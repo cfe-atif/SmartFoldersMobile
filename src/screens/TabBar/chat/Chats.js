@@ -108,17 +108,17 @@ export default function Chats({navigation}) {
         <View>
           <SimpleButton
             title="View All User"
-            addStyles={{textAlign: 'center'}}
+            addStyles={{textAlign: 'center', color: AppColors.white}}
             onPress={() => handleViewAllUsers()}
           />
           <SimpleButton
             title="View All groups"
-            addStyles={{textAlign: 'center'}}
+            addStyles={{textAlign: 'center', color: AppColors.white}}
             onPress={() => handleViewAllgroups()}
           />
           <SimpleButton
-            title="Add Group"
-            addStyles={{textAlign: 'center'}}
+            title="Create Group"
+            addStyles={{textAlign: 'center', color: AppColors.white}}
             onPress={() => handleAddGroups()}
           />
         </View>

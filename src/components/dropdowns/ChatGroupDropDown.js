@@ -1,26 +1,30 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {SelectList} from 'react-native-dropdown-select-list';
-import AppColors from './../../helpers/AppColors';
-import AppFontSize from './../../helpers/AppFontSize';
+import {StyleSheet, View} from 'react-native';
+import {MultipleSelectList} from 'react-native-dropdown-select-list';
+import AppColors from '../../helpers/AppColors';
+import AppFontSize from '../../helpers/AppFontSize';
 
-export default function ReminderDropDown({
+export default function ChatGroupDropDown({
   title = '',
   options = [],
-  setSelected = () => {},
+  setSelected,
+  handleOnSelect,
 }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <SelectList
-        setSelected={val => setSelected(val)}
+      <MultipleSelectList
+        label={title}
+        setSelected={setSelected}
+        onSelect={handleOnSelect}
         data={options}
-        save="value"
-        search={false}
-        placeholder="Select"
+        save="key"
+        search={true}
+        placeholder="Select from the list"
+        searchPlaceholder=""
         boxStyles={{
           borderColor: AppColors.gray,
           marginHorizontal: 10,
+          backgroundColor: AppColors.white,
         }}
         inputStyles={{
           color: AppColors.gray,
@@ -28,11 +32,13 @@ export default function ReminderDropDown({
         dropdownStyles={{
           borderColor: AppColors.gray,
           marginHorizontal: 10,
+          backgroundColor: AppColors.white,
         }}
         dropdownTextStyles={{
           color: AppColors.gray,
         }}
-        maxHeight={200}
+        notFoundText="No record found"
+        maxHeight={300}
       />
     </View>
   );

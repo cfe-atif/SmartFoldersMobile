@@ -14,6 +14,9 @@ const AppIcons = {
   chatIcon: 'send',
   menuIcon: 'ellipsis-vertical-outline',
   addReminder: 'add-circle',
+  // Search
+  search: 'search',
+  close: 'ios-close',
 };
 
 export default AppIcons;
