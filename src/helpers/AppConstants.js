@@ -87,5 +87,11 @@ const AppConstants = {
     '.bmp',
     '.eml',
   ],
+  dateTimeFormat: 'DD-MMM-YYYY, hh:mm:ss A',
+  datePicker: {
+    dateTime: 'datetime',
+    time: 'time',
+    date: 'date',
+  },
 };
 export default AppConstants;

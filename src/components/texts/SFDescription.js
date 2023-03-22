@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   description: {
-    fontSize: AppFontSize.size16,
+    fontSize: AppFontSize.size12,
     color: AppColors.gray,
     fontWeight: 'bold',
     textAlign: 'center',

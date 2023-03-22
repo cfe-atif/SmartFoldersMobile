@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {menuTypes} from './Constants';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../../components/headers/Header';
@@ -20,6 +19,7 @@ import SFHeading from './../../../components/texts/SFHeading';
 import AppIcons from './../../../helpers/AppIcons';
 import AppColors from './../../../helpers/AppColors';
 import AppRoutes from './../../../helpers/AppRoutes';
+import RecentSearches from './components/RecentSearches';
 
 export default function Home({navigation}) {
   const [selectedMenu, setSelectedMenu] = useState('');
@@ -106,6 +106,8 @@ export default function Home({navigation}) {
   const renderMenuView = () => {
     if (selectedMenu === menuTypes.addDocument) {
       return <AddDocument />;
+    } else if (selectedMenu === menuTypes.recentSearch) {
+      return <RecentSearches />;
     } else {
       return null;
     }
@@ -132,9 +134,7 @@ export default function Home({navigation}) {
           </TouchableOpacity>
         </View>
       )}
-      <KeyboardAwareScrollView>
-        <View style={styles.intContainer}>{renderMenuView()}</View>
-      </KeyboardAwareScrollView>
+      <View style={styles.intContainer}>{renderMenuView()}</View>
     </View>
   );
 }
