@@ -12,6 +12,9 @@ import Settings from '../../screens/TabBar/settings/Settings';
 import AddOrUpdateReminder from '../../screens/TabBar/reminders/AddOrUpdateReminder';
 import Reminders from '../../screens/TabBar/reminders/Reminders';
 import BottomNavigation from '../bottomTabNavigation/BottomNavigation';
+import AddDocument from '../../screens/TabBar/home/components/AddDocument';
+import AddFolder from '../../screens/TabBar/home/components/AddFolder';
+import RecentSearches from '../../screens/TabBar/home/components/RecentSearches';
 
 const headerOptions = {
   headerShown: false,
@@ -68,6 +71,18 @@ const NavigationScreens = {
   },
   Reminders: {
     screen: Reminders,
+    options: headerOptions,
+  },
+  AddDocument: {
+    screen: AddDocument,
+    options: headerOptions,
+  },
+  AddFolder: {
+    screen: AddFolder,
+    options: headerOptions,
+  },
+  RecentSearches: {
+    screen: RecentSearches,
     options: headerOptions,
   },
   BottomNavigation: {

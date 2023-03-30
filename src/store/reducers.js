@@ -1,5 +1,6 @@
 import {createReducer, combineReducers} from '@reduxjs/toolkit';
-import {AuthenticationReducer} from '../apiHandlers/authentication/AuthenticationReducer';
+import {AuthenticationReducer} from '../redux/reducers/AuthenticationReducer';
+import {SmartChatReducer} from '../redux/reducers/SmartChatReducer';
 
 const appState = {
   name: 'SmartFoldersApp',
@@ -14,6 +15,7 @@ const AppReducer = createReducer(appState, _ => {
 const rootReducer = combineReducers({
   AppReducer: AppReducer,
   AuthenticationReducer: AuthenticationReducer,
+  SmartChatReducer: SmartChatReducer,
 });
 
 export default rootReducer;

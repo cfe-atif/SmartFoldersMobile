@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
-import {stopLoaderAndError} from '../apiHandlers/authentication/AuthenticationReducer';
+import {stopLoaderAndError} from '../redux/reducers/AuthenticationReducer';
 import Toast from 'react-native-toast-message';
 import NavigationScreens from './screens/NavigationScreens';
 import AppRoutes from '../helpers/AppRoutes';

@@ -13,6 +13,9 @@ const AppRoutes = {
   AddOrUpdateReminder: 'AddOrUpdateReminder',
   Reminders: 'Reminders',
   BottomNavigation: 'BottomNavigation',
+  AddDocument: 'AddDocument',
+  AddFolder: 'AddFolder',
+  RecentSearches: 'RecentSearches',
 };
 
 export default AppRoutes;

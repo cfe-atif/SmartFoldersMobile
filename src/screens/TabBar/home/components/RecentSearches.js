@@ -2,9 +2,10 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View, FlatList} from 'react-native';
 import {get} from 'lodash';
 import {recentSearches} from '../TempConstants';
+import Header from '../../../../components/headers/Header';
+import RecentSearchCell from './../../../../components/cells/RecentSearchCell';
 import AppColors from './../../../../helpers/AppColors';
 import AppFontSize from './../../../../helpers/AppFontSize';
-import RecentSearchCell from './../../../../components/cells/RecentSearchCell';
 
 export default function RecentSearches({navigation}) {
   const [selectedSearch, setSelectedSearch] = useState('');
@@ -23,59 +24,66 @@ export default function RecentSearches({navigation}) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.flatListCont}>
-        <Text
-          style={styles.headerTitle}
-          adjustsFontSizeToFit={true}
-          numberOfLines={1}>
-          Last 50 Search
-        </Text>
-        <FlatList
-          data={
-            Array.isArray(
-              get(recentSearches, 'Searches.Saved.Last50.Search', []),
-            )
-              ? get(recentSearches, 'Searches.Saved.Last50.Search', [])
-              : [get(recentSearches, 'Searches.Saved.Last50.Search', [])]
-          }
-          renderItem={renderRecentSearchItem}
-        />
-      </View>
-      <View style={styles.flatListCont}>
-        <Text
-          style={styles.headerTitle}
-          adjustsFontSizeToFit={true}
-          numberOfLines={1}>
-          Public
-        </Text>
-        <FlatList
-          data={
-            Array.isArray(
-              get(recentSearches, 'Searches.Saved.Public.Search', []),
-            )
-              ? get(recentSearches, 'Searches.Saved.Public.Search', [])
-              : [get(recentSearches, 'Searches.Saved.Public.Search', [])]
-          }
-          renderItem={renderRecentSearchItem}
-        />
-      </View>
-      <View style={styles.flatListCont}>
-        <Text
-          style={styles.headerTitle}
-          adjustsFontSizeToFit={true}
-          numberOfLines={1}>
-          Private
-        </Text>
-        <FlatList
-          data={
-            Array.isArray(
-              get(recentSearches, 'Searches.Saved.Private.Search', []),
-            )
-              ? get(recentSearches, 'Searches.Saved.Private.Search', [])
-              : [get(recentSearches, 'Searches.Saved.Private.Search', [])]
-          }
-          renderItem={renderRecentSearchItem}
-        />
+      <Header
+        title="Recent Searches"
+        backButton={true}
+        onBackPress={() => navigation.goBack()}
+      />
+      <View style={styles.intContainer}>
+        <View style={styles.flatListCont}>
+          <Text
+            style={styles.headerTitle}
+            adjustsFontSizeToFit={true}
+            numberOfLines={1}>
+            Last 50 Search
+          </Text>
+          <FlatList
+            data={
+              Array.isArray(
+                get(recentSearches, 'Searches.Saved.Last50.Search', []),
+              )
+                ? get(recentSearches, 'Searches.Saved.Last50.Search', [])
+                : [get(recentSearches, 'Searches.Saved.Last50.Search', [])]
+            }
+            renderItem={renderRecentSearchItem}
+          />
+        </View>
+        <View style={styles.flatListCont}>
+          <Text
+            style={styles.headerTitle}
+            adjustsFontSizeToFit={true}
+            numberOfLines={1}>
+            Public
+          </Text>
+          <FlatList
+            data={
+              Array.isArray(
+                get(recentSearches, 'Searches.Saved.Public.Search', []),
+              )
+                ? get(recentSearches, 'Searches.Saved.Public.Search', [])
+                : [get(recentSearches, 'Searches.Saved.Public.Search', [])]
+            }
+            renderItem={renderRecentSearchItem}
+          />
+        </View>
+        <View style={styles.flatListCont}>
+          <Text
+            style={styles.headerTitle}
+            adjustsFontSizeToFit={true}
+            numberOfLines={1}>
+            Private
+          </Text>
+          <FlatList
+            data={
+              Array.isArray(
+                get(recentSearches, 'Searches.Saved.Private.Search', []),
+              )
+                ? get(recentSearches, 'Searches.Saved.Private.Search', [])
+                : [get(recentSearches, 'Searches.Saved.Private.Search', [])]
+            }
+            renderItem={renderRecentSearchItem}
+          />
+        </View>
       </View>
     </View>
   );
@@ -84,11 +92,13 @@ export default function RecentSearches({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  intContainer: {
+    flex: 1,
     flexDirection: 'row',
   },
   flatListCont: {
     flex: 1,
-    marginVertical: 10,
     borderWidth: 1,
     borderColor: AppColors.gray,
   },

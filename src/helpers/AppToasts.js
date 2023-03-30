@@ -8,7 +8,7 @@ export const showSuccessToast = (title, desc) => {
   });
 };
 
-export const showFailureToast = (title, desc) => {
+export const showFaliureToast = (title, desc) => {
   SFToast({
     type: 'error',
     title: title,

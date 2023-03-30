@@ -1,4 +1,4 @@
-export const Applogger = (message, data) => {
+const Applogger = (message, data) => {
   console.log(
     '%c========= Message =========',
     'color:green; font-weight:bold; font-size:15px',

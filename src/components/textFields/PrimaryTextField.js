@@ -61,6 +61,7 @@ export default function PrimaryTextField({
   value = '',
   placeholder = 'Type here...',
   onChange = () => {},
+  isSecure = false,
 }) {
   return (
     <View style={styles.container}>
@@ -71,6 +72,7 @@ export default function PrimaryTextField({
         style={styles.textField}
         value={value}
         onChangeText={onChange}
+        secureTextEntry={isSecure}
       />
     </View>
   );

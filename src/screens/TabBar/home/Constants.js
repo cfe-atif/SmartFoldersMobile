@@ -9,6 +9,11 @@ export const menuTypes = {
   reminders: 'Reminders',
 };
 
+export const foldersTypes = {
+  public: 'Public',
+  private: 'Private',
+};
+
 export const decalreOptions = [
   {
     key: '1',

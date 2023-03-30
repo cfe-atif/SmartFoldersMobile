@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useDispatch, useSelector} from 'react-redux';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {loginRequest} from '../../redux/reducers/AuthenticationReducer';
+import {mapAPICallError, responseHasError} from '../../utils/HelperFunctions';
+import {showFaliureToast} from '../../helpers/AppToasts';
+import Applogger from '../../helpers/AppLogger';
 import AppColors from '../../helpers/AppColors';
 import AppImages from '../../helpers/AppImages';
 import AppRoutes from '../../helpers/AppRoutes';
@@ -11,15 +17,50 @@ import SFLoader from '../../components/loaders/SFLoader';
 import SFHeading from '../../components/texts/SFHeading';
 
 export default function Login({navigation}) {
-  const loading = false;
+  const dispatch = useDispatch();
+
+  const {loading} = useSelector(state => state.AuthenticationReducer);
 
   const [loginBody, setLoginBody] = useState({
-    username: '',
-    password: '',
+    username: 'sysadmin',
+    password: 'psl2023',
   });
 
   const handleLoginPress = () => {
-    navigation.navigate(AppRoutes.SelectDatabase);
+    if (loginBody.username || loginBody.password) {
+      showFaliureToast('Fields Error', 'Both fields are required');
+      return;
+    }
+    dispatch(
+      loginRequest({
+        username: loginBody.username,
+        password: loginBody.password,
+      }),
+    )
+      .then(unwrapResult)
+      .then(res => {
+        if (responseHasError(res)) {
+          Applogger('Error at loginRequest Response', res);
+          showFaliureToast(mapAPICallError(err, true));
+        } else {
+          Applogger('Response at loginRequest', res);
+          if (res.hasOwnProperty('PasswordExpired')) {
+            navigation.navigate(AppRoutes.ChangePassword);
+          } else {
+            if (Array.isArray(res.Database) > 0) {
+              navigation.navigate(AppRoutes.SelectDatabase);
+            } else {
+              navigation.navigate(AppRoutes.SelectDatabase, {
+                databaseNumber: res.Database.Number,
+              });
+            }
+          }
+        }
+      })
+      .catch(err => {
+        Applogger('Error at loginRequest', err);
+        showFaliureToast(mapAPICallError(err, true));
+      });
   };
 
   const handleForgotPassword = () => {
@@ -44,6 +85,7 @@ export default function Login({navigation}) {
         placeholder={'Password'}
         value={loginBody.password}
         onChange={text => setLoginBody({...loginBody, password: text})}
+        isSecure={true}
       />
       <SimpleButton
         title="Forgot Password ?"

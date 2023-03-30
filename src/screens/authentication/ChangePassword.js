@@ -1,6 +1,13 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useDispatch, useSelector} from 'react-redux';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {mapAPICallError, responseHasError} from '../../utils/HelperFunctions';
+import {changePasswordRequest} from './../../redux/reducers/AuthenticationReducer';
+import {get} from 'lodash';
+import {showFaliureToast, showSuccessToast} from '../../helpers/AppToasts';
+import Applogger from '../../helpers/AppLogger';
 import AppColors from '../../helpers/AppColors';
 import AppImages from '../../helpers/AppImages';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
@@ -9,13 +16,38 @@ import SFLoader from '../../components/loaders/SFLoader';
 import SFHeading from '../../components/texts/SFHeading';
 
 export default function ChangePassword({navigation}) {
-  const loading = false;
+  const dispatch = useDispatch();
+
+  const {loading, user} = useSelector(state => state.AuthenticationReducer);
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSubmitPress = () => {
-    navigation.goBack();
+    if (password != confirmPassword) {
+      showFaliureToast('Error', 'Password and confirm password does not match');
+      return;
+    }
+    dispatch(
+      changePasswordRequest({password: password, userNo: get(user, 'No', '')}),
+    )
+      .then(unwrapResult)
+      .then(res => {
+        if (responseHasError(res)) {
+          Applogger('Error at changePasswordRequest Response', res);
+          showFaliureToast(mapAPICallError(err));
+        } else {
+          Applogger('Response at changePasswordRequest', res);
+          showSuccessToast(
+            'Congrats',
+            'Password has been changed successfully',
+          );
+        }
+      })
+      .catch(err => {
+        Applogger('Error at changePasswordRequest', err);
+        showFaliureToast(mapAPICallError(err));
+      });
   };
 
   return (

@@ -7,22 +7,25 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import {menuTypes} from './Constants';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Header from '../../../components/headers/Header';
-import SearchBar from '../../../components/search/SearchBar';
-import AddDocument from './components/AddDocument';
+import {menuTypes, foldersTypes} from './Constants';
 import AppImages from './../../../helpers/AppImages';
 import Applogger from '../../../helpers/AppLogger';
 import AppFontSize from './../../../helpers/AppFontSize';
-import SFHeading from './../../../components/texts/SFHeading';
-import AppIcons from './../../../helpers/AppIcons';
 import AppColors from './../../../helpers/AppColors';
 import AppRoutes from './../../../helpers/AppRoutes';
-import RecentSearches from './components/RecentSearches';
+import Header from '../../../components/headers/Header';
+import SearchBar from '../../../components/search/SearchBar';
 
 export default function Home({navigation}) {
   const [selectedMenu, setSelectedMenu] = useState('');
+  const [foldersType, setFoldersType] = useState(foldersTypes.public);
+  const [folderNavigation, setFolderNavigation] = useState([
+    {title: 'Nayyer'},
+    {title: 'Usman'},
+    {title: 'Junaid'},
+    {title: 'Shahab'},
+    {title: 'Atif Jamil'},
+  ]);
 
   const menuItems = [
     {
@@ -30,7 +33,8 @@ export default function Home({navigation}) {
       image: AppImages.addDocument,
       onPress: () => {
         Applogger('Clicked Add Document');
-        setSelectedMenu(menuTypes.addDocument);
+        // setSelectedMenu(menuTypes.addDocument);
+        navigation.navigate(AppRoutes.AddDocument);
       },
     },
     {
@@ -38,7 +42,8 @@ export default function Home({navigation}) {
       image: AppImages.addFolder,
       onPress: () => {
         Applogger('Clicked Add Folder');
-        setSelectedMenu(menuTypes.addFolder);
+        // setSelectedMenu(menuTypes.addFolder);
+        navigation.navigate(AppRoutes.AddFolder);
       },
     },
     {
@@ -71,7 +76,8 @@ export default function Home({navigation}) {
       image: AppImages.recentSearches,
       onPress: () => {
         Applogger('Clicked Recent Searches');
-        setSelectedMenu(menuTypes.recentSearch);
+        // setSelectedMenu(menuTypes.recentSearch);
+        navigation.navigate(AppRoutes.RecentSearches);
       },
     },
     {
@@ -103,14 +109,18 @@ export default function Home({navigation}) {
     );
   };
 
-  const renderMenuView = () => {
-    if (selectedMenu === menuTypes.addDocument) {
-      return <AddDocument />;
-    } else if (selectedMenu === menuTypes.recentSearch) {
-      return <RecentSearches />;
-    } else {
-      return null;
-    }
+  const renderFolderNavigationitem = ({item, index}) => {
+    const {title} = item;
+    return (
+      <TouchableOpacity style={styles.navBtn}>
+        <Text
+          style={
+            index == folderNavigation.length - 1
+              ? styles.currentNavBtnText
+              : styles.navBtnText
+          }>{`${title}/`}</Text>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -124,17 +134,47 @@ export default function Home({navigation}) {
           renderItem={renderMenuItems}
         />
       </View>
-      {selectedMenu && (
-        <View style={styles.intHeaderView}>
-          <SFHeading title={selectedMenu} />
+      <View style={styles.intContainer}>
+        <View style={styles.buttonsContainer}>
           <TouchableOpacity
-            style={styles.closeIcon}
-            onPress={() => setSelectedMenu('')}>
-            <Icon name={AppIcons.close} size={25} color={AppColors.gray} />
+            onPress={() => setFoldersType(foldersTypes.public)}
+            style={
+              foldersType == foldersTypes.public
+                ? styles.folderButton
+                : styles.selFolderButton
+            }>
+            <Text
+              style={
+                foldersType == foldersTypes.public
+                  ? styles.selFolderButtonText
+                  : styles.folderButtonText
+              }>
+              Public
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setFoldersType(foldersTypes.private)}
+            style={
+              foldersType == foldersTypes.private
+                ? styles.folderButton
+                : styles.selFolderButton
+            }>
+            <Text
+              style={
+                foldersType == foldersTypes.private
+                  ? styles.selFolderButtonText
+                  : styles.folderButtonText
+              }>
+              Private
+            </Text>
           </TouchableOpacity>
         </View>
-      )}
-      <View style={styles.intContainer}>{renderMenuView()}</View>
+        <FlatList
+          data={folderNavigation}
+          renderItem={renderFolderNavigationitem}
+          horizontal={true}
+        />
+      </View>
     </View>
   );
 }
@@ -145,6 +185,7 @@ const styles = StyleSheet.create({
   },
   intContainer: {
     flex: 1,
+    paddingHorizontal: 10,
   },
   menuIcon: {
     height: 30,
@@ -158,14 +199,55 @@ const styles = StyleSheet.create({
   menuTitle: {
     fontSize: AppFontSize.size12,
   },
-  intHeaderView: {
+  navBtn: {
+    marginRight: 5,
+  },
+  navBtnText: {
+    color: AppColors.gray,
+    fontSize: AppFontSize.size16,
+    fontWeight: '500',
+  },
+  currentNavBtnText: {
+    color: AppColors.customBlue,
+    fontSize: AppFontSize.size16,
+    fontWeight: 'bold',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    margin: 10,
+    padding: 10,
+    justifyContent: 'space-around',
+  },
+  selFolderButton: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    backgroundColor: AppColors.customBlue,
+    borderColor: AppColors.customBlue,
   },
-  closeIcon: {
-    position: 'absolute',
-    right: 10,
-    padding: 5,
+  folderButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    backgroundColor: AppColors.white,
+    borderColor: AppColors.customBlue,
+  },
+  selFolderButtonText: {
+    fontSize: AppFontSize.size16,
+    color: AppColors.customBlue,
+    fontWeight: 'bold',
+  },
+  folderButtonText: {
+    fontSize: AppFontSize.size16,
+    color: AppColors.white,
+    fontWeight: 'bold',
   },
 });

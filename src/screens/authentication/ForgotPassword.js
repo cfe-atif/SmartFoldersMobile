@@ -3,11 +3,11 @@ import {Image, StyleSheet} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AppColors from '../../helpers/AppColors';
 import AppImages from '../../helpers/AppImages';
+import AppRoutes from './../../helpers/AppRoutes';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import PrimaryTextField from '../../components/textFields/PrimaryTextField';
 import SFLoader from '../../components/loaders/SFLoader';
 import SFHeading from '../../components/texts/SFHeading';
-import AppRoutes from './../../helpers/AppRoutes';
 
 export default function ForgotPassword({navigation}) {
   const loading = false;

@@ -4,6 +4,7 @@ import {decalreOptions} from '../Constants';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {get} from 'lodash';
 import moment from 'moment';
+import Header from '../../../../components/headers/Header';
 import PrimaryTextField from './../../../../components/textFields/PrimaryTextField';
 import PrimaryButton from './../../../../components/buttons/PrimaryButton';
 import PrimaryDatePicker from '../../../../components/textFields/PrimaryDatePicker';
@@ -49,7 +50,12 @@ export default function AddDocument({navigation}) {
   };
 
   return (
-    <>
+    <View style={styles.container}>
+      <Header
+        title="Add Document"
+        backButton={true}
+        onBackPress={() => navigation.goBack()}
+      />
       <View>
         <SFDescription
           title="Select Document Type"
@@ -118,7 +124,7 @@ export default function AddDocument({navigation}) {
           <PrimaryButton title="Add" onPress={() => handleAddDocument()} />
         </View>
       </KeyboardAwareScrollView>
-    </>
+    </View>
   );
 }
 
