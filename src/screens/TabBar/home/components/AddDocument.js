@@ -1,19 +1,22 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
 import {decalreOptions} from '../Constants';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {get} from 'lodash';
 import moment from 'moment';
+import AppColors from './../../../../helpers/AppColors';
+import AppFontFamily from '../../../../helpers/AppFontFamily';
+import AppConstants from './../../../../helpers/AppConstants';
 import Header from '../../../../components/headers/Header';
 import PrimaryTextField from './../../../../components/textFields/PrimaryTextField';
 import PrimaryButton from './../../../../components/buttons/PrimaryButton';
 import PrimaryDatePicker from '../../../../components/textFields/PrimaryDatePicker';
 import PrimaryDropDown from './../../../../components/dropdowns/PrimaryDropDown';
 import SFDescription from './../../../../components/texts/SFDescription';
-import AppConstants from './../../../../helpers/AppConstants';
-import AppColors from './../../../../helpers/AppColors';
 
 export default function AddDocument({navigation}) {
+  const docTypeListRef = useRef(null);
+
   const [selectedDocType, setSelectedDocType] = useState(
     get(documentTypes, '[0].title', ''),
   );
@@ -29,7 +32,14 @@ export default function AddDocument({navigation}) {
 
   const handleAddDocument = () => {};
 
-  const documentTypes = [{title: 'General'}, {title: 'Pictures'}];
+  const documentTypes = [
+    {
+      title: 'General',
+    },
+    {
+      title: 'Pictures',
+    },
+  ];
 
   const renderDocumentTypeItem = ({item, index}) => {
     const {title} = item;
@@ -40,7 +50,13 @@ export default function AddDocument({navigation}) {
     return (
       <TouchableOpacity
         key={index}
-        onPress={() => setSelectedDocType(title)}
+        onPress={() => {
+          setSelectedDocType(title);
+          docTypeListRef?.current.scrollToIndex({
+            animated: true,
+            index: index,
+          });
+        }}
         style={[styles.docTypeCont, {backgroundColor: backgroundColor}]}>
         <Text style={selected ? styles.selDocTypeTitle : styles.docTypeTitle}>
           {title}
@@ -62,6 +78,7 @@ export default function AddDocument({navigation}) {
           containerStyle={{margin: 0}}
         />
         <FlatList
+          ref={docTypeListRef}
           style={{alignSelf: 'center'}}
           horizontal={true}
           data={documentTypes}
@@ -136,13 +153,14 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     borderRadius: 10,
+    fontFamily: AppFontFamily.regular,
   },
   docTypeTitle: {
-    fontWeight: '500',
     color: AppColors.black,
+    fontFamily: AppFontFamily.regular,
   },
   selDocTypeTitle: {
-    fontWeight: '700',
     color: AppColors.white,
+    fontFamily: AppFontFamily.bold,
   },
 });

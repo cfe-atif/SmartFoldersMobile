@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import AppFontSize from './../../helpers/AppFontSize';
 import AppColors from './../../helpers/AppColors';
+import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function SFNoRecord({
   title = '',
@@ -20,9 +21,9 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   heading: {
-    fontSize: AppFontSize.size20,
-    color: AppColors.black,
-    fontWeight: 'bold',
     textAlign: 'center',
+    color: AppColors.black,
+    fontSize: AppFontSize.size20,
+    fontFamily: AppFontFamily.bold,
   },
 });

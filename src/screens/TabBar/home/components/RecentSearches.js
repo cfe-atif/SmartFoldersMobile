@@ -2,10 +2,11 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View, FlatList} from 'react-native';
 import {get} from 'lodash';
 import {recentSearches} from '../TempConstants';
-import Header from '../../../../components/headers/Header';
-import RecentSearchCell from './../../../../components/cells/RecentSearchCell';
 import AppColors from './../../../../helpers/AppColors';
 import AppFontSize from './../../../../helpers/AppFontSize';
+import AppFontFamily from './../../../../helpers/AppFontFamily';
+import Header from '../../../../components/headers/Header';
+import RecentSearchCell from './../../../../components/cells/RecentSearchCell';
 
 export default function RecentSearches({navigation}) {
   const [selectedSearch, setSelectedSearch] = useState('');
@@ -101,15 +102,16 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderColor: AppColors.gray,
+    fontFamily: AppFontFamily.regular,
   },
   headerTitle: {
     textAlign: 'center',
-    fontWeight: 'bold',
     padding: 5,
-    fontSize: AppFontSize.size16,
-    color: AppColors.customBlue,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: AppColors.gray,
+    fontSize: AppFontSize.size16,
+    color: AppColors.customBlue,
+    fontFamily: AppFontFamily.bold,
   },
 });

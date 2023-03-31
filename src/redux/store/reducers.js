@@ -1,6 +1,6 @@
 import {createReducer, combineReducers} from '@reduxjs/toolkit';
-import {AuthenticationReducer} from '../redux/reducers/AuthenticationReducer';
-import {SmartChatReducer} from '../redux/reducers/SmartChatReducer';
+import {AuthenticationReducer} from '../reducers/AuthenticationReducer';
+import {SmartChatReducer} from '../reducers/SmartChatReducer';
 
 const appState = {
   name: 'SmartFoldersApp',

@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AppIcons from './../../helpers/AppIcons';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from '../../helpers/AppFontFamily';
 
 export default function SearchBar() {
   return (
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     paddingHorizontal: 5,
     fontSize: AppFontSize.size16,
+    fontFamily: AppFontFamily.regular,
   },
   iconStyle: {
     padding: 5,

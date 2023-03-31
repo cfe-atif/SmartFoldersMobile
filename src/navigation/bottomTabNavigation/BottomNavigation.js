@@ -1,6 +1,7 @@
-import AppColors from '../../helpers/AppColors';
 import AppIcons from '../../helpers/AppIcons';
 import AppRoutes from '../../helpers/AppRoutes';
+import AppColors from '../../helpers/AppColors';
+import AppFontFamily from '../../helpers/AppFontFamily';
 import BottomTabScreens from '../screens/BottomTabScreens';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -19,7 +20,7 @@ export default function BottomNavigation({navigation}) {
           opacity: AppColors.black,
         },
         tabBarLabelStyle: {
-          fontWeight: 'bold',
+          fontFamily: AppFontFamily.bold,
         },
         tabBarStyle: {
           backgroundColor: AppColors.offWhite,

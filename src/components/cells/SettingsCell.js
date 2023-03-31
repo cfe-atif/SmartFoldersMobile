@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from '../../helpers/AppFontFamily';
 
 export default function SettingsCell({title = '', onPress = () => {}}) {
   return (
@@ -23,9 +24,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
+    marginVertical: 10,
     color: AppColors.gray,
     fontSize: AppFontSize.size16,
-    fontWeight: '500',
-    marginVertical: 10,
+    fontFamily: AppFontFamily.semiBold,
   },
 });

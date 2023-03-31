@@ -15,6 +15,7 @@ import BottomNavigation from '../bottomTabNavigation/BottomNavigation';
 import AddDocument from '../../screens/TabBar/home/components/AddDocument';
 import AddFolder from '../../screens/TabBar/home/components/AddFolder';
 import RecentSearches from '../../screens/TabBar/home/components/RecentSearches';
+import DocumentDetails from '../../screens/TabBar/home/components/DocumentDetails';
 
 const headerOptions = {
   headerShown: false,
@@ -83,6 +84,10 @@ const NavigationScreens = {
   },
   RecentSearches: {
     screen: RecentSearches,
+    options: headerOptions,
+  },
+  DocumentDetails: {
+    screen: DocumentDetails,
     options: headerOptions,
   },
   BottomNavigation: {

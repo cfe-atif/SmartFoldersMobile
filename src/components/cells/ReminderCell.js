@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from '../../helpers/AppFontFamily';
 import moment from 'moment';
 
 export default function ReminderCell({
@@ -63,11 +64,13 @@ const styles = StyleSheet.create({
     flex: 1,
     color: AppColors.black,
     fontSize: AppFontSize.size14,
+    fontFamily: AppFontFamily.semiBold,
   },
   description: {
     flex: 3,
     marginLeft: 10,
     color: AppColors.gray,
     fontSize: AppFontSize.size12,
+    fontFamily: AppFontFamily.semiBold,
   },
 });

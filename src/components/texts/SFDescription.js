@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import AppFontSize from './../../helpers/AppFontSize';
 import AppColors from './../../helpers/AppColors';
+import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function SFDescription({
   title = '',
@@ -20,9 +21,9 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   description: {
+    textAlign: 'center',
     fontSize: AppFontSize.size12,
     color: AppColors.gray,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontFamily: AppFontFamily.bold,
   },
 });

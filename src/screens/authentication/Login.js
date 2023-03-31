@@ -27,7 +27,7 @@ export default function Login({navigation}) {
   });
 
   const handleLoginPress = () => {
-    if (loginBody.username || loginBody.password) {
+    if (!loginBody.username || !loginBody.password) {
       showFaliureToast('Fields Error', 'Both fields are required');
       return;
     }

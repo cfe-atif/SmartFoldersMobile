@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AppFontSize from './../../helpers/AppFontSize';
 import AppColors from './../../helpers/AppColors';
+import AppFontFamily from '../../helpers/AppFontFamily';
 
 export default function RecentSearchCell({title, selected, onPress}) {
   return (
@@ -22,11 +23,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: AppFontSize.size14,
     color: AppColors.gray,
-    fontWeight: '500',
+    fontFamily: AppFontFamily.regular,
   },
   selectedTitle: {
     fontSize: AppFontSize.size14,
     color: AppColors.customBlue,
-    fontWeight: '700',
+    fontFamily: AppFontFamily.bold,
   },
 });

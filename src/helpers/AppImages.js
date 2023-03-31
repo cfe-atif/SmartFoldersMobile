@@ -9,6 +9,7 @@ const AppImages = {
   email: require('../assets/images/email.png'),
   pdf: require('../assets/images/pdf.png'),
   refresh: require('../assets/images/refresh.png'),
+  folder: require('../assets/images/colored-folder.png'),
 };
 
 export default AppImages;

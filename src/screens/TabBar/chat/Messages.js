@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import AppColors from '../../../helpers/AppColors';
 import AppIcons from './../../../helpers/AppIcons';
 import AppFontSize from './../../../helpers/AppFontSize';
+import AppFontFamily from '../../../helpers/AppFontFamily';
 import Header from '../../../components/headers/Header';
 import SFNoRecord from './../../../components/texts/SFNoRecord';
 import OutGoingMessageCell from '../../../components/cells/OutGoingMessageCell';
@@ -126,5 +127,6 @@ const styles = StyleSheet.create({
     fontSize: AppFontSize.size16,
     color: AppColors.black,
     borderColor: AppColors.gray,
+    fontFamily: AppFontFamily.regular,
   },
 });

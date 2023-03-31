@@ -14,7 +14,9 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-SmartFoldersApp-SmartFoldersAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-SmartFoldersApp-SmartFoldersAppTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		4DE32E41194245AB94454234 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 1CCEF91355BC4BDE92B0819F /* fonts */; };
+		7FDABB7BC02C474682899F78 /* OpenSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5EBD1339550E4ABDB1095A0D /* OpenSans-Bold.ttf */; };
+		348F6C39A7BB4801BC45D2F6 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA0C0955B0834556B5A04519 /* OpenSans-Regular.ttf */; };
+		568CF9303AB64F368112B3D2 /* OpenSans-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 411B154E8DCE4BDB8F79B7B0 /* OpenSans-Semibold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,7 +47,9 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = SmartFoldersApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-SmartFoldersApp-SmartFoldersAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartFoldersApp-SmartFoldersAppTests.release.xcconfig"; path = "Target Support Files/Pods-SmartFoldersApp-SmartFoldersAppTests/Pods-SmartFoldersApp-SmartFoldersAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		1CCEF91355BC4BDE92B0819F /* fonts */ = {isa = PBXFileReference; name = "fonts"; path = "../src/assets/fonts"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5EBD1339550E4ABDB1095A0D /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; name = "OpenSans-Bold.ttf"; path = "../src/assets/fonts/OpenSans-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FA0C0955B0834556B5A04519 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; name = "OpenSans-Regular.ttf"; path = "../src/assets/fonts/OpenSans-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		411B154E8DCE4BDB8F79B7B0 /* OpenSans-Semibold.ttf */ = {isa = PBXFileReference; name = "OpenSans-Semibold.ttf"; path = "../src/assets/fonts/OpenSans-Semibold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,7 +158,9 @@
 		5B6D9F23B9904838AB93507A /* Resources */ = {
 			isa = "PBXGroup";
 			children = (
-				1CCEF91355BC4BDE92B0819F /* fonts */,
+				5EBD1339550E4ABDB1095A0D /* OpenSans-Bold.ttf */,
+				FA0C0955B0834556B5A04519 /* OpenSans-Regular.ttf */,
+				411B154E8DCE4BDB8F79B7B0 /* OpenSans-Semibold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -256,7 +262,9 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				4DE32E41194245AB94454234 /* fonts in Resources */,
+				7FDABB7BC02C474682899F78 /* OpenSans-Bold.ttf in Resources */,
+				348F6C39A7BB4801BC45D2F6 /* OpenSans-Regular.ttf in Resources */,
+				568CF9303AB64F368112B3D2 /* OpenSans-Semibold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

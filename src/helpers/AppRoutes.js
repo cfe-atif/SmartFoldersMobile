@@ -16,6 +16,7 @@ const AppRoutes = {
   AddDocument: 'AddDocument',
   AddFolder: 'AddFolder',
   RecentSearches: 'RecentSearches',
+  DocumentDetails: 'DocumentDetails',
 };
 
 export default AppRoutes;

@@ -1,17 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {StyleSheet, FlatList, View, TouchableOpacity} from 'react-native';
 import {
   filterOptions,
-  filterTypes,
-  sortTypes,
   reminderFilterOptions,
   reminderSortOptions,
 } from './Constants';
 import {get} from 'lodash';
 import Applogger from '../../../helpers/AppLogger';
 import Icon from 'react-native-vector-icons/Ionicons';
-import ReminderCell from '../../../components/cells/ReminderCell';
 import Header from '../../../components/headers/Header';
+import ReminderCell from '../../../components/cells/ReminderCell';
 import ReminderDropDown from '../../../components/dropdowns/ReminderDropDown';
 import ReminderFilterButton from '../../../components/buttons/ReminderFilterButton';
 import AppIcons from './../../../helpers/AppIcons';
@@ -19,6 +17,8 @@ import AppColors from './../../../helpers/AppColors';
 import AppRoutes from './../../../helpers/AppRoutes';
 
 export default function Reminders({navigation}) {
+  const filtersRef = useRef();
+
   const reminders = [
     {
       Details: 'Test for reminder without doc',
@@ -78,7 +78,13 @@ export default function Reminders({navigation}) {
     const {title, query} = item;
     return (
       <ReminderFilterButton
-        onPress={() => handleReminderFiler(query)}
+        onPress={() => {
+          handleReminderFiler(query);
+          filtersRef?.current.scrollToIndex({
+            animated: true,
+            index: index,
+          });
+        }}
         title={title}
         selected={selectedFilter === query}
       />
@@ -90,6 +96,7 @@ export default function Reminders({navigation}) {
       <Header title="Reminders" />
       <View>
         <FlatList
+          ref={filtersRef}
           horizontal={true}
           data={filterOptions}
           renderItem={renderReminderFilterItems}

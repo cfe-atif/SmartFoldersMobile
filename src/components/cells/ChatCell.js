@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function ChatCell({
   title = '',
@@ -43,13 +44,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: AppFontSize.size16,
     color: AppColors.black,
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
   },
   description: {
     marginTop: 5,
     fontSize: AppFontSize.size14,
     color: AppColors.gray,
-    fontWeight: '500',
+    fontFamily: AppFontFamily.regular,
   },
   rightContainer: {
     alignItems: 'center',
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   timeStamp: {
     fontSize: AppFontSize.size12,
     color: AppColors.gray,
-    fontWeight: '500',
+    fontFamily: AppFontFamily.regular,
   },
   dotIcon: {
     backgroundColor: AppColors.customBlue,

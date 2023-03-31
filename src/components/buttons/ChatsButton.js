@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function ChatsButton({
   title = '',
@@ -44,12 +45,12 @@ const styles = StyleSheet.create({
   },
   selectedButtontext: {
     fontSize: AppFontSize.size16,
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
     color: AppColors.white,
   },
   buttontext: {
     fontSize: AppFontSize.size16,
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
     color: AppColors.customBlue,
   },
 });

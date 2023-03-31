@@ -1,9 +1,10 @@
 import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import AppColors from '../../helpers/AppColors';
 import AppFontSize from '../../helpers/AppFontSize';
-import DatePicker from 'react-native-date-picker';
 import AppConstants from './../../helpers/AppConstants';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function PrimaryDatePicker({
   placeholder = 'Type here...',
@@ -55,14 +56,14 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
   placeholder: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: AppColors.gray,
     flex: 1,
+    textAlign: 'center',
+    color: AppColors.gray,
+    fontFamily: AppFontFamily.bold,
   },
   dateText: {
-    fontWeight: 'bold',
     color: AppColors.gray,
+    fontFamily: AppFontFamily.bold,
   },
   textField: {
     height: 50,
@@ -70,9 +71,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: 'center',
     borderLeftWidth: 1.5,
-    borderLeftColor: AppColors.lightGray,
-    fontWeight: 'bold',
     color: AppColors.gray,
+    fontFamily: AppFontFamily.bold,
     fontSize: AppFontSize.size16,
+    borderLeftColor: AppColors.lightGray,
   },
 });

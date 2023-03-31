@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function PrimaryDropDown({
   title = '',
@@ -40,6 +41,7 @@ export default function PrimaryDropDown({
           borderBottomColor: AppColors.lightGray,
         }}
         maxHeight={200}
+        fontFamily={AppFontFamily.semiBold}
       />
     </View>
   );
@@ -54,6 +56,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginBottom: 10,
     fontSize: AppFontSize.size14,
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
   },
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from '../../helpers/AppFontSize';
+import AppFontFamily from '../../helpers/AppFontFamily';
 
 export default function PrimaryButton({title = '', onPress = () => {}}) {
   return (
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.customBlue,
   },
   buttonText: {
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
     color: AppColors.white,
     fontSize: AppFontSize.size18,
   },

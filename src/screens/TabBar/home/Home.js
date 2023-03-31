@@ -1,25 +1,52 @@
-import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  Image,
-  TouchableOpacity,
-  Text,
-} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {StyleSheet, View, FlatList} from 'react-native';
 import {menuTypes, foldersTypes} from './Constants';
-import AppImages from './../../../helpers/AppImages';
+import moment from 'moment';
 import Applogger from '../../../helpers/AppLogger';
-import AppFontSize from './../../../helpers/AppFontSize';
-import AppColors from './../../../helpers/AppColors';
+import AppImages from './../../../helpers/AppImages';
 import AppRoutes from './../../../helpers/AppRoutes';
+import AppColors from './../../../helpers/AppColors';
+import AppConstants from './../../../helpers/AppConstants';
 import Header from '../../../components/headers/Header';
 import SearchBar from '../../../components/search/SearchBar';
+import FileCell from './../../../components/cells/FileCell';
+import FolderCell from './../../../components/cells/FolderCell';
+import MenuButton from '../../../components/buttons/MenuButton';
+import FolderTypeButton from './../../../components/buttons/FolderTypeButton';
+import FolderNavigationButton from './../../../components/buttons/FolderNavigationButton';
 
 export default function Home({navigation}) {
+  const menulistRef = useRef(null);
+  const folderNavlistRef = useRef(null);
+
   const [selectedMenu, setSelectedMenu] = useState('');
   const [foldersType, setFoldersType] = useState(foldersTypes.public);
+
+  const [currentFoldersData, setCurrentFoldersData] = useState([
+    {title: 'Nayyer', folder: false},
+    {
+      title: 'Usman',
+      folder: true,
+      date: moment(new Date()).format(AppConstants.dateFormat),
+      description: 'This is file description',
+    },
+    {title: 'Junaid', folder: false},
+    {
+      title: 'Shahab',
+      folder: true,
+      date: moment(new Date()).format(AppConstants.dateFormat),
+      description:
+        'This is file description which has multiple lines to truncate',
+    },
+    {title: 'Atif Jamil', folder: false},
+  ]);
+
   const [folderNavigation, setFolderNavigation] = useState([
+    {title: 'Nayyer'},
+    {title: 'Usman'},
+    {title: 'Junaid'},
+    {title: 'Shahab'},
+    {title: 'Atif Jamil'},
     {title: 'Nayyer'},
     {title: 'Usman'},
     {title: 'Junaid'},
@@ -60,6 +87,7 @@ export default function Home({navigation}) {
       onPress: () => {
         Applogger('Clicked Add Reminder');
         setSelectedMenu('');
+
         navigation.navigate(AppRoutes.AddOrUpdateReminder);
       },
     },
@@ -102,25 +130,53 @@ export default function Home({navigation}) {
   const renderMenuItems = ({item, index}) => {
     const {title, image, onPress} = item;
     return (
-      <TouchableOpacity onPress={onPress} key={index} style={styles.menuItem}>
-        <Image source={image} resizeMode="contain" style={styles.menuIcon} />
-        <Text style={styles.menuTitle}>{title}</Text>
-      </TouchableOpacity>
+      <MenuButton
+        key={index}
+        title={title}
+        image={image}
+        onPress={() => {
+          onPress();
+          menulistRef?.current.scrollToIndex({animated: true, index: index});
+        }}
+      />
     );
   };
 
   const renderFolderNavigationitem = ({item, index}) => {
     const {title} = item;
     return (
-      <TouchableOpacity style={styles.navBtn}>
-        <Text
-          style={
-            index == folderNavigation.length - 1
-              ? styles.currentNavBtnText
-              : styles.navBtnText
-          }>{`${title}/`}</Text>
-      </TouchableOpacity>
+      <FolderNavigationButton
+        title={index == 0 ? `/${title}/` : `${title}/`}
+        isSelected={index == folderNavigation.length - 1}
+        onPress={() => {
+          folderNavlistRef?.current.scrollToIndex({
+            animated: true,
+            index: index,
+          });
+        }}
+      />
     );
+  };
+
+  const renderFolderFileItem = ({item, index}) => {
+    const {title, folder, date, description} = item;
+    if (folder) {
+      return (
+        <FileCell
+          key={index}
+          title={title}
+          date={date}
+          description={description}
+          onPress={() =>
+            navigation.navigate(AppRoutes.DocumentDetails, {
+              document: item,
+            })
+          }
+        />
+      );
+    } else {
+      return <FolderCell key={index} title={title} onPress={null} />;
+    }
   };
 
   return (
@@ -129,50 +185,42 @@ export default function Home({navigation}) {
         <Header title="Home" />
         <SearchBar />
         <FlatList
+          ref={menulistRef}
           data={menuItems}
           horizontal={true}
           renderItem={renderMenuItems}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
         />
       </View>
-      <View style={styles.intContainer}>
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            onPress={() => setFoldersType(foldersTypes.public)}
-            style={
-              foldersType == foldersTypes.public
-                ? styles.folderButton
-                : styles.selFolderButton
-            }>
-            <Text
-              style={
-                foldersType == foldersTypes.public
-                  ? styles.selFolderButtonText
-                  : styles.folderButtonText
-              }>
-              Public
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setFoldersType(foldersTypes.private)}
-            style={
-              foldersType == foldersTypes.private
-                ? styles.folderButton
-                : styles.selFolderButton
-            }>
-            <Text
-              style={
-                foldersType == foldersTypes.private
-                  ? styles.selFolderButtonText
-                  : styles.folderButtonText
-              }>
-              Private
-            </Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.buttonsContainer}>
+        <FolderTypeButton
+          title="Public"
+          isSelected={foldersType == foldersTypes.public}
+          onPress={() => setFoldersType(foldersTypes.public)}
+        />
+        <FolderTypeButton
+          title="Private"
+          isSelected={foldersType == foldersTypes.private}
+          onPress={() => setFoldersType(foldersTypes.private)}
+        />
+      </View>
+      <View style={styles.foldersContainer}>
         <FlatList
+          data={currentFoldersData}
+          renderItem={renderFolderFileItem}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+      <View style={styles.folderNavCon}>
+        <FlatList
+          ref={folderNavlistRef}
           data={folderNavigation}
           renderItem={renderFolderNavigationitem}
           horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </View>
@@ -184,70 +232,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   intContainer: {
-    flex: 1,
     paddingHorizontal: 10,
   },
-  menuIcon: {
-    height: 30,
-    width: 30,
-  },
-  menuItem: {
-    margin: 10,
-    marginHorizontal: 10,
-    alignItems: 'center',
-  },
-  menuTitle: {
-    fontSize: AppFontSize.size12,
-  },
-  navBtn: {
-    marginRight: 5,
-  },
-  navBtnText: {
-    color: AppColors.gray,
-    fontSize: AppFontSize.size16,
-    fontWeight: '500',
-  },
-  currentNavBtnText: {
-    color: AppColors.customBlue,
-    fontSize: AppFontSize.size16,
-    fontWeight: 'bold',
+  foldersContainer: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'space-between',
   },
   buttonsContainer: {
-    flexDirection: 'row',
-    margin: 10,
     padding: 10,
+    flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  selFolderButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    backgroundColor: AppColors.customBlue,
-    borderColor: AppColors.customBlue,
-  },
-  folderButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    borderWidth: 2,
+  folderNavCon: {
+    padding: 10,
+    marginTop: 0,
     backgroundColor: AppColors.white,
-    borderColor: AppColors.customBlue,
-  },
-  selFolderButtonText: {
-    fontSize: AppFontSize.size16,
-    color: AppColors.customBlue,
-    fontWeight: 'bold',
-  },
-  folderButtonText: {
-    fontSize: AppFontSize.size16,
-    color: AppColors.white,
-    fontWeight: 'bold',
   },
 });

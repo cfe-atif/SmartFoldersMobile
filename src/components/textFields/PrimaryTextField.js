@@ -30,7 +30,7 @@
 //   },
 //   placeholder: {
 //     textAlign: 'left',
-//     fontWeight: 'bold',
+//     fontFamily: AppFontFamily.bold,
 //     color: AppColors.gray,
 //     marginBottom: 5,
 //     fontSize: AppFontSize.size14,
@@ -42,7 +42,7 @@
 //     borderWidth: 1.5,
 //     justifyContent: 'center',
 //     alignItems: 'center',
-//     fontWeight: 'bold',
+//     fontFamily: AppFontFamily.bold,
 //     backgroundColor: AppColors.white,
 //     borderColor: AppColors.gray,
 //     color: AppColors.gray,
@@ -56,6 +56,7 @@ import React from 'react';
 import {StyleSheet, View, Text, TextInput} from 'react-native';
 import AppColors from '../../helpers/AppColors';
 import AppFontSize from '../../helpers/AppFontSize';
+import AppFontFamily from '../../helpers/AppFontFamily';
 
 export default function PrimaryTextField({
   value = '',
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
   placeholder: {
     flex: 1,
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
     color: AppColors.gray,
   },
   textField: {
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderLeftWidth: 1.5,
     borderLeftColor: AppColors.lightGray,
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
     color: AppColors.gray,
     fontSize: AppFontSize.size16,
   },
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
 //     alignItems: 'center',
 //     backgroundColor: AppColors.white,
 //     borderColor: AppColors.customBlue,
-//     fontWeight: 'bold',
+//     fontFamily: AppFontFamily.bold,
 //     color: AppColors.gray,
 //     fontSize: AppFontSize.size16,
 //   },

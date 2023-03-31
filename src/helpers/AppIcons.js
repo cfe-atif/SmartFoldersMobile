@@ -17,6 +17,10 @@ const AppIcons = {
   // Search
   search: 'search',
   close: 'ios-close',
+  // Folders Cell
+  arrowRight: 'chevron-forward',
+  // File Cell
+  fileIcon: 'document-sharp',
 };
 
 export default AppIcons;

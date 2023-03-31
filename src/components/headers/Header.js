@@ -1,9 +1,10 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AppIcons from './../../helpers/AppIcons';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
-import AppIcons from './../../helpers/AppIcons';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function Header({
   title = '',
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
   title: {
     color: AppColors.white,
     fontSize: AppFontSize.size22,
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
     textAlign: 'center',
     width: '75%',
   },

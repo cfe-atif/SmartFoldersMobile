@@ -3,7 +3,7 @@ import {ActivityIndicator, LogBox} from 'react-native';
 import {Provider as ReduxProvider} from 'react-redux';
 import {PersistGate} from 'redux-persist/es/integration/react';
 import AppContainer from './src/navigation/MainNavigator';
-import configureStores from './src/store';
+import configureStores from './src/redux/store';
 
 LogBox.ignoreAllLogs();
 

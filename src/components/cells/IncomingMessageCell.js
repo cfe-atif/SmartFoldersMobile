@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function IncomingMessageCell({
   message = '',
@@ -31,17 +32,18 @@ const styles = StyleSheet.create({
   senderName: {
     color: AppColors.customBlue,
     fontSize: AppFontSize.size12,
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
   },
   message: {
+    marginVertical: 4,
     color: AppColors.black,
     fontSize: AppFontSize.size14,
-    marginVertical: 4,
+    fontFamily: AppFontFamily.regular,
   },
   timeStamp: {
+    textAlign: 'right',
     color: AppColors.gray,
     fontSize: AppFontSize.size12,
-    textAlign: 'right',
-    fontWeight: '600',
+    fontFamily: AppFontFamily.semiBold,
   },
 });

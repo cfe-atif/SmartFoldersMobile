@@ -5,7 +5,7 @@ import Applogger from '../../helpers/AppLogger';
 function apiLoginRequest(payload) {
   Applogger('Payload at apiLoginRequest', payload);
   const {username, password} = payload;
-  const path = APIConstants.login + `Name=${username}&Password=${password}`;
+  const path = `servlets.CH_VaultJson?INT=1&Name=${username}&Password=${password}`;
   Applogger('Path at apiLoginRequest', path);
   return AxiosEvent.post(path);
 }

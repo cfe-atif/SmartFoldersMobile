@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from '../../helpers/AppFontFamily';
 
 export default function OutGoingMessageCell({message = '', timeStamp = ''}) {
   return (
@@ -24,14 +25,15 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   message: {
+    marginVertical: 4,
     color: AppColors.white,
     fontSize: AppFontSize.size14,
-    marginVertical: 4,
+    fontFamily: AppFontFamily.regular,
   },
   timeStamp: {
+    textAlign: 'right',
     color: AppColors.lightGray,
     fontSize: AppFontSize.size12,
-    textAlign: 'right',
-    fontWeight: '600',
+    fontFamily: AppFontFamily.semiBold,
   },
 });

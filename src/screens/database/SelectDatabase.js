@@ -2,9 +2,10 @@ import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import AppColors from './../../helpers/AppColors';
-import PrimaryButton from './../../components/buttons/PrimaryButton';
-import SFHeading from './../../components/texts/SFHeading';
 import AppRoutes from './../../helpers/AppRoutes';
+import AppFontFamily from '../../helpers/AppFontFamily';
+import SFHeading from './../../components/texts/SFHeading';
+import PrimaryButton from './../../components/buttons/PrimaryButton';
 
 export default function SelectDatabase({navigation}) {
   const [selected, setSelected] = useState('');
@@ -46,6 +47,7 @@ export default function SelectDatabase({navigation}) {
             color: AppColors.gray,
           }}
           maxHeight={300}
+          fontFamily={AppFontFamily.semiBold}
         />
       </View>
       <PrimaryButton title="Continue" onPress={() => handleContinue()} />

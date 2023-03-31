@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function ReminderFilterButton({
   selected = false,
@@ -35,6 +36,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: AppFontSize.size14,
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
   },
 });

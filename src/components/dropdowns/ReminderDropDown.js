@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
+import AppFontFamily from './../../helpers/AppFontFamily';
 
 export default function ReminderDropDown({
   title = '',
@@ -33,6 +34,7 @@ export default function ReminderDropDown({
           color: AppColors.gray,
         }}
         maxHeight={200}
+        fontFamily={AppFontFamily.semiBold}
       />
     </View>
   );
@@ -43,10 +45,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   title: {
-    color: AppColors.customBlue,
     marginHorizontal: 10,
     marginVertical: 10,
+    color: AppColors.customBlue,
+    fontFamily: AppFontFamily.bold,
     fontSize: AppFontSize.size14,
-    fontWeight: 'bold',
   },
 });

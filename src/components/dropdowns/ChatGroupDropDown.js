@@ -3,6 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {MultipleSelectList} from 'react-native-dropdown-select-list';
 import AppColors from '../../helpers/AppColors';
 import AppFontSize from '../../helpers/AppFontSize';
+import AppFontFamily from '../../helpers/AppFontFamily';
 
 export default function ChatGroupDropDown({
   title = '',
@@ -39,6 +40,7 @@ export default function ChatGroupDropDown({
         }}
         notFoundText="No record found"
         maxHeight={300}
+        fontFamily={AppFontFamily.semiBold}
       />
     </View>
   );
@@ -53,6 +55,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 10,
     fontSize: AppFontSize.size14,
-    fontWeight: 'bold',
+    fontFamily: AppFontFamily.bold,
   },
 });
