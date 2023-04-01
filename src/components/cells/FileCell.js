@@ -24,7 +24,7 @@ export default function FileCell({
         </Text>
       </View>
       <Text style={styles.date}>{date}</Text>
-      <Icon name={AppIcons.arrowRight} color={AppColors.customBlue} size={30} />
+      <Icon name={AppIcons.arrowRight} color={AppColors.customBlue} size={25} />
     </TouchableOpacity>
   );
 }
@@ -44,9 +44,9 @@ const styles = StyleSheet.create({
   },
   title: {
     marginHorizontal: 10,
-    color: AppColors.gray,
-    fontSize: AppFontSize.size16,
-    fontFamily: AppFontFamily.bold,
+    color: AppColors.black,
+    fontSize: AppFontSize.size14,
+    fontFamily: AppFontFamily.semiBold,
   },
   date: {
     marginHorizontal: 10,
@@ -58,6 +58,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     color: AppColors.gray,
     fontSize: AppFontSize.size14,
-    fontFamily: AppFontFamily.semiBold,
+    fontFamily: AppFontFamily.regular,
   },
 });

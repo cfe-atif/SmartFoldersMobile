@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import AppColors from '../../../helpers/AppColors';
-import Header from '../../../components/headers/Header';
-import PrimaryTextField from './../../../components/textFields/PrimaryTextField';
-import ChatGroupDropDown from './../../../components/dropdowns/ChatGroupDropDown';
-import PrimaryButton from './../../../components/buttons/PrimaryButton';
-import Applogger from '../../../helpers/AppLogger';
+import AppColors from '../../../../helpers/AppColors';
+import Applogger from '../../../../helpers/AppLogger';
+import Header from '../../../../components/headers/Header';
+import PrimaryTextField from '../../../../components/textFields/PrimaryTextField';
+import ChatGroupDropDown from '../../../../components/dropdowns/ChatGroupDropDown';
+import PrimaryButton from '../../../../components/buttons/PrimaryButton';
 
 export default function AddOrUpdateGroup({navigation}) {
   const [title, setTitle] = useState('');

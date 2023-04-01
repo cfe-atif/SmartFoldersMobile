@@ -1,56 +1,45 @@
 import React, {useState, useRef} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
+import {chats} from './Constants';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import ChatCell from '../../../components/cells/ChatCell';
-import Header from '../../../components/headers/Header';
-import ChatsButton from './../../../components/buttons/ChatsButton';
-import SimpleButton from './../../../components/buttons/SimpleButton';
 import AppColors from './../../../helpers/AppColors';
 import AppRoutes from './../../../helpers/AppRoutes';
+import Applogger from '../../../helpers/AppLogger';
 import AppIcons from './../../../helpers/AppIcons';
+import ChatCell from '../../../components/cells/ChatCell';
+import Header from '../../../components/headers/Header';
+import SearchBar from '../../../components/search/SearchBar';
+import ChatsButton from './../../../components/buttons/ChatsButton';
+import SimpleButton from './../../../components/buttons/SimpleButton';
 
 export default function Chats({navigation}) {
   const sheetRef = useRef(null);
 
-  const [selected, setSelected] = useState(true);
+  const currentUserId = 10;
 
-  const chats = [
-    {
-      title: 'Nayyer Ali',
-      message: 'This is last message from nayyer ali',
-      timeStamp: '10:00',
-      unreadMessage: false,
-    },
-    {
-      title: 'Usman Ali',
-      message: 'This is last message from usman ali',
-      timeStamp: '07:00',
-      unreadMessage: true,
-    },
-    {
-      title: 'Junaid Manzoor',
-      message: 'This is last message from junaid manzoor',
-      timeStamp: '09:00',
-      unreadMessage: false,
-    },
-  ];
+  const [searchText, setSearchText] = useState('');
+  const [selected, setSelected] = useState(true);
 
   const handleChatCellPress = chat => {
     navigation.navigate(AppRoutes.Messages);
   };
 
   const renderChatsItem = ({item, index}) => {
-    const {title, message, timeStamp, unreadMessage} = item;
-    return (
-      <ChatCell
-        key={index}
-        title={title}
-        message={message}
-        timeStamp={timeStamp}
-        unreadMessage={unreadMessage}
-        onPress={item => handleChatCellPress(item)}
-      />
-    );
+    const {userId, userName, messageBody, createdAt, unreadMessageCount} = item;
+    if (userId != currentUserId) {
+      return (
+        <ChatCell
+          key={index}
+          title={userName}
+          message={messageBody}
+          timeStamp={createdAt}
+          unreadMessage={unreadMessageCount}
+          onPress={item => handleChatCellPress(item)}
+        />
+      );
+    } else {
+      return null;
+    }
   };
 
   const handleViewAllUsers = () => {
@@ -76,7 +65,13 @@ export default function Chats({navigation}) {
         rightButton={true}
         onRightButtonPress={() => sheetRef.current.open()}
       />
-
+      <SearchBar
+        value={searchText}
+        placeholder="Search..."
+        onChange={text => setSearchText(text)}
+        onClosePress={() => Applogger('Pressed close search')}
+        onSearchPress={() => Applogger('Pressed search')}
+      />
       <View style={styles.buttonContainer}>
         <ChatsButton
           onPress={() => setSelected(true)}
@@ -143,5 +138,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: AppColors.lightGray,
   },
 });

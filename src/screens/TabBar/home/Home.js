@@ -19,6 +19,7 @@ export default function Home({navigation}) {
   const menulistRef = useRef(null);
   const folderNavlistRef = useRef(null);
 
+  const [searchText, setSearchText] = useState('');
   const [selectedMenu, setSelectedMenu] = useState('');
   const [foldersType, setFoldersType] = useState(foldersTypes.public);
 
@@ -183,7 +184,13 @@ export default function Home({navigation}) {
     <View style={styles.container}>
       <View>
         <Header title="Home" />
-        <SearchBar />
+        <SearchBar
+          value={searchText}
+          placeholder="Search..."
+          onChange={text => setSearchText(text)}
+          onClosePress={() => Applogger('Pressed close search')}
+          onSearchPress={() => Applogger('Pressed search')}
+        />
         <FlatList
           ref={menulistRef}
           data={menuItems}

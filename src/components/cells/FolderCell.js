@@ -12,7 +12,7 @@ export default function FolderCell({title = '', onPress = () => {}}) {
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={AppImages.folder} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
-      <Icon name={AppIcons.arrowRight} color={AppColors.customBlue} size={30} />
+      <Icon name={AppIcons.arrowRight} color={AppColors.customBlue} size={25} />
     </TouchableOpacity>
   );
 }
@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     marginHorizontal: 10,
-    fontSize: AppFontSize.size16,
-    color: AppColors.gray,
-    fontFamily: AppFontFamily.bold,
+    fontSize: AppFontSize.size14,
+    color: AppColors.black,
+    fontFamily: AppFontFamily.semiBold,
   },
 });

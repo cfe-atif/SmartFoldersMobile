@@ -7,14 +7,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import AppColors from '../../../helpers/AppColors';
-import AppIcons from './../../../helpers/AppIcons';
-import AppFontSize from './../../../helpers/AppFontSize';
-import AppFontFamily from '../../../helpers/AppFontFamily';
-import Header from '../../../components/headers/Header';
-import SFNoRecord from './../../../components/texts/SFNoRecord';
-import OutGoingMessageCell from '../../../components/cells/OutGoingMessageCell';
-import IncomingMessageCell from './../../../components/cells/IncomingMessageCell';
+import AppColors from '../../../../helpers/AppColors';
+import AppIcons from './../../../../helpers/AppIcons';
+import AppFontSize from './../../../../helpers/AppFontSize';
+import AppFontFamily from '../../../../helpers/AppFontFamily';
+import Header from '../../../../components/headers/Header';
+import SFNoRecord from './../../../../components/texts/SFNoRecord';
+import OutGoingMessageCell from '../../../../components/cells/OutGoingMessageCell';
+import IncomingMessageCell from './../../../../components/cells/IncomingMessageCell';
 
 export default function Messages({navigation}) {
   const messages = [

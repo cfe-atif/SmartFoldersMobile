@@ -6,21 +6,38 @@ import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
 import AppFontFamily from '../../helpers/AppFontFamily';
 
-export default function SearchBar() {
+export default function SearchBar({
+  value = '',
+  placeholder = '',
+  onChange = () => {},
+  onClosePress = () => {},
+  onSearchPress = () => {},
+}) {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.iconStyle}>
-        <Icon name={AppIcons.search} color={AppColors.customBlue} size={20} />
-      </TouchableOpacity>
-      <TextInput style={styles.searchField} placeholder="Search ..." />
-      <TouchableOpacity style={styles.iconStyle}>
-        <Icon name={AppIcons.close} color={AppColors.customBlue} size={25} />
-      </TouchableOpacity>
+    <View style={styles.mainContainer}>
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.iconStyle} onPress={onSearchPress}>
+          <Icon name={AppIcons.search} color={AppColors.customBlue} size={20} />
+        </TouchableOpacity>
+        <TextInput
+          style={styles.searchField}
+          placeholder={placeholder}
+          value={value}
+          onChangeText={onChange}
+        />
+        <TouchableOpacity style={styles.iconStyle} onPress={onClosePress}>
+          <Icon name={AppIcons.close} color={AppColors.customBlue} size={25} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    borderBottomColor: AppColors.lightGray,
+    borderBottomWidth: 1,
+  },
   container: {
     flexDirection: 'row',
     margin: 10,

@@ -3,12 +3,13 @@ import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
 import AppFontFamily from './../../helpers/AppFontFamily';
+import moment from 'moment';
 
 export default function ChatCell({
   title = '',
   message = '',
   timeStamp = '',
-  unreadMessage = false,
+  unreadMessage = 0,
   onPress = () => {},
 }) {
   return (
@@ -22,8 +23,8 @@ export default function ChatCell({
         </Text>
       </View>
       <View style={styles.rightContainer}>
-        <Text style={styles.timeStamp}>{timeStamp}</Text>
-        {unreadMessage && <View style={styles.dotIcon} />}
+        <Text style={styles.timeStamp}>{moment(timeStamp).fromNow()}</Text>
+        {unreadMessage > 0 && <View style={styles.dotIcon} />}
       </View>
     </TouchableOpacity>
   );
@@ -31,33 +32,33 @@ export default function ChatCell({
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
     borderBottomWidth: 1,
+    padding: 10,
     borderBottomColor: AppColors.lightGray,
     backgroundColor: AppColors.white,
-    flexDirection: 'row',
   },
   textsContainer: {
     flex: 1,
-    marginHorizontal: 10,
-    padding: 10,
   },
   title: {
+    margin: 2,
     fontSize: AppFontSize.size16,
     color: AppColors.black,
     fontFamily: AppFontFamily.bold,
   },
   description: {
-    marginTop: 5,
+    margin: 2,
     fontSize: AppFontSize.size14,
     color: AppColors.gray,
     fontFamily: AppFontFamily.regular,
   },
   rightContainer: {
     alignItems: 'center',
-    marginRight: 10,
-    padding: 10,
+    marginLeft: 10,
   },
   timeStamp: {
+    margin: 2,
     fontSize: AppFontSize.size12,
     color: AppColors.gray,
     fontFamily: AppFontFamily.regular,
