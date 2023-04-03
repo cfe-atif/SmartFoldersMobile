@@ -333,3 +333,191 @@ export const chats = [
     unreadMessageCount: 0,
   },
 ];
+
+export const groupChats = [
+  {
+    id: 1,
+    name: 'Hello',
+    active: true,
+    createdAt: '2023-03-29T20:40:49+01:00',
+    users: [
+      {
+        email: 'atif@cfe-solutions.co.uk',
+        No: 16,
+        userName: 'Atif',
+        Full_Name: 'Atif Amin',
+      },
+      {email: 'none', No: 20, userName: 'Usmanali', Full_Name: 'Usman Ali'},
+      {
+        email: 'junaid@centillionsol.com',
+        No: 14,
+        userName: 'Junaid',
+        Full_Name: 'Junaid Manzoor',
+      },
+      {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+    ],
+    groupMessageHistory: {
+      id: 248,
+      messageBody: 'hello',
+      sender: {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+      createdAt: '2023-03-29T20:41:19+01:00',
+    },
+    unreadMessageCount: 4,
+  },
+  {
+    id: 2,
+    name: 'Test Group',
+    active: true,
+    createdAt: '2023-03-29T20:42:02+01:00',
+    users: [
+      {
+        email: 'atif@cfe-solutions.co.uk',
+        No: 16,
+        userName: 'Atif',
+        Full_Name: 'Atif Amin',
+      },
+      {
+        email: 'junaid@centillionsol.com',
+        No: 14,
+        userName: 'Junaid',
+        Full_Name: 'Junaid Manzoor',
+      },
+      {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+    ],
+    groupMessageHistory: {
+      id: 249,
+      messageBody: 'hello',
+      sender: {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+      createdAt: '2023-03-29T20:42:48+01:00',
+    },
+    unreadMessageCount: 1,
+  },
+  {
+    id: 3,
+    name: 'new',
+    active: true,
+    createdAt: '2023-03-29T20:43:13+01:00',
+    users: [
+      {
+        email: 'junaid@centillionsol.com',
+        No: 14,
+        userName: 'Junaid',
+        Full_Name: 'Junaid Manzoor',
+      },
+      {
+        email: 'atif@cfe-solutions.co.uk',
+        No: 16,
+        userName: 'Atif',
+        Full_Name: 'Atif Amin',
+      },
+      {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+    ],
+    groupMessageHistory: {
+      id: 250,
+      messageBody: 'Hi',
+      sender: {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+      createdAt: '2023-03-29T20:43:21+01:00',
+    },
+    unreadMessageCount: 1,
+  },
+  {
+    id: 4,
+    name: 'help',
+    active: true,
+    createdAt: '2023-03-29T20:53:20+01:00',
+    users: [
+      {
+        email: 'atif@cfe-solutions.co.uk',
+        No: 16,
+        userName: 'Atif',
+        Full_Name: 'Atif Amin',
+      },
+      {
+        email: 'junaid@centillionsol.com',
+        No: 14,
+        userName: 'Junaid',
+        Full_Name: 'Junaid Manzoor',
+      },
+      {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+    ],
+    groupMessageHistory: {
+      id: 251,
+      messageBody: 'hy',
+      sender: {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+      createdAt: '2023-03-29T20:57:55+01:00',
+    },
+    unreadMessageCount: 1,
+  },
+  {
+    id: 5,
+    name: 'hy',
+    active: true,
+    createdAt: '2023-03-29T20:57:48+01:00',
+    users: [
+      {
+        email: 'atif@cfe-solutions.co.uk',
+        No: 16,
+        userName: 'Atif',
+        Full_Name: 'Atif Amin',
+      },
+      {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+    ],
+    groupMessageHistory: {
+      id: 252,
+      messageBody: 'help',
+      sender: {
+        email: 'none',
+        No: 10,
+        userName: 'sysadmin',
+        Full_Name: 'System Administrator',
+      },
+      createdAt: '2023-03-29T20:57:59+01:00',
+    },
+    unreadMessageCount: 0,
+  },
+];

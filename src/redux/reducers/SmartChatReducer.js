@@ -284,7 +284,23 @@ export const SmartChatReducer = createReducer(initialState, {
     };
   },
 
+  [deleteUserGroupRequest.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+
   [deleteUserGroupRequest.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [deleteUserGroupRequest.rejected]: (state, action) => {
     return {
       ...state,
       loading: false,
@@ -304,7 +320,7 @@ export const SmartChatReducer = createReducer(initialState, {
   [getUsersAllGroupsRequest.pending]: (state, action) => {
     return {
       ...state,
-      loading: false,
+      loading: true,
       error: null,
     };
   },
@@ -318,10 +334,18 @@ export const SmartChatReducer = createReducer(initialState, {
     };
   },
 
-  [getSpecificUsersAllGroupsRequest.pending]: (state, action) => {
+  [getUsersAllGroupsRequest.rejected]: (state, action) => {
     return {
       ...state,
       loading: false,
+      error: null,
+    };
+  },
+
+  [getSpecificUsersAllGroupsRequest.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
       error: null,
       specificUsersAllGroups: [],
     };
@@ -336,10 +360,18 @@ export const SmartChatReducer = createReducer(initialState, {
     };
   },
 
-  [getUsersInGroupRequest.pending]: (state, action) => {
+  [getSpecificUsersAllGroupsRequest.rejected]: (state, action) => {
     return {
       ...state,
       loading: false,
+      error: null,
+    };
+  },
+
+  [getUsersInGroupRequest.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
       error: null,
       usersInGroup: [],
     };
@@ -354,10 +386,42 @@ export const SmartChatReducer = createReducer(initialState, {
     };
   },
 
+  [getUsersInGroupRequest.rejected]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [createUserGroupRequest.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+
   [createUserGroupRequest.fulfilled]: (state, action) => {
     return {
       ...state,
       loading: false,
+      error: null,
+    };
+  },
+
+  [createUserGroupRequest.rejected]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [updateUserGroupRequest.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
       error: null,
     };
   },
@@ -370,12 +434,19 @@ export const SmartChatReducer = createReducer(initialState, {
     };
   },
 
-  [getUsersListRequest.pending]: (state, action) => {
+  [updateUserGroupRequest.rejected]: (state, action) => {
     return {
       ...state,
       loading: false,
       error: null,
-      usersList: [],
+    };
+  },
+
+  [getUsersListRequest.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
     };
   },
 
@@ -387,8 +458,7 @@ export const SmartChatReducer = createReducer(initialState, {
       usersList: sortUsersByName(action.payload.users),
     };
   },
-
-  [getSingleMessageHistoryRequest.pending]: (state, action) => {
+  [getUsersListRequest.rejected]: (state, action) => {
     return {
       ...state,
       loading: false,
@@ -402,14 +472,6 @@ export const SmartChatReducer = createReducer(initialState, {
       loading: false,
       error: null,
       userChatMessagesList: sortChatMessagesbyDate(action.payload.data),
-    };
-  },
-
-  [getUserGroupMessagesListRequest.pending]: (state, action) => {
-    return {
-      ...state,
-      loading: false,
-      error: null,
     };
   },
 

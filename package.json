@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "lint": "eslint .",
+    "ios": "react-native run-ios  --simulator='iPhone 8 Plus'",
     "start": "react-native start",
+    "android:build:release": "cd android && gradlew assembleRelease && cd ..",
     "test": "jest"
   },
   "dependencies": {

@@ -10,7 +10,7 @@ import AppRoutes from '../helpers/AppRoutes';
 const StackNavigator = createStackNavigator();
 
 const AppContainer = ({props, navigation}) => {
-  var initialRoute = AppRoutes.BottomNavigation;
+  var initialRoute = AppRoutes.Login;
 
   const dispatch = useDispatch();
 
@@ -20,9 +20,9 @@ const AppContainer = ({props, navigation}) => {
     dispatch(stopLoaderAndError());
   }, []);
 
-  if (user != null) {
-    initialRoute = AppRoutes.BottomNavigation;
-  }
+  // if (user != null) {
+  //   initialRoute = AppRoutes.BottomNavigation;
+  // }
 
   return (
     <NavigationContainer>

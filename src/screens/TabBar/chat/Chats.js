@@ -1,6 +1,31 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {chats} from './Constants';
+import {useDispatch, useSelector} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {get} from 'lodash';
+import {showFaliureToast} from '../../../helpers/AppToasts';
+import {
+  mapAPICallError,
+  isUnAuthenticatedUser,
+} from '../../../utils/HelperFunctions';
+import {
+  exitFromGroupRequest,
+  getUserChatsListRequest,
+  getUsersListRequest,
+  getSingleMessageHistoryRequest,
+  getUsersAllGroupsRequest,
+  deleteUserGroupRequest,
+  getUsersInGroupRequest,
+  createUserGroupRequest,
+  getUserGroupMessagesListRequest,
+  setShowSmartChat,
+  getSpecificUsersAllGroupsRequest,
+  updateUserGroupRequest,
+  singleChatMessageRead,
+  groupChatMessagesRead,
+  singleChatMessageReadAll,
+} from '../../../redux/reducers/SmartChatReducer';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import AppColors from './../../../helpers/AppColors';
 import AppRoutes from './../../../helpers/AppRoutes';
@@ -11,17 +36,164 @@ import Header from '../../../components/headers/Header';
 import SearchBar from '../../../components/search/SearchBar';
 import ChatsButton from './../../../components/buttons/ChatsButton';
 import SimpleButton from './../../../components/buttons/SimpleButton';
+import GroupCell from './../../../components/cells/GroupCell';
+import SFNoRecord from './../../../components/texts/SFNoRecord';
 
 export default function Chats({navigation}) {
   const sheetRef = useRef(null);
+  const chatsRef = useRef();
+
+  const dispatch = useDispatch();
+
+  const isFocused = useIsFocused();
+
+  const {usersAllGroups, userAllChats} = useSelector(
+    state => state.SmartChatReducer,
+  );
+
+  // const {user} = useSelector(state => state.AuthReducer);
+  // const currentUserId = user?.No;
 
   const currentUserId = 10;
 
-  const [searchText, setSearchText] = useState('');
-  const [selected, setSelected] = useState(true);
+  // const user = {
+  //   Full_Name: "System Administrator",
+  //   Name: "sysadmin",
+  //   No: "10",
+  //   isConnec: false,
+  // };
 
-  const handleChatCellPress = chat => {
-    navigation.navigate(AppRoutes.Messages);
+  const [searchedGroupArray, setSearchedGroupArray] = useState([]);
+  const [searchedArray, setSearchedArray] = useState([]);
+  const [searchedText, setSearchedText] = useState('');
+  const [isChatListing, setIsChatListing] = useState(true);
+
+  useEffect(() => {
+    if (isFocused) {
+      handleGetUserChatsListRequest();
+      handleGetUsersAllGroupsRequest(currentUserId);
+    }
+  }, []);
+
+  const handleGetUserChatsListRequest = () => {
+    dispatch(getUserChatsListRequest({userId: currentUserId}))
+      .then(unwrapResult)
+      .then(res => {
+        handleSuccessToastAndLogs('getUserChatsListRequest', res);
+      })
+      .catch(err => {
+        handleFaliureToastAndLogs('getUserChatsListRequest', err);
+      });
+  };
+
+  const handleGetUsersAllGroupsRequest = userId => {
+    dispatch(getUsersAllGroupsRequest({userId}))
+      .then(unwrapResult)
+      .then(res => {
+        handleSuccessToastAndLogs('getUsersAllGroupsRequest', res);
+      })
+      .catch(err => {
+        handleFaliureToastAndLogs('getUsersAllGroupsRequest', err);
+      });
+  };
+
+  const scrollToBottom = () => {
+    // chatsRef?.current.scrollToIndex({
+    //   animated: true,
+    //   index: isChatListing
+    //     ? localChatMessages.length > 0
+    //       ? localChatMessages.length - 1
+    //       : 0
+    //     : localGroupMessages.length > 0
+    //     ? localGroupMessages.length - 1
+    //     : 0,
+    // });
+  };
+
+  const handleSuccessToastAndLogs = (message, res) => {
+    Applogger('Response at ' + message, res);
+    if (isUnAuthenticatedUser(res)) {
+      navigation.navigate(AppRoutes.Login);
+      showFaliureToast(mapAPICallError(res));
+    }
+  };
+
+  const handleFaliureToastAndLogs = (message, err) => {
+    Applogger('Error at ' + message, err);
+    if (isUnAuthenticatedUser(err)) {
+      navigation.navigate(AppRoutes.Login);
+      showFaliureToast(mapAPICallError(err));
+    }
+  };
+
+  const handleViewAllUsers = () => {
+    sheetRef.current.close();
+    navigation.navigate(AppRoutes.AllUsers);
+  };
+
+  const handleViewAllgroups = () => {
+    sheetRef.current.close();
+    navigation.navigate(AppRoutes.AllGroups, {
+      userId: currentUserId,
+    });
+  };
+
+  const handleAddGroups = () => {
+    sheetRef.current.close();
+    navigation.navigate(AppRoutes.AddOrUpdateGroup);
+  };
+
+  const handleSearch = search => {
+    setSearchedText(search);
+    if (!isChatListing) {
+      if (search) {
+        const filteredArray = usersAllGroups.filter(item => {
+          const groupName = get(item, 'name', '');
+          return groupName.toLowerCase().includes(search.toLowerCase());
+        });
+        const sortedArray = filteredArray.sort((a, b) => {
+          const groupNameA = get(a, 'name', '');
+          const groupNameB = get(b, 'name', '');
+          return groupNameA.toLowerCase() > groupNameB.toLowerCase() ? 1 : -1;
+        });
+        setSearchedGroupArray(sortedArray);
+      } else {
+        setSearchedGroupArray([]);
+      }
+    } else {
+      if (search) {
+        const filteredArray = userAllChats.filter(item => {
+          const {userName} = item;
+          return userName.toLowerCase().includes(search.toLowerCase());
+        });
+        const sortedArray = filteredArray.sort((a, b) => {
+          return a?.userName.toLowerCase() > b?.userName.toLowerCase() ? 1 : -1;
+        });
+        setSearchedArray(sortedArray);
+      } else {
+        setSearchedArray([]);
+      }
+    }
+  };
+
+  const renderGroupChatsItem = ({item, index}) => {
+    const {name, groupMessageHistory, unreadMessageCount} = item;
+    return (
+      <GroupCell
+        key={index}
+        title={name}
+        lastMessage={get(groupMessageHistory, 'messageBody', '')}
+        timestamp={get(groupMessageHistory, 'createdAt', '')}
+        sender={get(groupMessageHistory, 'sender.userName', '')}
+        senderId={get(groupMessageHistory, 'sender.No', '')}
+        unreadMessageCount={unreadMessageCount}
+        onPress={() =>
+          navigation.navigate(AppRoutes.Messages, {
+            group: item,
+          })
+        }
+      />
+    );
   };
 
   const renderChatsItem = ({item, index}) => {
@@ -34,27 +206,16 @@ export default function Chats({navigation}) {
           message={messageBody}
           timeStamp={createdAt}
           unreadMessage={unreadMessageCount}
-          onPress={item => handleChatCellPress(item)}
+          onPress={() =>
+            navigation.navigate(AppRoutes.Messages, {
+              userChat: item,
+            })
+          }
         />
       );
     } else {
       return null;
     }
-  };
-
-  const handleViewAllUsers = () => {
-    sheetRef.current.close();
-    navigation.navigate(AppRoutes.AllUsers);
-  };
-
-  const handleViewAllgroups = () => {
-    sheetRef.current.close();
-    navigation.navigate(AppRoutes.AllGroups);
-  };
-
-  const handleAddGroups = () => {
-    sheetRef.current.close();
-    navigation.navigate(AppRoutes.AddOrUpdateGroup);
   };
 
   return (
@@ -66,26 +227,46 @@ export default function Chats({navigation}) {
         onRightButtonPress={() => sheetRef.current.open()}
       />
       <SearchBar
-        value={searchText}
+        value={searchedText}
         placeholder="Search..."
-        onChange={text => setSearchText(text)}
-        onClosePress={() => Applogger('Pressed close search')}
+        onChange={text => handleSearch(text)}
+        onClosePress={() => setSearchedText('')}
         onSearchPress={() => Applogger('Pressed search')}
       />
       <View style={styles.buttonContainer}>
         <ChatsButton
-          onPress={() => setSelected(true)}
+          onPress={() => setIsChatListing(true)}
           title="Chats"
-          selected={selected}
+          selected={isChatListing}
         />
         <ChatsButton
-          onPress={() => setSelected(false)}
+          onPress={() => setIsChatListing(false)}
           title="Groups"
-          selected={!selected}
+          selected={!isChatListing}
         />
       </View>
       <View style={styles.listContainer}>
-        <FlatList data={chats} renderItem={renderChatsItem} />
+        {isChatListing ? (
+          searchedText && !searchedArray.length > 0 ? (
+            <SFNoRecord title="No Chat Found" textStyle={styles.noSearchText} />
+          ) : (
+            <FlatList
+              ref={chatsRef}
+              data={searchedText ? searchedArray : userAllChats}
+              renderItem={renderChatsItem}
+              showsVerticalScrollIndicator={false}
+            />
+          )
+        ) : searchedText && !searchedGroupArray.length > 0 ? (
+          <SFNoRecord title="No Group Found" textStyle={styles.noSearchText} />
+        ) : (
+          <FlatList
+            ref={chatsRef}
+            data={searchedText ? searchedGroupArray : usersAllGroups}
+            renderItem={renderGroupChatsItem}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </View>
       <RBSheet
         ref={sheetRef}
@@ -140,5 +321,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: AppColors.lightGray,
+  },
+  noSearchText: {
+    color: AppColors.gray,
   },
 });
