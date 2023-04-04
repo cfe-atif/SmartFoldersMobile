@@ -9,13 +9,14 @@ import AllGroups from '../../screens/TabBar/chat/components/AllGroups';
 import AllUsers from '../../screens/TabBar/chat/components/AllUsers';
 import Home from '../../screens/TabBar/home/Home';
 import Settings from '../../screens/TabBar/settings/Settings';
-import AddOrUpdateReminder from '../../screens/TabBar/reminders/AddOrUpdateReminder';
+import AddOrUpdateReminder from '../../screens/TabBar/reminders/components/AddOrUpdateReminder';
 import Reminders from '../../screens/TabBar/reminders/Reminders';
 import BottomNavigation from '../bottomTabNavigation/BottomNavigation';
 import AddDocument from '../../screens/TabBar/home/components/AddDocument';
 import AddFolder from '../../screens/TabBar/home/components/AddFolder';
 import RecentSearches from '../../screens/TabBar/home/components/RecentSearches';
 import DocumentDetails from '../../screens/TabBar/home/components/DocumentDetails';
+import ReminderDetails from '../../screens/TabBar/reminders/components/ReminderDetails';
 
 const headerOptions = {
   headerShown: false,
@@ -88,6 +89,10 @@ const NavigationScreens = {
   },
   DocumentDetails: {
     screen: DocumentDetails,
+    options: headerOptions,
+  },
+  ReminderDetails: {
+    screen: ReminderDetails,
     options: headerOptions,
   },
   BottomNavigation: {

@@ -1,74 +1,176 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, FlatList, View, TouchableOpacity} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {get} from 'lodash';
 import {
   filterOptions,
   reminderFilterOptions,
   reminderSortOptions,
+  reminderActions,
+  reminderPeriods,
+  reminderStates,
+  filterTypes,
+  sortTypes,
 } from './Constants';
-import {get} from 'lodash';
-import Applogger from '../../../helpers/AppLogger';
+import {
+  mapAPICallError,
+  isUnAuthenticatedUser,
+  responseHasError,
+} from '../../../utils/HelperFunctions';
+import {
+  getRemindersList,
+  getUpcomingRemindersList,
+} from '../../../redux/reducers/RemindersReducer';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Applogger from '../../../helpers/AppLogger';
+import AppIcons from './../../../helpers/AppIcons';
+import AppColors from './../../../helpers/AppColors';
+import AppRoutes from './../../../helpers/AppRoutes';
 import Header from '../../../components/headers/Header';
 import ReminderCell from '../../../components/cells/ReminderCell';
 import ReminderDropDown from '../../../components/dropdowns/ReminderDropDown';
 import ReminderFilterButton from '../../../components/buttons/ReminderFilterButton';
-import AppIcons from './../../../helpers/AppIcons';
-import AppColors from './../../../helpers/AppColors';
-import AppRoutes from './../../../helpers/AppRoutes';
 
 export default function Reminders({navigation}) {
+  const dispatch = useDispatch();
+
   const filtersRef = useRef();
 
-  const reminders = [
-    {
-      Details: 'Test for reminder without doc',
-      AlertDate: '',
-      State: 'DISMISS',
-      ID: 2,
-      DueDate: '2023-01-27 07:17:31.0',
-      Subject: 'Reminder 2 DISMISS',
-    },
-    {
-      Details: 'Test for reminder without doc',
-      AlertDate: '2023-01-27 07:17:31.0',
-      State: 'OPEN',
-      ID: 4,
-      DueDate: '2023-01-27 07:17:31.0',
-      Subject: 'Reminder 2 OPEN',
-    },
-    {
-      Details: 'OPEN Test for reminder without doc',
-      AlertDate: '2023-01-27 07:17:31.0',
-      State: 'OPEN',
-      ID: 6,
-      DueDate: '2023-01-27 07:17:31.0',
-      Subject: 'Reminder 2 OPEN',
-    },
-  ];
+  const {user} = useSelector(state => state.AuthenticationReducer);
+  const {remindersList} = useSelector(state => state.RemindersReducer);
 
-  const [selectedFilter, setSelectedFilter] = useState(
-    get(filterOptions, '[0].query', ''),
-  );
+  const [filterOption, setFilterOption] = useState(reminderPeriods.all);
+  const [sortType, setSortType] = useState(sortTypes.byDate);
+  const [filterType, setFilterType] = useState(filterTypes.active);
+  const [finalRemindersList, setFinalRemindersList] = useState([]);
+
+  useEffect(() => {
+    handleGetRemindersList(reminderPeriods.all);
+    handleGetUpcomingRemindersList();
+  }, []);
+
+  useEffect(() => {
+    getFinalRemindersList();
+  }, [remindersList, filterType, sortType]);
+
+  const getFinalRemindersList = () => {
+    let finalList = remindersList;
+    if (Array.isArray(remindersList)) {
+      if (filterType == filterTypes.active) {
+        finalList = finalList.filter(reminder => {
+          return (
+            reminder.State == reminderStates.open ||
+            reminder.State == reminderStates.snooze
+          );
+        });
+      }
+      if (filterType == filterTypes.completed) {
+        finalList = finalList.filter(reminder => {
+          return (
+            reminder.State == reminderStates.completed ||
+            reminder.State == reminderStates.dismiss
+          );
+        });
+      }
+
+      if (sortType == sortTypes.aToZ) {
+        finalList = finalList.sort((reminderA, reminderB) => {
+          return get(reminderA, 'Subject', '').toLowerCase() >
+            get(reminderB, 'Subject', '').toLowerCase()
+            ? 1
+            : -1;
+        });
+      } else if (sortType == sortTypes.zToA) {
+        finalList = finalList.sort((reminderA, reminderB) => {
+          return get(reminderA, 'Subject', '').toLowerCase() <
+            get(reminderB, 'Subject', '').toLowerCase()
+            ? 1
+            : -1;
+        });
+      } else if (sortType == sortTypes.byDate) {
+        finalList = finalList.sort((reminderA, reminderB) => {
+          return (
+            new Date(get(reminderA, 'AlertDate', '')) -
+            new Date(get(reminderB, 'AlertDate', ''))
+          );
+        });
+      } else {
+        finalList;
+      }
+    }
+    setFinalRemindersList(finalList);
+  };
+
+  const handleSuccessToastAndLogs = (message, res) => {
+    Applogger('Response at ' + message, res);
+    if (isUnAuthenticatedUser(res)) {
+      navigate(AppRoutes.Login);
+      showFaliureToast(mapAPICallError(res));
+    }
+  };
+
+  const handleFaliureToastAndLogs = (message, err) => {
+    Applogger('Error at ' + message, err);
+    if (isUnAuthenticatedUser(err)) {
+      navigate(AppRoutes.Login);
+      showFaliureToast(mapAPICallError(err));
+    }
+  };
+
+  const handleGetRemindersList = reminderPeriod => {
+    const getRemindersBody = {
+      ACTION_TYPE: reminderActions.list,
+      USER: user.No,
+    };
+    dispatch(getRemindersList({getRemindersBody, reminderPeriod}))
+      .then(unwrapResult)
+      .then(res => {
+        handleSuccessToastAndLogs('getRemindersList', res);
+        if (!responseHasError(res)) {
+        }
+      })
+      .catch(err => {
+        handleFaliureToastAndLogs('getRemindersList', err);
+      });
+  };
+
+  const handleGetUpcomingRemindersList = () => {
+    const upcomingRemindersBody = {
+      ACTION_TYPE: reminderActions.upcoming,
+      USER: user.No,
+    };
+    dispatch(getUpcomingRemindersList({upcomingRemindersBody}))
+      .then(unwrapResult)
+      .then(res => {
+        handleSuccessToastAndLogs('getUpcomingRemindersList', res);
+        if (!responseHasError(res)) {
+          if (res.hasOwnProperty('Reminders')) {
+            if (res.Reminders.Reminder) {
+            }
+          }
+        }
+      })
+      .catch(err => {
+        handleFaliureToastAndLogs('getUpcomingRemindersList', err);
+      });
+  };
+
   const handleAddReminder = () => {
     navigation.navigate(AppRoutes.AddOrUpdateReminder);
   };
 
-  const handleReminderFiler = query => {
-    setSelectedFilter(query);
+  const handleReminderCellPress = reminder => {
+    navigation.navigate(AppRoutes.ReminderDetails, {
+      selectedReminder: reminder,
+    });
   };
 
-  const handleReminderCellPress = reminder => {};
-
   const renderReminderItem = ({item, index}) => {
-    const {Details, AlertDate, State, DueDate, Subject} = item;
     return (
       <ReminderCell
         key={index}
-        Details={Details}
-        AlertDate={AlertDate}
-        State={State}
-        DueDate={DueDate}
-        Subject={Subject}
+        reminder={item}
         onPress={item => handleReminderCellPress(item)}
       />
     );
@@ -79,14 +181,15 @@ export default function Reminders({navigation}) {
     return (
       <ReminderFilterButton
         onPress={() => {
-          handleReminderFiler(query);
+          setFilterOption(query);
+          handleGetRemindersList(query);
           filtersRef?.current.scrollToIndex({
             animated: true,
             index: index,
           });
         }}
         title={title}
-        selected={selectedFilter === query}
+        selected={filterOption === query}
       />
     );
   };
@@ -106,16 +209,26 @@ export default function Reminders({navigation}) {
         <ReminderDropDown
           title="Filter By:"
           options={reminderFilterOptions}
-          setSelected={filter => Applogger('Filter By: ', filter)}
+          setSelected={filter => {
+            Applogger('Filter By: ', filter);
+            setFilterType(filter);
+          }}
+          defaultKey={''}
+          defaultValue={filterType}
         />
         <ReminderDropDown
           title="Sort By:"
           options={reminderSortOptions}
-          setSelected={sort => Applogger('Sort By: ', sort)}
+          setSelected={sort => {
+            Applogger('Sort By: ', sort);
+            setSortType(sort);
+          }}
+          defaultKey={''}
+          defaultValue={sortType}
         />
       </View>
       <View style={styles.listContainer}>
-        <FlatList data={reminders} renderItem={renderReminderItem} />
+        <FlatList data={finalRemindersList} renderItem={renderReminderItem} />
       </View>
       <TouchableOpacity
         style={styles.addButton}

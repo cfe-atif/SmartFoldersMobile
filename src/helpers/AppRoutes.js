@@ -17,6 +17,7 @@ const AppRoutes = {
   AddFolder: 'AddFolder',
   RecentSearches: 'RecentSearches',
   DocumentDetails: 'DocumentDetails',
+  ReminderDetails: 'ReminderDetails',
 };
 
 export default AppRoutes;

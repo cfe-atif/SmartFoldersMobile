@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import Header from './../../../components/headers/Header';
-import PrimaryTextField from './../../../components/textFields/PrimaryTextField';
-import PrimaryButton from './../../../components/buttons/PrimaryButton';
+import Header from '../../../../components/headers/Header';
+import PrimaryTextField from '../../../../components/textFields/PrimaryTextField';
+import PrimaryButton from '../../../../components/buttons/PrimaryButton';
 
 export default function AddOrUpdateReminder({navigation}) {
   const [headerTitle, setHeaderTitle] = useState('Add Reminder');
