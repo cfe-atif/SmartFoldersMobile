@@ -148,7 +148,23 @@ export const RemindersReducer = createReducer(initialState, {
     };
   },
 
+  [updateReminderRequest.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+
   [updateReminderRequest.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [updateReminderRequest.rejected]: (state, action) => {
     return {
       ...state,
       loading: false,
@@ -164,7 +180,23 @@ export const RemindersReducer = createReducer(initialState, {
     };
   },
 
+  [addReminderRequest.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+
   [addReminderRequest.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [addReminderRequest.rejected]: (state, action) => {
     return {
       ...state,
       loading: false,

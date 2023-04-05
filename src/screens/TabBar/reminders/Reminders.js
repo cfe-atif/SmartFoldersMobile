@@ -105,7 +105,7 @@ export default function Reminders({navigation}) {
   const handleSuccessToastAndLogs = (message, res) => {
     Applogger('Response at ' + message, res);
     if (isUnAuthenticatedUser(res)) {
-      navigate(AppRoutes.Login);
+      navigation.navigate(AppRoutes.Login);
       showFaliureToast(mapAPICallError(res));
     }
   };
@@ -113,7 +113,7 @@ export default function Reminders({navigation}) {
   const handleFaliureToastAndLogs = (message, err) => {
     Applogger('Error at ' + message, err);
     if (isUnAuthenticatedUser(err)) {
-      navigate(AppRoutes.Login);
+      navigation.navigate(AppRoutes.Login);
       showFaliureToast(mapAPICallError(err));
     }
   };
@@ -161,6 +161,9 @@ export default function Reminders({navigation}) {
   };
 
   const handleReminderCellPress = reminder => {
+    console.log('====================================');
+    console.log('handleReminderCellPress', reminder);
+    console.log('====================================');
     navigation.navigate(AppRoutes.ReminderDetails, {
       selectedReminder: reminder,
     });
@@ -171,7 +174,7 @@ export default function Reminders({navigation}) {
       <ReminderCell
         key={index}
         reminder={item}
-        onPress={item => handleReminderCellPress(item)}
+        onPress={() => handleReminderCellPress(item)}
       />
     );
   };

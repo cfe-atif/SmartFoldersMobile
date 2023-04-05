@@ -21,7 +21,7 @@ function apiGetUpcomingRemindersList(payload) {
 
 function apiAddReminderRequest(payload) {
   Applogger('Payload at apiAddReminderRequest', payload);
-  const {addReminderBody} = payload;
+  const {reminderBody} = payload;
   const {
     ACTION_TYPE,
     USER,
@@ -32,7 +32,7 @@ function apiAddReminderRequest(payload) {
     ALERT_DATE,
     DATABASE,
     DOC_NUM,
-  } = addReminderBody;
+  } = reminderBody;
   let path = `servlets.CH_VaultJson?INT=904&ACTION=${ACTION_TYPE}&USER=${USER}&SUBJECT=${SUBJECT}&DETAILS=${DETAILS}&STATE=${STATE}&DUE_DATE=${DUE_DATE}&ALERT_DATE=${ALERT_DATE}`;
   if (DATABASE && DOC_NUM) {
     path += `&DB=${DATABASE}&DOC_NO=${DOC_NUM}`;

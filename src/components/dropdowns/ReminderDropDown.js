@@ -9,14 +9,17 @@ export default function ReminderDropDown({
   title = '',
   options = [],
   setSelected = () => {},
+  defaultKey = '',
+  defaultValue = '',
 }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <SelectList
+        defaultOption={(defaultKey, defaultValue)}
         setSelected={val => setSelected(val)}
         data={options}
-        save="value"
+        save="key"
         search={false}
         placeholder="Select"
         boxStyles={{

@@ -9,13 +9,12 @@ import AppFontFamily from './../../helpers/AppFontFamily';
 export default function PrimaryDatePicker({
   placeholder = 'Type here...',
   openDatePicker = false,
-  onChange,
-  setOpenDatePicker,
-  date,
+  onChange = () => {},
+  setOpenDatePicker = false,
+  date = new Date(),
   dateMode = AppConstants.datePicker.dateTime,
   value = '',
 }) {
-  console.log('Date: ', date);
   return (
     <View style={styles.container}>
       <Text style={styles.placeholder} numberOfLines={2}>

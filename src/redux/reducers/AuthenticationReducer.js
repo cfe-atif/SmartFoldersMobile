@@ -59,7 +59,7 @@ const initialState = {
   loading: false,
   error: null,
   user: null,
-  database: [],
+  databases: [],
   dataBaseNumber: null,
   dataBaseName: null,
   expiry: '',
@@ -80,10 +80,9 @@ export const AuthenticationReducer = createReducer(initialState, {
       loading: false,
       error: null,
       user: responseHasError(action.payload) ? null : action.payload.User,
-      database: responseHasError(action.payload) ? [] : action.payload.Database,
-      dataBaseName: responseHasError(action.payload)
-        ? ''
-        : getDataBaseName(action.payload),
+      databases: responseHasError(action.payload)
+        ? []
+        : action.payload.Database,
     };
   },
   [loginRequest.rejected]: (state, action) => {
@@ -120,7 +119,7 @@ export const AuthenticationReducer = createReducer(initialState, {
   [changeDBNumber.rejected]: (state, _) => {
     return {
       ...state,
-      loading: true,
+      loading: false,
       error: null,
     };
   },
@@ -142,19 +141,15 @@ export const AuthenticationReducer = createReducer(initialState, {
   [changeDBName.rejected]: (state, _) => {
     return {
       ...state,
-      loading: true,
+      loading: false,
       error: null,
     };
   },
   [logoutUser.fulfilled]: (state, _) => {
-    return {
-      initialState,
-    };
+    return initialState;
   },
   [logoutUser.rejected]: (state, _) => {
-    return {
-      initialState,
-    };
+    return initialState;
   },
   [clearStore.fulfilled]: (state, action) => {
     return initialState;
