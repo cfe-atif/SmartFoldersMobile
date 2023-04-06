@@ -3,6 +3,8 @@ import {StyleSheet, FlatList, View, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {get} from 'lodash';
+import {useIsFocused} from '@react-navigation/native';
+import {showFaliureToast} from '../../../helpers/AppToasts';
 import {
   filterOptions,
   reminderFilterOptions,
@@ -35,6 +37,7 @@ import ReminderFilterButton from '../../../components/buttons/ReminderFilterButt
 export default function Reminders({navigation}) {
   const dispatch = useDispatch();
 
+  const isFocused = useIsFocused();
   const filtersRef = useRef();
 
   const {user} = useSelector(state => state.AuthenticationReducer);
@@ -46,9 +49,11 @@ export default function Reminders({navigation}) {
   const [finalRemindersList, setFinalRemindersList] = useState([]);
 
   useEffect(() => {
-    handleGetRemindersList(reminderPeriods.all);
-    handleGetUpcomingRemindersList();
-  }, []);
+    if (isFocused) {
+      handleGetRemindersList(reminderPeriods.all);
+      handleGetUpcomingRemindersList();
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     getFinalRemindersList();
@@ -161,9 +166,6 @@ export default function Reminders({navigation}) {
   };
 
   const handleReminderCellPress = reminder => {
-    console.log('====================================');
-    console.log('handleReminderCellPress', reminder);
-    console.log('====================================');
     navigation.navigate(AppRoutes.ReminderDetails, {
       selectedReminder: reminder,
     });

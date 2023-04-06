@@ -63,6 +63,7 @@ export default function PrimaryTextField({
   placeholder = 'Type here...',
   onChange = () => {},
   isSecure = false,
+  multiline = false,
 }) {
   return (
     <View style={styles.container}>
@@ -70,10 +71,11 @@ export default function PrimaryTextField({
         {placeholder}
       </Text>
       <TextInput
-        style={styles.textField}
+        style={[styles.textField, multiline && {height: 125}]}
         value={value}
         onChangeText={onChange}
         secureTextEntry={isSecure}
+        multiline={multiline}
       />
     </View>
   );
@@ -104,9 +106,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderLeftWidth: 1.5,
     borderLeftColor: AppColors.lightGray,
-    fontFamily: AppFontFamily.bold,
+    fontFamily: AppFontFamily.semiBold,
     color: AppColors.gray,
-    fontSize: AppFontSize.size16,
+    fontSize: AppFontSize.size14,
   },
 });
 

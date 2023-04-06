@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
   },
   dateText: {
     color: AppColors.gray,
-    fontFamily: AppFontFamily.bold,
+    fontFamily: AppFontFamily.semiBold,
+    fontSize: AppFontSize.size14,
   },
   textField: {
     height: 50,
@@ -71,8 +72,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderLeftWidth: 1.5,
     color: AppColors.gray,
-    fontFamily: AppFontFamily.bold,
-    fontSize: AppFontSize.size16,
+    fontFamily: AppFontFamily.semiBold,
+    fontSize: AppFontSize.size14,
     borderLeftColor: AppColors.lightGray,
   },
 });

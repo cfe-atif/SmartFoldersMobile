@@ -19,8 +19,8 @@ function apiGetUpcomingRemindersList(payload) {
   return AxiosEvent.get(path);
 }
 
-function apiAddReminderRequest(payload) {
-  Applogger('Payload at apiAddReminderRequest', payload);
+function apiAddOrUpdateReminderRequest(payload) {
+  Applogger('Payload at apiAddOrUpdateReminderRequest', payload);
   const {reminderBody} = payload;
   const {
     ACTION_TYPE,
@@ -32,32 +32,14 @@ function apiAddReminderRequest(payload) {
     ALERT_DATE,
     DATABASE,
     DOC_NUM,
+    REMINDER_ID,
   } = reminderBody;
   let path = `servlets.CH_VaultJson?INT=904&ACTION=${ACTION_TYPE}&USER=${USER}&SUBJECT=${SUBJECT}&DETAILS=${DETAILS}&STATE=${STATE}&DUE_DATE=${DUE_DATE}&ALERT_DATE=${ALERT_DATE}`;
   if (DATABASE && DOC_NUM) {
     path += `&DB=${DATABASE}&DOC_NO=${DOC_NUM}`;
   }
-  return AxiosEvent.get(path);
-}
-
-function apiUpdateReminderRequest(payload) {
-  Applogger('Payload at apiUpdateReminderRequest', payload);
-  const {updateReminderBody} = payload;
-  const {
-    ACTION_TYPE,
-    USER,
-    REMINDER_ID,
-    SUBJECT,
-    DETAILS,
-    STATE,
-    DUE_DATE,
-    ALERT_DATE,
-    DATABASE,
-    DOC_NUM,
-  } = updateReminderBody;
-  let path = `servlets.CH_VaultJson?INT=904&ACTION=${ACTION_TYPE}&USER=${USER}&ID=${REMINDER_ID}&SUBJECT=${SUBJECT}&DETAILS=${DETAILS}&STATE=${STATE}&DUE_DATE=${DUE_DATE}&ALERT_DATE=${ALERT_DATE}`;
-  if (DATABASE && DOC_NUM) {
-    path += `&DB=${DATABASE}&DOC_NO=${DOC_NUM}`;
+  if (REMINDER_ID) {
+    path += `&ID=${REMINDER_ID}`;
   }
   return AxiosEvent.get(path);
 }
@@ -81,8 +63,7 @@ function apiDeleteReminderRequest(payload) {
 export const RemindersAPIServices = {
   apiGetRemindersList,
   apiGetUpcomingRemindersList,
-  apiAddReminderRequest,
-  apiUpdateReminderRequest,
+  apiAddOrUpdateReminderRequest,
   apiSetReminderStateRequest,
   apiDeleteReminderRequest,
 };

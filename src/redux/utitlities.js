@@ -35,3 +35,15 @@ export function sortChatMessagesbyDate(chatMessages) {
     return createdAtA > createdAtB ? 1 : -1;
   });
 }
+
+export const getConvertedRemindersList = remindersList => {
+  let finalArray = [];
+  if (remindersList == '') {
+    finalArray = [];
+  } else if (!Array.isArray(remindersList)) {
+    finalArray = [remindersList];
+  } else {
+    finalArray = remindersList;
+  }
+  return finalArray;
+};

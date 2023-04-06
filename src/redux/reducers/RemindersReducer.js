@@ -5,41 +5,6 @@ import {getConvertedRemindersList} from '../utitlities';
 import {get} from 'lodash';
 import Applogger from './../../helpers/AppLogger';
 
-export const setRemindersViewShown = createAsyncThunk(
-  'RemindersReducer/setRemindersViewShown',
-  async payload => {
-    return payload;
-  },
-);
-
-export const setRemindersViewHidden = createAsyncThunk(
-  'RemindersReducer/setRemindersViewHidden',
-  async payload => {
-    return payload;
-  },
-);
-
-export const setPopUpReminder = createAsyncThunk(
-  'RemindersReducer/setPopUpReminder',
-  async payload => {
-    return payload;
-  },
-);
-
-export const setRemindersPopupShown = createAsyncThunk(
-  'RemindersReducer/setRemindersPopupShown',
-  async payload => {
-    return payload;
-  },
-);
-
-export const setRemindersPopupHidden = createAsyncThunk(
-  'RemindersReducer/setRemindersPopupHidden',
-  async payload => {
-    return payload;
-  },
-);
-
 export const getRemindersList = createAsyncThunk(
   'RemindersReducer/getRemindersList',
   async payload => {
@@ -58,18 +23,10 @@ export const getUpcomingRemindersList = createAsyncThunk(
   },
 );
 
-export const addReminderRequest = createAsyncThunk(
-  'RemindersReducer/addReminderRequest',
+export const addOrUpdateReminderRequest = createAsyncThunk(
+  'RemindersReducer/addOrUpdateReminderRequest',
   async payload => {
-    const response = await RemindersAPIServices.apiAddReminderRequest(payload);
-    return response.data;
-  },
-);
-
-export const updateReminderRequest = createAsyncThunk(
-  'RemindersReducer/updateReminderRequest',
-  async payload => {
-    const response = await RemindersAPIServices.apiUpdateReminderRequest(
+    const response = await RemindersAPIServices.apiAddOrUpdateReminderRequest(
       payload,
     );
     return response.data;
@@ -97,46 +54,16 @@ export const deleteReminderRequest = createAsyncThunk(
 );
 
 const initialState = {
-  showRemindersView: false,
-  showRemindersPopup: false,
   remindersList: [],
   upComingRemindersList: [],
-  popupReminder: null,
 };
 
 export const RemindersReducer = createReducer(initialState, {
-  [setRemindersViewShown.fulfilled]: (state, action) => {
+  [deleteReminderRequest.pending]: (state, action) => {
     return {
       ...state,
-      showRemindersView: true,
-    };
-  },
-
-  [setRemindersViewHidden.fulfilled]: (state, action) => {
-    return {
-      ...state,
-      showRemindersView: false,
-    };
-  },
-
-  [setRemindersPopupShown.fulfilled]: (state, action) => {
-    return {
-      ...state,
-      showRemindersPopup: true,
-    };
-  },
-
-  [setRemindersPopupHidden.fulfilled]: (state, action) => {
-    return {
-      ...state,
-      showRemindersPopup: false,
-    };
-  },
-
-  [setPopUpReminder.fulfilled]: (state, action) => {
-    return {
-      ...state,
-      popupReminder: action.payload,
+      loading: true,
+      error: null,
     };
   },
 
@@ -148,26 +75,18 @@ export const RemindersReducer = createReducer(initialState, {
     };
   },
 
-  [updateReminderRequest.pending]: (state, action) => {
+  [deleteReminderRequest.rejected]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [setReminderStateRequest.pending]: (state, action) => {
     return {
       ...state,
       loading: true,
-      error: null,
-    };
-  },
-
-  [updateReminderRequest.fulfilled]: (state, action) => {
-    return {
-      ...state,
-      loading: false,
-      error: null,
-    };
-  },
-
-  [updateReminderRequest.rejected]: (state, action) => {
-    return {
-      ...state,
-      loading: false,
       error: null,
     };
   },
@@ -180,15 +99,7 @@ export const RemindersReducer = createReducer(initialState, {
     };
   },
 
-  [addReminderRequest.pending]: (state, action) => {
-    return {
-      ...state,
-      loading: true,
-      error: null,
-    };
-  },
-
-  [addReminderRequest.fulfilled]: (state, action) => {
+  [setReminderStateRequest.rejected]: (state, action) => {
     return {
       ...state,
       loading: false,
@@ -196,7 +107,23 @@ export const RemindersReducer = createReducer(initialState, {
     };
   },
 
-  [addReminderRequest.rejected]: (state, action) => {
+  [addOrUpdateReminderRequest.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+
+  [addOrUpdateReminderRequest.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [addOrUpdateReminderRequest.rejected]: (state, action) => {
     return {
       ...state,
       loading: false,

@@ -16,8 +16,7 @@ import {
   responseHasError,
 } from '../../../../utils/HelperFunctions';
 import {
-  addReminderRequest,
-  updateReminderRequest,
+  addOrUpdateReminderRequest,
   getRemindersList,
   getUpcomingRemindersList,
 } from '../../../../redux/reducers/RemindersReducer';
@@ -40,7 +39,7 @@ export default function AddOrUpdateReminder({navigation, route}) {
   const {user} = useSelector(state => state.AuthenticationReducer);
   const {loading} = useSelector(state => state.RemindersReducer);
 
-  const [headerTitle, setHeaderTitle] = useState('');
+  const [headerTitle, setHeaderTitle] = useState('Add Reminder');
   const [pickerType, setPickerType] = useState(false);
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [addReminderBody, setAddReminderBody] = useState({
@@ -51,20 +50,33 @@ export default function AddOrUpdateReminder({navigation, route}) {
     ALERT_DATE_VALUE: null,
     DATABASE: null,
     DOC_NUM: null,
+    ID: null,
   });
 
   const reminderToUpdate = get(route, 'params.reminderToUpdate', null);
 
   useEffect(() => {
-    setHeaderTitle('Add Reminder');
+    handleInitialValues();
   }, []);
 
   const handleInitialValues = () => {
+    console.log('====================================');
+    console.log('reminderToUpdate', reminderToUpdate);
+    console.log('====================================');
     if (reminderToUpdate) {
-      addReminderBody.SUBJECT = get(reminderToUpdate, '', '');
-      addReminderBody.DETAILS = get(reminderToUpdate, '', '');
-      addReminderBody.DUE_DATE = get(reminderToUpdate, '', '');
-      addReminderBody.ALERT_DATE = get(reminderToUpdate, '', '');
+      setHeaderTitle('Update Reminder');
+      addReminderBody.SUBJECT = get(reminderToUpdate, 'Subject', '');
+      addReminderBody.DETAILS = get(reminderToUpdate, 'Details', '');
+      addReminderBody.DUE_DATE = new Date(get(reminderToUpdate, 'DueDate', ''));
+      addReminderBody.ALERT_DATE = new Date(
+        get(reminderToUpdate, 'AlertDate', ''),
+      );
+      addReminderBody.ALERT_DATE_VALUE = get(reminderToUpdate, 'AlertDate', '')
+        ? get(reminderToUpdate, 'AlertDate', '')
+        : null;
+      addReminderBody.DATABASE = get(reminderToUpdate, 'Database.Name', '');
+      addReminderBody.DOC_NUM = get(reminderToUpdate, 'DocumentNo', '');
+      addReminderBody.ID = get(reminderToUpdate, 'ID', '');
     }
   };
 
@@ -84,11 +96,15 @@ export default function AddOrUpdateReminder({navigation, route}) {
     }
   };
 
-  const handleAddReminderRequest = () => {
+  const getReminderBody = () => {
     const reminderBody = {
-      ACTION_TYPE: reminderActions.add,
+      ACTION_TYPE: reminderToUpdate
+        ? reminderActions.update
+        : reminderActions.add,
       USER: user.No,
-      STATE: reminderStates.open,
+      STATE: reminderToUpdate
+        ? get(reminderToUpdate, 'State', '')
+        : reminderStates.open,
       SUBJECT: addReminderBody.SUBJECT,
       DETAILS: addReminderBody.DETAILS,
       DUE_DATE: moment(addReminderBody.DUE_DATE).format(
@@ -101,15 +117,23 @@ export default function AddOrUpdateReminder({navigation, route}) {
         : null,
       DATABASE: addReminderBody.DATABASE,
       DOC_NUM: addReminderBody.DOC_NUM,
+      REMINDER_ID: addReminderBody.ID,
     };
-    dispatch(addReminderRequest({reminderBody}))
+    return reminderBody;
+  };
+
+  const handleAddOrUpdateReminderRequest = () => {
+    const reminderBody = getReminderBody();
+    dispatch(addOrUpdateReminderRequest({reminderBody}))
       .then(unwrapResult)
       .then(res => {
-        handleSuccessToastAndLogs('addReminderRequest', res);
+        handleSuccessToastAndLogs('addOrUpdateReminderRequest', res);
         if (!responseHasError(res)) {
           handleGetRemindersList(reminderPeriods.all);
           handleGetUpcomingRemindersList();
-          showSuccessToast('Reminder added successfully');
+          showSuccessToast(
+            `Reminder ${reminderToUpdate ? 'updated' : 'added'} successfully`,
+          );
           navigation.goBack();
         } else {
           if (responseHasError(res)) {
@@ -118,7 +142,7 @@ export default function AddOrUpdateReminder({navigation, route}) {
         }
       })
       .catch(err => {
-        handleFaliureToastAndLogs('addReminderRequest', err);
+        handleFaliureToastAndLogs('addOrUpdateReminderRequest', err);
       });
   };
 
@@ -164,7 +188,7 @@ export default function AddOrUpdateReminder({navigation, route}) {
     if (!addReminderBody.SUBJECT || !addReminderBody.DETAILS) {
       showFaliureToast('Fields Error', 'Please fill all fields');
     } else {
-      handleAddReminderRequest();
+      handleAddOrUpdateReminderRequest();
     }
   };
 
@@ -185,6 +209,7 @@ export default function AddOrUpdateReminder({navigation, route}) {
           }
         />
         <PrimaryTextField
+          multiline={true}
           placeholder="Details"
           value={addReminderBody.DETAILS}
           onChange={text =>

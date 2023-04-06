@@ -145,11 +145,27 @@ export const AuthenticationReducer = createReducer(initialState, {
       error: null,
     };
   },
+
+  [logoutUser.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
   [logoutUser.fulfilled]: (state, _) => {
-    return initialState;
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
   },
   [logoutUser.rejected]: (state, _) => {
-    return initialState;
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
   },
   [clearStore.fulfilled]: (state, action) => {
     return initialState;

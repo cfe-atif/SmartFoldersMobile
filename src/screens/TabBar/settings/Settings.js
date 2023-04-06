@@ -8,11 +8,12 @@ import Header from './../../../components/headers/Header';
 import SettingsCell from './../../../components/cells/SettingsCell';
 import AppRoutes from './../../../helpers/AppRoutes';
 import Applogger from '../../../helpers/AppLogger';
+import SFLoader from './../../../components/loaders/SFLoader';
 
 export default function Settings({navigation}) {
   const dispatch = useDispatch();
 
-  const {user, dataBaseNumber} = useSelector(
+  const {user, dataBaseNumber, loading} = useSelector(
     state => state.AuthenticationReducer,
   );
 
@@ -37,6 +38,7 @@ export default function Settings({navigation}) {
 
   return (
     <View style={styles.container}>
+      {loading && <SFLoader />}
       <Header title="Settings" />
       <View>
         <SettingsCell

@@ -5,16 +5,103 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {get} from 'lodash';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {ReminderDocumentView} from './../../../../components/cells/ReminderCell';
+import {reminderActions, reminderStates} from '../Constants';
+import {
+  deleteReminderRequest,
+  setReminderStateRequest,
+} from '../../../../redux/reducers/RemindersReducer';
+import {
+  responseHasError,
+  isUnAuthenticatedUser,
+  mapAPICallError,
+} from '../../../../utils/HelperFunctions';
+import {
+  showFaliureToast,
+  showSuccessToast,
+} from '../../../../helpers/AppToasts';
 import moment from 'moment';
 import Header from '../../../../components/headers/Header';
 import ReminderDetailCell from '../../../../components/cells/ReminderDetailCell';
 import AppColors from './../../../../helpers/AppColors';
 import AppConstants from './../../../../helpers/AppConstants';
+import ReminderFilterButton from './../../../../components/buttons/ReminderFilterButton';
+import Applogger from './../../../../helpers/AppLogger';
+import AppRoutes from '../../../../helpers/AppRoutes';
 
 export default function ReminderDetails({navigation, route}) {
   const dispatch = useDispatch();
 
+  const {user} = useSelector(state => state.AuthenticationReducer);
+
   const selectedReminder = get(route, 'params.selectedReminder', null);
+
+  const handleEditPress = () => {
+    Applogger('Clicked Edit');
+    navigation.navigate(AppRoutes.AddOrUpdateReminder, {
+      reminderToUpdate: selectedReminder,
+    });
+  };
+
+  const handleDeletePress = () => {
+    Applogger('Clicked Edit');
+    const deleteReminderBody = {
+      ACTION_TYPE: reminderActions.delete,
+      USER: user.No,
+      REMINDER_ID: get(selectedReminder, 'ID', ''),
+    };
+    dispatch(deleteReminderRequest({deleteReminderBody}))
+      .then(unwrapResult)
+      .then(res => {
+        handleSuccessToastAndLogs('deleteReminderRequest', res);
+        if (responseHasError(res)) {
+          showFaliureToast('Unable to delete reminder');
+        } else {
+          showSuccessToast('Success', 'Reminder Deleted Successfully');
+          navigation.goBack();
+        }
+      })
+      .catch(err => {
+        handleFaliureToastAndLogs('deleteReminderRequest', err);
+      });
+  };
+
+  const handleCompletePress = () => {
+    Applogger('Clicked Edit');
+    const setReminderBody = {
+      ACTION_TYPE: reminderActions.setState,
+      USER: user.No,
+      REMINDER_ID: get(selectedReminder, 'ID', ''),
+      STATE: reminderStates.completed,
+    };
+    dispatch(setReminderStateRequest({setReminderBody}))
+      .then(unwrapResult)
+      .then(res => {
+        handleSuccessToastAndLogs('setReminderStateRequest', res);
+        if (!responseHasError(res)) {
+          showSuccessToast('Success', 'Reminder Status Updated Successfully');
+          navigation.goBack();
+        }
+      })
+      .catch(err => {
+        handleFaliureToastAndLogs('setReminderStateRequest', err);
+      });
+  };
+
+  const handleSuccessToastAndLogs = (message, res) => {
+    Applogger('Response at ' + message, res);
+    if (isUnAuthenticatedUser(res)) {
+      navigation.navigate(AppRoutes.Login);
+      showFaliureToast(mapAPICallError(res));
+    }
+  };
+
+  const handleFaliureToastAndLogs = (message, err) => {
+    Applogger('Error at ' + message, err);
+    if (isUnAuthenticatedUser(err)) {
+      navigation.navigate(AppRoutes.Login);
+      showFaliureToast(mapAPICallError(err));
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -64,6 +151,23 @@ export default function ReminderDetails({navigation, route}) {
             AppConstants.dateTimeFormat,
           )}
         />
+        <View style={styles.buttonsContainer}>
+          <ReminderFilterButton
+            selected={true}
+            title={'Edit'}
+            onPress={() => handleEditPress()}
+          />
+          <ReminderFilterButton
+            selected={true}
+            title={'Delete'}
+            onPress={() => handleDeletePress()}
+          />
+          <ReminderFilterButton
+            selected={true}
+            title={'Complete'}
+            onPress={() => handleCompletePress()}
+          />
+        </View>
       </KeyboardAwareScrollView>
     </View>
   );
@@ -75,6 +179,10 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.white,
   },
   docView: {
-    margin: 50,
+    alignSelf: 'center',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    alignSelf: 'center',
   },
 });
