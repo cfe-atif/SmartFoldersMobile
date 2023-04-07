@@ -63,7 +63,10 @@ export default function Reminders({navigation}) {
     let finalList = remindersList;
     if (Array.isArray(remindersList)) {
       if (filterType == filterTypes.active) {
-        finalList = finalList.filter(reminder => {
+        finalList = [...finalList].filter(reminder => {
+          console.log('====================================');
+          console.log('Reminder at 1', reminder);
+          console.log('====================================');
           return (
             reminder.State == reminderStates.open ||
             reminder.State == reminderStates.snooze
@@ -71,7 +74,10 @@ export default function Reminders({navigation}) {
         });
       }
       if (filterType == filterTypes.completed) {
-        finalList = finalList.filter(reminder => {
+        finalList = [...finalList].filter(reminder => {
+          console.log('====================================');
+          console.log('Reminder at 2', reminder);
+          console.log('====================================');
           return (
             reminder.State == reminderStates.completed ||
             reminder.State == reminderStates.dismiss
@@ -80,20 +86,29 @@ export default function Reminders({navigation}) {
       }
 
       if (sortType == sortTypes.aToZ) {
-        finalList = finalList.sort((reminderA, reminderB) => {
+        console.log('====================================');
+        console.log('Final List at 1', finalList);
+        console.log('====================================');
+        finalList = [...finalList].sort((reminderA, reminderB) => {
           return get(reminderA, 'Subject', '').toLowerCase() >
             get(reminderB, 'Subject', '').toLowerCase()
             ? 1
             : -1;
         });
       } else if (sortType == sortTypes.zToA) {
-        finalList = finalList.sort((reminderA, reminderB) => {
+        console.log('====================================');
+        console.log('Final List at 2', finalList);
+        console.log('====================================');
+        finalList = [...finalList].sort((reminderA, reminderB) => {
           return get(reminderA, 'Subject', '').toLowerCase() <
             get(reminderB, 'Subject', '').toLowerCase()
             ? 1
             : -1;
         });
       } else if (sortType == sortTypes.byDate) {
+        console.log('====================================');
+        console.log('Final List at 3', finalList);
+        console.log('====================================');
         finalList = finalList.sort((reminderA, reminderB) => {
           return (
             new Date(get(reminderA, 'AlertDate', '')) -

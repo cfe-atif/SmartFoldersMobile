@@ -55,7 +55,9 @@ export default function SelectDatabase({navigation}) {
       .then(unwrapResult)
       .then(res => {
         Applogger('DB Name updated Successfully', res);
-        navigation.navigate(AppRoutes.BottomNavigation);
+        navigation.navigate(AppRoutes.BottomNavigation, {
+          screen: AppRoutes.Home,
+        });
       })
       .catch(err => {
         Applogger('Error at updating DB Name', err);

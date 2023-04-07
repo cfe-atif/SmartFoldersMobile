@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Image, StyleSheet} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,6 +7,7 @@ import {
   changeDBNumber,
   loginRequest,
   changeDBName,
+  clearStore,
 } from '../../redux/reducers/AuthenticationReducer';
 import {mapAPICallError, responseHasError} from '../../utils/HelperFunctions';
 import {showFaliureToast} from '../../helpers/AppToasts';
@@ -31,6 +32,10 @@ export default function Login({navigation}) {
     // username: '',
     // password: '',
   });
+
+  useEffect(() => {
+    dispatch(clearStore());
+  }, []);
 
   const handleChangeDBNumber = dbNumber => {
     dispatch(changeDBNumber(dbNumber))

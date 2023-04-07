@@ -21,6 +21,10 @@ export default function Settings({navigation}) {
     navigation.navigate(AppRoutes.ChangePassword);
   };
 
+  const handleChangeDB = () => {
+    navigation.navigate(AppRoutes.SelectDatabase);
+  };
+
   const handleLogout = () => {
     const DB = dataBaseNumber;
     const USER = get(user, 'No', '');
@@ -44,6 +48,10 @@ export default function Settings({navigation}) {
         <SettingsCell
           title={'Change Password'}
           onPress={() => handleChangePassword()}
+        />
+        <SettingsCell
+          title={'Change Database'}
+          onPress={() => handleChangeDB()}
         />
         <SettingsCell title={'Logout'} onPress={() => handleLogout()} />
       </View>

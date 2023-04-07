@@ -24,22 +24,22 @@ export default function Home({navigation}) {
   const [foldersType, setFoldersType] = useState(foldersTypes.public);
 
   const [currentFoldersData, setCurrentFoldersData] = useState([
-    {title: 'Nayyer', folder: false},
+    {title: 'Junaid', folder: true},
+    {title: 'Nayyer', folder: true},
+    {title: 'Atif Jamil', folder: true},
     {
       title: 'Usman',
-      folder: true,
+      folder: false,
       date: moment(new Date()).format(AppConstants.dateFormat),
       description: 'This is file description',
     },
-    {title: 'Junaid', folder: false},
     {
       title: 'Shahab',
-      folder: true,
+      folder: false,
       date: moment(new Date()).format(AppConstants.dateFormat),
       description:
         'This is file description which has multiple lines to truncate',
     },
-    {title: 'Atif Jamil', folder: false},
   ]);
 
   const [folderNavigation, setFolderNavigation] = useState([
@@ -162,6 +162,8 @@ export default function Home({navigation}) {
   const renderFolderFileItem = ({item, index}) => {
     const {title, folder, date, description} = item;
     if (folder) {
+      return <FolderCell key={index} title={title} onPress={null} />;
+    } else {
       return (
         <FileCell
           key={index}
@@ -175,8 +177,6 @@ export default function Home({navigation}) {
           }
         />
       );
-    } else {
-      return <FolderCell key={index} title={title} onPress={null} />;
     }
   };
 
