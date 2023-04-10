@@ -29,7 +29,7 @@ export default function GroupCell({
       <View style={styles.desContainer}>
         <Text style={styles.title}>{title}</Text>
         <Text
-          style={styles.description}>{`${getUserName()}: ${lastMessage}`}</Text>
+          style={styles.description}>{`${getUserName()} ${lastMessage}`}</Text>
       </View>
       <View style={styles.timeContainer}>
         <Text style={styles.timestamp}>{moment(timestamp).fromNow()}</Text>
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     margin: 2,
     textTransform: 'capitalize',
     fontSize: AppFontSize.size16,
-    fontFamily: AppFontFamily.semiBold,
+    fontFamily: AppFontFamily.bold,
   },
   description: {
     margin: 2,

@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import moment from 'moment';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
 import AppFontFamily from './../../helpers/AppFontFamily';
@@ -11,9 +12,11 @@ export default function IncomingMessageCell({
 }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.senderName}>{senderName}</Text>
-      <Text style={styles.message}>{message}</Text>
-      <Text style={styles.timeStamp}>{timeStamp}</Text>
+      {senderName && <Text style={styles.senderName}>{senderName}</Text>}
+      {message && <Text style={styles.message}>{message}</Text>}
+      {timeStamp && (
+        <Text style={styles.timeStamp}>{moment(timeStamp).fromNow()}</Text>
+      )}
     </View>
   );
 }
@@ -35,7 +38,7 @@ const styles = StyleSheet.create({
     fontFamily: AppFontFamily.bold,
   },
   message: {
-    marginVertical: 4,
+    marginBottom: 4,
     color: AppColors.black,
     fontSize: AppFontSize.size14,
     fontFamily: AppFontFamily.regular,

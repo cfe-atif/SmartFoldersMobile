@@ -10,15 +10,19 @@ import AppRoutes from '../helpers/AppRoutes';
 const StackNavigator = createStackNavigator();
 
 const AppContainer = () => {
-  var initialRoute = AppRoutes.BottomNavigation;
-
   const dispatch = useDispatch();
 
   const {user} = useSelector(state => state.AuthenticationReducer);
 
+  var initialRoute = AppRoutes.Login;
+
   useEffect(() => {
     dispatch(stopLoaderAndError());
   }, []);
+
+  if (user) {
+    initialRoute = AppRoutes.BottomNavigation;
+  }
 
   return (
     <NavigationContainer>

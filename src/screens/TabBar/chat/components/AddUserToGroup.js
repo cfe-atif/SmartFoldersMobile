@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {get} from 'lodash';
+import {_, get} from 'lodash';
 import {
   showFaliureToast,
   showSuccessToast,
@@ -12,7 +12,7 @@ import {
   mapAPICallError,
 } from '../../../../utils/HelperFunctions';
 import {
-  createUserGroupRequest,
+  updateUserGroupRequest,
   getUsersListRequest,
 } from '../../../../redux/reducers/SmartChatReducer';
 import AppConstants from '../../../../helpers/AppConstants';
@@ -23,16 +23,22 @@ import PrimaryButton from '../../../../components/buttons/PrimaryButton';
 import PrimaryTextField from '../../../../components/textFields/PrimaryTextField';
 import ChatGroupDropDown from '../../../../components/dropdowns/ChatGroupDropDown';
 import SFLoader from './../../../../components/loaders/SFLoader';
+import AppRoutes from './../../../../helpers/AppRoutes';
 
-export default function AddOrUpdateGroup({navigation}) {
+export default function AddUserToGroup({navigation, route}) {
   const dispatch = useDispatch();
 
   const {user} = useSelector(state => state.AuthenticationReducer);
   const {loading, usersList} = useSelector(state => state.SmartChatReducer);
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(
+    get(route, 'params.selectedGroup.name', ''),
+  );
   const [dropDownItems, setDropDownItems] = useState([]);
   const [selectedUsersList, setSelectedUsersList] = useState([]);
+
+  const selectedGroup = get(route, 'params.selectedGroup', null);
+  const selectedGroupUsersList = get(route, 'params.selectedGroup.users', null);
 
   useEffect(() => {
     if (!usersList.length > 0) {
@@ -43,17 +49,25 @@ export default function AddOrUpdateGroup({navigation}) {
   }, [usersList]);
 
   const createDrpDownArray = () => {
-    const convertedArray = usersList.map(
+    let filteredOptions = usersList.filter(o => {
+      return o?.No != get(user, 'No', '');
+    });
+
+    filteredOptions = _.differenceWith(
+      filteredOptions,
+      selectedGroupUsersList,
+      _.isEqual,
+    );
+
+    const convertedArray = filteredOptions.map(
       ({No: key, userName: value, ...rest}) => ({
         key,
         value,
         ...rest,
       }),
     );
-    const filteredOptions = convertedArray.filter(o => {
-      return o?.key != get(user, 'No', '');
-    });
-    setDropDownItems(filteredOptions);
+
+    setDropDownItems(convertedArray);
   };
 
   const handlGetUsersListRequest = () => {
@@ -65,39 +79,6 @@ export default function AddOrUpdateGroup({navigation}) {
       .catch(err => {
         handleFaliureToastAndLogs('getUsersListRequest', err);
       });
-  };
-
-  const handleSave = () => {
-    handleCreateGroupRequest();
-  };
-
-  const handleCreateGroupRequest = () => {
-    if (!title) {
-      showFaliureToast('Warning', 'Please enter group name');
-    } else if (!selectedUsersList.length > 0) {
-      showFaliureToast('Warning', 'Please select users for group');
-    } else {
-      let groupUsers = selectedUsersList;
-      if (!selectedUsersList.includes(get(user, 'No', ''))) {
-        selectedUsersList.push(get(user, 'No', ''));
-      }
-      const createGroupBody = {
-        name: title,
-        userIds: groupUsers,
-      };
-
-      dispatch(createUserGroupRequest({createGroupBody}))
-        .then(unwrapResult)
-        .then(res => {
-          showSuccessToast(AppConstants.toastMessages.groupCreated);
-          handleSuccessToastAndLogs('createUserGroupRequest', res);
-          navigation.goBack();
-        })
-        .catch(err => {
-          showFaliureToast(mapAPICallError(err.message));
-          handleFaliureToastAndLogs('createUserGroupRequest', err);
-        });
-    }
   };
 
   const handleSuccessToastAndLogs = (message, res) => {
@@ -116,11 +97,48 @@ export default function AddOrUpdateGroup({navigation}) {
     }
   };
 
+  const handleSave = () => {
+    handleUpdateGroupRequest();
+  };
+
+  const handleUpdateGroupRequest = () => {
+    if (!title) {
+      showFaliureToast('Warning', 'Please enter group name');
+    } else if (!selectedUsersList.length > 0) {
+      showFaliureToast('Warning', 'Please select users for group');
+    } else {
+      const updateGroupBody = {
+        name: title,
+        groupId: get(selectedGroup, 'id', ''),
+        userIds: selectedUsersList,
+      };
+
+      dispatch(
+        updateUserGroupRequest({
+          groupId: get(selectedGroup, 'id', ''),
+          updateGroupBody,
+        }),
+      )
+        .then(unwrapResult)
+        .then(res => {
+          showSuccessToast(AppConstants.toastMessages.groupUpdated);
+          handleSuccessToastAndLogs('updateUserGroupRequest', res);
+          navigation.navigate(AppRoutes.BottomNavigation, {
+            screen: AppRoutes.Chats,
+          });
+        })
+        .catch(err => {
+          showFaliureToast(mapAPICallError(err.message));
+          handleFaliureToastAndLogs('updateUserGroupRequest', err);
+        });
+    }
+  };
+
   return (
     <View style={styles.container}>
       {loading && <SFLoader />}
       <Header
-        title={'Create Group'}
+        title={get(selectedGroup, 'name', '')}
         backButton={true}
         onBackPress={() => navigation.goBack()}
       />
@@ -152,5 +170,6 @@ const styles = StyleSheet.create({
   },
   intContainer: {
     flex: 1,
+    paddingVertical: 10,
   },
 });

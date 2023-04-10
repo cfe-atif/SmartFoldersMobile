@@ -93,10 +93,26 @@ export const AuthenticationReducer = createReducer(initialState, {
     };
   },
 
-  [changePasswordRequest.fulfilled]: (state, action) => {
+  [changePasswordRequest.pending]: (state, action) => {
     return {
       ...state,
       loading: true,
+      error: null,
+    };
+  },
+
+  [changePasswordRequest.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [changePasswordRequest.rejected]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
       error: action.payload,
     };
   },

@@ -17,6 +17,7 @@ import AddFolder from '../../screens/TabBar/home/components/AddFolder';
 import RecentSearches from '../../screens/TabBar/home/components/RecentSearches';
 import DocumentDetails from '../../screens/TabBar/home/components/DocumentDetails';
 import ReminderDetails from '../../screens/TabBar/reminders/components/ReminderDetails';
+import AddUserToGroup from '../../screens/TabBar/chat/components/AddUserToGroup';
 
 const headerOptions = {
   headerShown: false,
@@ -93,6 +94,10 @@ const NavigationScreens = {
   },
   ReminderDetails: {
     screen: ReminderDetails,
+    options: headerOptions,
+  },
+  AddUserToGroup: {
+    screen: AddUserToGroup,
     options: headerOptions,
   },
   BottomNavigation: {

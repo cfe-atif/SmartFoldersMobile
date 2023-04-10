@@ -10,21 +10,8 @@ import {
   isUnAuthenticatedUser,
 } from '../../../utils/HelperFunctions';
 import {
-  exitFromGroupRequest,
   getUserChatsListRequest,
-  getUsersListRequest,
-  getSingleMessageHistoryRequest,
   getUsersAllGroupsRequest,
-  deleteUserGroupRequest,
-  getUsersInGroupRequest,
-  createUserGroupRequest,
-  getUserGroupMessagesListRequest,
-  setShowSmartChat,
-  getSpecificUsersAllGroupsRequest,
-  updateUserGroupRequest,
-  singleChatMessageRead,
-  groupChatMessagesRead,
-  singleChatMessageReadAll,
 } from '../../../redux/reducers/SmartChatReducer';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import AppColors from './../../../helpers/AppColors';
@@ -38,6 +25,7 @@ import ChatsButton from './../../../components/buttons/ChatsButton';
 import SimpleButton from './../../../components/buttons/SimpleButton';
 import GroupCell from './../../../components/cells/GroupCell';
 import SFNoRecord from './../../../components/texts/SFNoRecord';
+import SFLoader from './../../../components/loaders/SFLoader';
 
 export default function Chats({navigation}) {
   const sheetRef = useRef(null);
@@ -47,21 +35,13 @@ export default function Chats({navigation}) {
 
   const isFocused = useIsFocused();
 
-  const {usersAllGroups, userAllChats} = useSelector(
+  const {usersAllGroups, userAllChats, loading} = useSelector(
     state => state.SmartChatReducer,
   );
 
-  // const {user} = useSelector(state => state.AuthReducer);
-  // const currentUserId = user?.No;
+  const {user} = useSelector(state => state.AuthenticationReducer);
 
-  const currentUserId = 10;
-
-  // const user = {
-  //   Full_Name: "System Administrator",
-  //   Name: "sysadmin",
-  //   No: "10",
-  //   isConnec: false,
-  // };
+  const currentUserId = user?.No;
 
   const [searchedGroupArray, setSearchedGroupArray] = useState([]);
   const [searchedArray, setSearchedArray] = useState([]);
@@ -73,7 +53,7 @@ export default function Chats({navigation}) {
       handleGetUserChatsListRequest();
       handleGetUsersAllGroupsRequest(currentUserId);
     }
-  }, []);
+  }, [isFocused]);
 
   const handleGetUserChatsListRequest = () => {
     dispatch(getUserChatsListRequest({userId: currentUserId}))
@@ -95,19 +75,6 @@ export default function Chats({navigation}) {
       .catch(err => {
         handleFaliureToastAndLogs('getUsersAllGroupsRequest', err);
       });
-  };
-
-  const scrollToBottom = () => {
-    // chatsRef?.current.scrollToIndex({
-    //   animated: true,
-    //   index: isChatListing
-    //     ? localChatMessages.length > 0
-    //       ? localChatMessages.length - 1
-    //       : 0
-    //     : localGroupMessages.length > 0
-    //     ? localGroupMessages.length - 1
-    //     : 0,
-    // });
   };
 
   const handleSuccessToastAndLogs = (message, res) => {
@@ -177,14 +144,22 @@ export default function Chats({navigation}) {
   };
 
   const renderGroupChatsItem = ({item, index}) => {
-    const {name, groupMessageHistory, unreadMessageCount} = item;
+    const {name, groupMessageHistory, unreadMessageCount, createdAt} = item;
     return (
       <GroupCell
         key={index}
         title={name}
         lastMessage={get(groupMessageHistory, 'messageBody', '')}
-        timestamp={get(groupMessageHistory, 'createdAt', '')}
-        sender={get(groupMessageHistory, 'sender.userName', '')}
+        timestamp={
+          groupMessageHistory
+            ? get(groupMessageHistory, 'createdAt', '')
+            : createdAt
+        }
+        sender={
+          groupMessageHistory
+            ? get(groupMessageHistory, 'sender.userName', '') + ':'
+            : 'No Recent Message'
+        }
         senderId={get(groupMessageHistory, 'sender.No', '')}
         unreadMessageCount={unreadMessageCount}
         onPress={() =>
@@ -220,6 +195,9 @@ export default function Chats({navigation}) {
 
   return (
     <View style={styles.container}>
+      {loading && (userAllChats.length == 0 || usersAllGroups.length == 0) && (
+        <SFLoader />
+      )}
       <Header
         title={'Chats'}
         rightIcon={AppIcons.menuIcon}
@@ -228,7 +206,7 @@ export default function Chats({navigation}) {
       />
       <SearchBar
         value={searchedText}
-        placeholder="Search..."
+        placeholder="Type here to search..."
         onChange={text => handleSearch(text)}
         onClosePress={() => setSearchedText('')}
         onSearchPress={() => Applogger('Pressed search')}
