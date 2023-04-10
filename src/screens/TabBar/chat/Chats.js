@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {get} from 'lodash';
+import {over} from 'stompjs';
 import {showFaliureToast} from '../../../helpers/AppToasts';
 import {
   mapAPICallError,
@@ -13,7 +14,9 @@ import {
   getUserChatsListRequest,
   getUsersAllGroupsRequest,
 } from '../../../redux/reducers/SmartChatReducer';
+import SockJS from 'sockjs-client';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import APIConstants from '../../../helpers/APIConstants';
 import AppColors from './../../../helpers/AppColors';
 import AppRoutes from './../../../helpers/AppRoutes';
 import Applogger from '../../../helpers/AppLogger';
@@ -26,6 +29,10 @@ import SimpleButton from './../../../components/buttons/SimpleButton';
 import GroupCell from './../../../components/cells/GroupCell';
 import SFNoRecord from './../../../components/texts/SFNoRecord';
 import SFLoader from './../../../components/loaders/SFLoader';
+
+let topicId = 'stompClientTopicId';
+let stompClient = null;
+let messageSendPath = '/app/private/message';
 
 export default function Chats({navigation}) {
   const sheetRef = useRef(null);
@@ -54,6 +61,64 @@ export default function Chats({navigation}) {
       handleGetUsersAllGroupsRequest(currentUserId);
     }
   }, [isFocused]);
+
+  useEffect(() => {
+    if (!user) {
+      if (stompClient != null) {
+        stompClient.disconnect(onDisconnect);
+      }
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (stompClient == null) {
+      connect();
+    }
+
+    return () => {
+      if (stompClient != null && user == null) {
+        stompClient.disconnect(onDisconnect);
+        stompClient = null;
+      }
+    };
+  }, []);
+
+  const connect = () => {
+    let Sock = new SockJS(APIConstants.wsChatBaseUrl);
+    stompClient = over(Sock);
+    stompClient.connect({}, onConnected, onError);
+  };
+
+  const onConnected = () => {
+    Applogger('React Stomp Client Is Connected');
+    stompClient.subscribe(
+      `/user/${currentUserId}/private`,
+      msg => {
+        onMessageReceived(msg);
+      },
+      {id: topicId},
+    );
+  };
+
+  const onError = err => {
+    Applogger('Error at React Stomp Client', err);
+    stompClient = null;
+    connect();
+  };
+
+  const onDisconnect = event => {
+    Applogger('Disconnect Event: ', event);
+    stompClient = null;
+  };
+
+  const onMessageReceived = msg => {
+    const notification = JSON.parse(msg.body);
+    if (get(notification, 'groupId', null)) {
+      handleGetUsersAllGroupsRequest(currentUserId);
+    } else {
+      handleGetUserChatsListRequest();
+    }
+  };
 
   const handleGetUserChatsListRequest = () => {
     dispatch(getUserChatsListRequest({userId: currentUserId}))
@@ -157,7 +222,7 @@ export default function Chats({navigation}) {
         }
         sender={
           groupMessageHistory
-            ? get(groupMessageHistory, 'sender.userName', '') + ':'
+            ? get(groupMessageHistory, 'sender.userName', '')
             : 'No Recent Message'
         }
         senderId={get(groupMessageHistory, 'sender.No', '')}
@@ -165,6 +230,7 @@ export default function Chats({navigation}) {
         onPress={() =>
           navigation.navigate(AppRoutes.Messages, {
             group: item,
+            stompClient: stompClient,
           })
         }
       />
@@ -184,6 +250,7 @@ export default function Chats({navigation}) {
           onPress={() =>
             navigation.navigate(AppRoutes.Messages, {
               userChat: item,
+              stompClient: stompClient,
             })
           }
         />
