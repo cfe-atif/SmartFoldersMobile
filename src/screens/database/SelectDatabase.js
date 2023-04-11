@@ -15,11 +15,14 @@ import Applogger from './../../helpers/AppLogger';
 import AppFontFamily from '../../helpers/AppFontFamily';
 import SFHeading from './../../components/texts/SFHeading';
 import PrimaryButton from './../../components/buttons/PrimaryButton';
+import SFLoader from './../../components/loaders/SFLoader';
 
 export default function SelectDatabase({navigation}) {
   const dispatch = useDispatch();
 
-  const {databases} = useSelector(state => state.AuthenticationReducer);
+  const {databases, loading} = useSelector(
+    state => state.AuthenticationReducer,
+  );
 
   const [dropDownItems, setDropDownItems] = useState([]);
   const [selectedDatabase, setSelectedDatabase] = useState('');
@@ -86,6 +89,7 @@ export default function SelectDatabase({navigation}) {
 
   return (
     <View style={styles.container}>
+      {loading && <SFLoader />}
       <View>
         <SFHeading title="Select Database" />
         <SelectList

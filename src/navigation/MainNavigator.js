@@ -14,7 +14,7 @@ const AppContainer = () => {
 
   const {user} = useSelector(state => state.AuthenticationReducer);
 
-  var initialRoute = AppRoutes.Login;
+  var initialRoute = AppRoutes.BottomNavigation;
 
   useEffect(() => {
     dispatch(stopLoaderAndError());

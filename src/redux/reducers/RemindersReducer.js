@@ -131,6 +131,14 @@ export const RemindersReducer = createReducer(initialState, {
     };
   },
 
+  [getRemindersList.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+
   [getRemindersList.fulfilled]: (state, action) => {
     return {
       ...state,
@@ -142,6 +150,22 @@ export const RemindersReducer = createReducer(initialState, {
     };
   },
 
+  [getRemindersList.rejected]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [getUpcomingRemindersList.pending]: (state, action) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+
   [getUpcomingRemindersList.fulfilled]: (state, action) => {
     return {
       ...state,
@@ -150,6 +174,14 @@ export const RemindersReducer = createReducer(initialState, {
       upComingRemindersList: getConvertedRemindersList(
         get(action.payload, 'Reminders.Reminder', []),
       ),
+    };
+  },
+
+  [getRemindersList.rejected]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
     };
   },
 

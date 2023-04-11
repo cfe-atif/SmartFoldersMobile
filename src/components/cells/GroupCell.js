@@ -18,9 +18,9 @@ export default function GroupCell({
 
   const getUserName = () => {
     if (senderId == currentUserId) {
-      return 'You';
+      return 'You:';
     } else {
-      return sender;
+      return `${sender}:`;
     }
   };
 

@@ -34,7 +34,7 @@ export default function Login({navigation}) {
   });
 
   useEffect(() => {
-    dispatch(clearStore());
+    // dispatch(clearStore());
   }, []);
 
   const handleChangeDBNumber = dbNumber => {

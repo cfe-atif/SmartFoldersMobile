@@ -60,9 +60,6 @@ export default function AddOrUpdateReminder({navigation, route}) {
   }, []);
 
   const handleInitialValues = () => {
-    console.log('====================================');
-    console.log('reminderToUpdate', reminderToUpdate);
-    console.log('====================================');
     if (reminderToUpdate) {
       setHeaderTitle('Update Reminder');
       addReminderBody.SUBJECT = get(reminderToUpdate, 'Subject', '');
