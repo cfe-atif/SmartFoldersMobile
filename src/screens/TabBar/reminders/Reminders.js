@@ -1,9 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {StyleSheet, FlatList, View, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect, useRef, Fragment} from 'react';
+import {StyleSheet, FlatList, View, TouchableOpacity, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {get} from 'lodash';
 import {useIsFocused} from '@react-navigation/native';
+import {Calendar} from 'react-native-big-calendar';
 import {showFaliureToast} from '../../../helpers/AppToasts';
 import {
   filterOptions,
@@ -30,10 +31,12 @@ import AppIcons from './../../../helpers/AppIcons';
 import AppColors from './../../../helpers/AppColors';
 import AppRoutes from './../../../helpers/AppRoutes';
 import Header from '../../../components/headers/Header';
+import FolderTypeButton from '../../../components/buttons/FolderTypeButton';
 import ReminderCell from '../../../components/cells/ReminderCell';
 import ReminderDropDown from '../../../components/dropdowns/ReminderDropDown';
 import ReminderFilterButton from '../../../components/buttons/ReminderFilterButton';
 import SFLoader from './../../../components/loaders/SFLoader';
+import AppConstants from './../../../helpers/AppConstants';
 
 export default function Reminders({navigation}) {
   const dispatch = useDispatch();
@@ -44,6 +47,10 @@ export default function Reminders({navigation}) {
   const {user} = useSelector(state => state.AuthenticationReducer);
   const {remindersList, loading} = useSelector(state => state.RemindersReducer);
 
+  const [remindersViewType, setRemindersViewType] = useState(
+    AppConstants.reminderType.chart,
+  );
+  const [reminderEventsList, setReminderEventsList] = useState([]);
   const [filterOption, setFilterOption] = useState(reminderPeriods.all);
   const [sortType, setSortType] = useState(sortTypes.byDate);
   const [filterType, setFilterType] = useState(filterTypes.active);
@@ -58,6 +65,7 @@ export default function Reminders({navigation}) {
 
   useEffect(() => {
     getFinalRemindersList();
+    handleChartReminders();
   }, [remindersList, filterType, sortType]);
 
   const getFinalRemindersList = () => {
@@ -106,6 +114,33 @@ export default function Reminders({navigation}) {
       }
     }
     setFinalRemindersList(finalList);
+  };
+
+  const handleChartReminders = () => {
+    let list = [];
+
+    remindersList.forEach(reminder => {
+      list.push({
+        title: get(reminder, 'Subject', ''),
+        start: new Date(get(reminder, 'DueDate', null)),
+        end: new Date(get(reminder, 'DueDate', null)),
+        id: get(reminder, 'ID', ''),
+      });
+    });
+
+    setReminderEventsList(list);
+  };
+
+  const handleSelectEvent = reminder => {
+    let finalReminder = '';
+    remindersList.forEach(reminderItem => {
+      if (get(reminderItem, 'ID', '') == get(reminder, 'id', '')) {
+        finalReminder = reminderItem;
+      }
+    });
+    navigation.navigate(AppRoutes.ReminderDetails, {
+      selectedReminder: finalReminder,
+    });
   };
 
   const handleSuccessToastAndLogs = (message, res) => {
@@ -204,39 +239,66 @@ export default function Reminders({navigation}) {
     <View style={styles.container}>
       {loading && <SFLoader />}
       <Header title="Reminders" />
-      <View>
-        <FlatList
-          ref={filtersRef}
-          horizontal={true}
-          data={filterOptions}
-          renderItem={renderReminderFilterItems}
+      <View style={styles.buttonsContainer}>
+        <FolderTypeButton
+          title="Chart"
+          isSelected={remindersViewType === AppConstants.reminderType.chart}
+          onPress={() => setRemindersViewType(AppConstants.reminderType.chart)}
+        />
+        <FolderTypeButton
+          title="List"
+          isSelected={remindersViewType === AppConstants.reminderType.list}
+          onPress={() => setRemindersViewType(AppConstants.reminderType.list)}
         />
       </View>
-      <View style={styles.filtersView}>
-        <ReminderDropDown
-          title="Filter By:"
-          options={reminderFilterOptions}
-          setSelected={filter => {
-            Applogger('Filter By: ', filter);
-            setFilterType(filter);
-          }}
-          defaultKey={''}
-          defaultValue={filterType}
+      {remindersViewType === AppConstants.reminderType.chart ? (
+        <Calendar
+          locale="en"
+          events={reminderEventsList}
+          height={600}
+          onPressEvent={handleSelectEvent}
+          mode="month"
         />
-        <ReminderDropDown
-          title="Sort By:"
-          options={reminderSortOptions}
-          setSelected={sort => {
-            Applogger('Sort By: ', sort);
-            setSortType(sort);
-          }}
-          defaultKey={''}
-          defaultValue={sortType}
-        />
-      </View>
-      <View style={styles.listContainer}>
-        <FlatList data={finalRemindersList} renderItem={renderReminderItem} />
-      </View>
+      ) : (
+        <Fragment>
+          <View>
+            <FlatList
+              ref={filtersRef}
+              horizontal={true}
+              data={filterOptions}
+              renderItem={renderReminderFilterItems}
+            />
+          </View>
+          <View style={styles.filtersView}>
+            <ReminderDropDown
+              title="Filter By:"
+              options={reminderFilterOptions}
+              setSelected={filter => {
+                Applogger('Filter By: ', filter);
+                setFilterType(filter);
+              }}
+              defaultKey={''}
+              defaultValue={filterType}
+            />
+            <ReminderDropDown
+              title="Sort By:"
+              options={reminderSortOptions}
+              setSelected={sort => {
+                Applogger('Sort By: ', sort);
+                setSortType(sort);
+              }}
+              defaultKey={''}
+              defaultValue={sortType}
+            />
+          </View>
+          <View style={styles.listContainer}>
+            <FlatList
+              data={finalRemindersList}
+              renderItem={renderReminderItem}
+            />
+          </View>
+        </Fragment>
+      )}
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => handleAddReminder()}>
@@ -266,5 +328,11 @@ const styles = StyleSheet.create({
   filtersView: {
     flexDirection: 'column',
     justifyContent: 'space-between',
+  },
+  buttonsContainer: {
+    padding: 10,
+    margin: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
 });

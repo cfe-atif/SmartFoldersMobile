@@ -96,5 +96,9 @@ const AppConstants = {
     time: 'time',
     date: 'date',
   },
+  reminderType: {
+    list: 'List',
+    chart: 'Chart',
+  },
 };
 export default AppConstants;
