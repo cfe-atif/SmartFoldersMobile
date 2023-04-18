@@ -34,7 +34,7 @@ export default function Login({navigation}) {
   });
 
   useEffect(() => {
-    // dispatch(clearStore());
+    dispatch(clearStore());
   }, []);
 
   const handleChangeDBNumber = dbNumber => {
@@ -76,7 +76,7 @@ export default function Login({navigation}) {
       .then(res => {
         if (responseHasError(res)) {
           Applogger('Error at loginRequest Response', res);
-          showFaliureToast(mapAPICallError(err, true));
+          showFaliureToast('Error', mapAPICallError(res, true));
         } else {
           Applogger('Response at loginRequest', res);
           if (res.hasOwnProperty('PasswordExpired')) {

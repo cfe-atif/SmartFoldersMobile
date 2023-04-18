@@ -7,7 +7,9 @@ import AppFontFamily from '../../helpers/AppFontFamily';
 export default function RecentSearchCell({title, selected, onPress}) {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Text style={selected ? styles.selectedTitle : styles.title}>
+      <Text
+        style={selected ? styles.selectedTitle : styles.title}
+        numberOfLines={2}>
         {title}
       </Text>
     </TouchableOpacity>
@@ -24,10 +26,12 @@ const styles = StyleSheet.create({
     fontSize: AppFontSize.size14,
     color: AppColors.gray,
     fontFamily: AppFontFamily.regular,
+    textAlign: 'center',
   },
   selectedTitle: {
     fontSize: AppFontSize.size14,
     color: AppColors.customBlue,
     fontFamily: AppFontFamily.bold,
+    textAlign: 'center',
   },
 });

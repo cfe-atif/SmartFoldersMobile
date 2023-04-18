@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, Fragment} from 'react';
-import {StyleSheet, FlatList, View, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, FlatList, View, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {get} from 'lodash';
