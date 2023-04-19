@@ -1,49 +1,37 @@
 import React, {useRef, useState} from 'react';
 import {StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
-import {decalreOptions} from '../Constants';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useSelector} from 'react-redux';
 import {get} from 'lodash';
-import moment from 'moment';
-import AppColors from './../../../../helpers/AppColors';
+import {documentTypes} from './../Constants';
+import AppColors from '../../../../helpers/AppColors';
+import AppFontSize from '../../../../helpers/AppFontSize';
 import AppFontFamily from '../../../../helpers/AppFontFamily';
-import AppConstants from './../../../../helpers/AppConstants';
 import Header from '../../../../components/headers/Header';
-import PrimaryTextField from './../../../../components/textFields/PrimaryTextField';
-import PrimaryButton from './../../../../components/buttons/PrimaryButton';
-import PrimaryDatePicker from '../../../../components/textFields/PrimaryDatePicker';
-import PrimaryDropDown from './../../../../components/dropdowns/PrimaryDropDown';
-import SFDescription from './../../../../components/texts/SFDescription';
+import Emails from '../../../../components/addDocuments/Emails';
+import SFLoader from '../../../../components/loaders/SFLoader';
+import Pictures from '../../../../components/addDocuments/Pictures';
+import Applications from '../../../../components/addDocuments/Applications';
+import Notifications from '../../../../components/addDocuments/Notifications';
+import SFDescription from '../../../../components/texts/SFDescription';
+import Correspondence from '../../../../components/addDocuments/Correspondence';
+import GeneralDocument from '../../../../components/addDocuments/GeneralDocument';
 
 export default function AddDocument({navigation}) {
   const docTypeListRef = useRef(null);
 
+  const {documentType, loading} = useSelector(state => state.DocumentsReducer);
+
   const [selectedDocType, setSelectedDocType] = useState(
-    get(documentTypes, '[0].title', ''),
+    get(documentOptions, '[0].title', ''),
   );
-  const [openDatePicker, setOpenDatePicker] = useState(false);
-  const [addDocumentBody, setAddDocumentBody] = useState({
-    title: '',
-    subject: '',
-    description: '',
-    receivedDate: new Date(),
-    addressee: '',
-    recordType: '',
-  });
 
-  const handleAddDocument = () => {};
-
-  const documentTypes = [
-    {
-      title: 'General',
-    },
-    {
-      title: 'Pictures',
-    },
-  ];
+  const documentOptions = get(documentType, 'dt', [])
+    ? get(documentType, 'dt', [])
+    : [get(documentType, 'dt', [])];
 
   const renderDocumentTypeItem = ({item, index}) => {
-    const {title} = item;
-    const selected = title === selectedDocType;
+    const {n, no} = item;
+    const selected = item === selectedDocType;
     const backgroundColor = selected
       ? AppColors.customBlue
       : AppColors.lightGray;
@@ -51,7 +39,7 @@ export default function AddDocument({navigation}) {
       <TouchableOpacity
         key={index}
         onPress={() => {
-          setSelectedDocType(title);
+          setSelectedDocType(item);
           docTypeListRef?.current.scrollToIndex({
             animated: true,
             index: index,
@@ -59,14 +47,33 @@ export default function AddDocument({navigation}) {
         }}
         style={[styles.docTypeCont, {backgroundColor: backgroundColor}]}>
         <Text style={selected ? styles.selDocTypeTitle : styles.docTypeTitle}>
-          {title}
+          {n}
         </Text>
       </TouchableOpacity>
     );
   };
 
+  const renderDocumentComponent = () => {
+    if (get(selectedDocType, 'n', '') == documentTypes.General) {
+      return <GeneralDocument />;
+    } else if (get(selectedDocType, 'n', '') == documentTypes.Correspondence) {
+      return <Correspondence />;
+    } else if (get(selectedDocType, 'n', '') == documentTypes.Emails) {
+      return <Emails />;
+    } else if (get(selectedDocType, 'n', '') == documentTypes.Applications) {
+      return <Applications />;
+    } else if (get(selectedDocType, 'n', '') == documentTypes.Pictures) {
+      return <Pictures />;
+    } else if (get(selectedDocType, 'n', '') == documentTypes.Notifications) {
+      return <Notifications />;
+    } else {
+      return null;
+    }
+  };
+
   return (
     <View style={styles.container}>
+      {loading && <SFLoader />}
       <Header
         title="Add Document"
         backButton={true}
@@ -75,72 +82,17 @@ export default function AddDocument({navigation}) {
       <View>
         <SFDescription
           title="Select Document Type"
-          containerStyle={{margin: 0}}
+          textStyle={{fontSize: AppFontSize.size16}}
         />
         <FlatList
           ref={docTypeListRef}
           style={{alignSelf: 'center'}}
           horizontal={true}
-          data={documentTypes}
+          data={documentOptions}
           renderItem={renderDocumentTypeItem}
         />
+        {renderDocumentComponent()}
       </View>
-      <KeyboardAwareScrollView>
-        <View style={styles.container}>
-          <PrimaryTextField
-            placeholder="Title"
-            value={addDocumentBody.title}
-            onChange={text =>
-              setAddDocumentBody({...addDocumentBody, title: text})
-            }
-          />
-          <PrimaryTextField
-            placeholder="Subject"
-            value={addDocumentBody.subject}
-            onChange={text =>
-              setAddDocumentBody({...addDocumentBody, subject: text})
-            }
-          />
-          <PrimaryTextField
-            placeholder="Description"
-            value={addDocumentBody.description}
-            onChange={text =>
-              setAddDocumentBody({...addDocumentBody, description: text})
-            }
-          />
-          <PrimaryDatePicker
-            placeholder="Received Date"
-            openDatePicker={openDatePicker}
-            setOpenDatePicker={setOpenDatePicker}
-            date={addDocumentBody.receivedDate}
-            dateMode={AppConstants.datePicker.dateTime}
-            value={moment(addDocumentBody.receivedDate).format(
-              AppConstants.dateTimeFormat,
-            )}
-            onChange={date =>
-              setAddDocumentBody({
-                ...addDocumentBody,
-                receivedDate: date,
-              })
-            }
-          />
-          <PrimaryTextField
-            placeholder="Addressee"
-            value={addDocumentBody.addressee}
-            onChange={text =>
-              setAddDocumentBody({...addDocumentBody, addressee: text})
-            }
-          />
-          <PrimaryDropDown
-            title="Declared as Record Type"
-            options={decalreOptions}
-            setSelected={declareType =>
-              setAddDocumentBody({...addDocumentBody, recordType: declareType})
-            }
-          />
-          <PrimaryButton title="Add" onPress={() => handleAddDocument()} />
-        </View>
-      </KeyboardAwareScrollView>
     </View>
   );
 }
@@ -157,7 +109,7 @@ const styles = StyleSheet.create({
   },
   docTypeTitle: {
     color: AppColors.black,
-    fontFamily: AppFontFamily.regular,
+    fontFamily: AppFontFamily.semiBold,
   },
   selDocTypeTitle: {
     color: AppColors.white,
