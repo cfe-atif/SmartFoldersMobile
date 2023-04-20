@@ -20,12 +20,32 @@ export const treeAPIRRData = createAsyncThunk(
   },
 );
 
+export const createNewFolderData = createAsyncThunk(
+  'DocumentsReducer/createNewFolderData',
+  async payload => {
+    const response = await DocumentsAPIServices.apiCreateNewFolderData(payload);
+    return response.data;
+  },
+);
+
+export const createNewDocumentData = createAsyncThunk(
+  'DocumentsReducer/createNewDocumentData',
+  async payload => {
+    const response = await DocumentsAPIServices.apiCreateNewDocumentData(
+      payload,
+    );
+    return response.data;
+  },
+);
+
 const initialState = {
   loading: false,
   error: null,
   folderType: null,
   documentType: null,
   treeData: null,
+  newDocumentData: null,
+  newFolderData: null,
 };
 
 export const DocumentsReducer = createReducer(initialState, {
@@ -80,6 +100,54 @@ export const DocumentsReducer = createReducer(initialState, {
     };
   },
   [treeAPIRRData.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+
+  [createNewFolderData.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      newFolderData: null,
+    };
+  },
+  [createNewFolderData.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      newFolderData: action.payload,
+    };
+  },
+  [createNewFolderData.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+
+  [createNewDocumentData.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      newDocumentData: null,
+    };
+  },
+  [createNewDocumentData.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      newDocumentData: action.payload,
+    };
+  },
+  [createNewDocumentData.rejected]: (state, _) => {
     return {
       ...state,
       loading: true,

@@ -2,21 +2,15 @@ import React, {useRef, useState} from 'react';
 import {StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
 import {useSelector} from 'react-redux';
 import {get} from 'lodash';
-import {documentTypes} from './../Constants';
 import AppColors from '../../../../helpers/AppColors';
 import AppFontSize from '../../../../helpers/AppFontSize';
 import AppFontFamily from '../../../../helpers/AppFontFamily';
 import Header from '../../../../components/headers/Header';
-import Emails from '../../../../components/addDocuments/Emails';
 import SFLoader from '../../../../components/loaders/SFLoader';
-import Pictures from '../../../../components/addDocuments/Pictures';
-import Applications from '../../../../components/addDocuments/Applications';
-import Notifications from '../../../../components/addDocuments/Notifications';
+import DocumentView from '../../../../components/addDocuments/DocumentView';
 import SFDescription from '../../../../components/texts/SFDescription';
-import Correspondence from '../../../../components/addDocuments/Correspondence';
-import GeneralDocument from '../../../../components/addDocuments/GeneralDocument';
 
-export default function AddDocument({navigation}) {
+export default function AddDocument({navigation, route}) {
   const docTypeListRef = useRef(null);
 
   const {documentType, loading} = useSelector(state => state.DocumentsReducer);
@@ -28,6 +22,8 @@ export default function AddDocument({navigation}) {
   const documentOptions = get(documentType, 'dt', [])
     ? get(documentType, 'dt', [])
     : [get(documentType, 'dt', [])];
+
+  const folderPath = get(route, 'params.folderPath', '');
 
   const renderDocumentTypeItem = ({item, index}) => {
     const {n, no} = item;
@@ -53,24 +49,6 @@ export default function AddDocument({navigation}) {
     );
   };
 
-  const renderDocumentComponent = () => {
-    if (get(selectedDocType, 'n', '') == documentTypes.General) {
-      return <GeneralDocument />;
-    } else if (get(selectedDocType, 'n', '') == documentTypes.Correspondence) {
-      return <Correspondence />;
-    } else if (get(selectedDocType, 'n', '') == documentTypes.Emails) {
-      return <Emails />;
-    } else if (get(selectedDocType, 'n', '') == documentTypes.Applications) {
-      return <Applications />;
-    } else if (get(selectedDocType, 'n', '') == documentTypes.Pictures) {
-      return <Pictures />;
-    } else if (get(selectedDocType, 'n', '') == documentTypes.Notifications) {
-      return <Notifications />;
-    } else {
-      return null;
-    }
-  };
-
   return (
     <View style={styles.container}>
       {loading && <SFLoader />}
@@ -91,7 +69,12 @@ export default function AddDocument({navigation}) {
           data={documentOptions}
           renderItem={renderDocumentTypeItem}
         />
-        {renderDocumentComponent()}
+        {selectedDocType && (
+          <DocumentView
+            selectedDocType={selectedDocType}
+            folderPath={folderPath}
+          />
+        )}
       </View>
     </View>
   );

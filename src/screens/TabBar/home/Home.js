@@ -78,7 +78,9 @@ export default function Home({navigation}) {
       onPress: () => {
         Applogger('Clicked Add Document');
         // setSelectedMenu(menuTypes.addDocument);
-        navigation.navigate(AppRoutes.AddDocument);
+        navigation.navigate(AppRoutes.AddDocument, {
+          folderPath: foldersType == foldersTypes.private ? 'P' : 'G',
+        });
       },
     },
     {
@@ -175,7 +177,7 @@ export default function Home({navigation}) {
       .then(unwrapResult)
       .then(res => {
         if (isUnAuthenticatedUser(res)) {
-          navigate(AppRoutes.Login);
+          navigation.navigate(AppRoutes.Login);
           showFaliureToast(mapAPICallError(res));
         } else {
           if (responseHasError(res)) {
@@ -274,8 +276,8 @@ export default function Home({navigation}) {
 
   return (
     <View style={styles.container}>
+      {loading && <SFLoader />}
       <View>
-        {loading && <SFLoader />}
         <Header title="Home" />
         <SearchBar
           value={searchText}
