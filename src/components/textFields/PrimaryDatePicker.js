@@ -9,13 +9,12 @@ import AppFontFamily from './../../helpers/AppFontFamily';
 export default function PrimaryDatePicker({
   placeholder = 'Type here...',
   openDatePicker = false,
-  onChange,
-  setOpenDatePicker,
-  date,
+  onChange = () => {},
+  setOpenDatePicker = false,
+  date = new Date(),
   dateMode = AppConstants.datePicker.dateTime,
   value = '',
 }) {
-  console.log('Date: ', date);
   return (
     <View style={styles.container}>
       <Text style={styles.placeholder} numberOfLines={2}>
@@ -63,7 +62,8 @@ const styles = StyleSheet.create({
   },
   dateText: {
     color: AppColors.gray,
-    fontFamily: AppFontFamily.bold,
+    fontFamily: AppFontFamily.semiBold,
+    fontSize: AppFontSize.size14,
   },
   textField: {
     height: 50,
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderLeftWidth: 1.5,
     color: AppColors.gray,
-    fontFamily: AppFontFamily.bold,
-    fontSize: AppFontSize.size16,
+    fontFamily: AppFontFamily.semiBold,
+    fontSize: AppFontSize.size14,
     borderLeftColor: AppColors.lightGray,
   },
 });

@@ -24,7 +24,7 @@ export default function FileCell({
         </Text>
       </View>
       <Text style={styles.date}>{date}</Text>
-      <Icon name={AppIcons.arrowRight} color={AppColors.customBlue} size={25} />
+      <Icon name={AppIcons.infoIcon} color={AppColors.customBlue} size={25} />
     </TouchableOpacity>
   );
 }

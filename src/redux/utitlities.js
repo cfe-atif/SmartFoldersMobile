@@ -29,9 +29,22 @@ export function sortUsersByName(userGroupsList) {
 }
 
 export function sortChatMessagesbyDate(chatMessages) {
-  return chatMessages.sort((a, b) => {
+  const chats = chatMessages.reverse().sort((a, b) => {
     const createdAtA = get(a, 'createdAt', '');
     const createdAtB = get(b, 'createdAt', '');
     return createdAtA > createdAtB ? 1 : -1;
   });
+  return chats.reverse();
 }
+
+export const getConvertedRemindersList = remindersList => {
+  let finalArray = [];
+  if (remindersList == '') {
+    finalArray = [];
+  } else if (!Array.isArray(remindersList)) {
+    finalArray = [remindersList];
+  } else {
+    finalArray = remindersList;
+  }
+  return finalArray;
+};

@@ -8,15 +8,13 @@ import AppFontFamily from '../../helpers/AppFontFamily';
 export default function ChatGroupDropDown({
   title = '',
   options = [],
-  setSelected,
-  handleOnSelect,
+  setSelected = () => {},
 }) {
   return (
     <View style={styles.container}>
       <MultipleSelectList
         label={title}
         setSelected={setSelected}
-        onSelect={handleOnSelect}
         data={options}
         save="key"
         search={true}

@@ -21,6 +21,7 @@ const AppIcons = {
   arrowRight: 'chevron-forward',
   // File Cell
   fileIcon: 'document-sharp',
+  infoIcon: 'information-circle-outline',
 };
 
 export default AppIcons;

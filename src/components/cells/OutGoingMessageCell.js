@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import moment from 'moment';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
 import AppFontFamily from '../../helpers/AppFontFamily';
@@ -8,7 +9,7 @@ export default function OutGoingMessageCell({message = '', timeStamp = ''}) {
   return (
     <View style={styles.container}>
       <Text style={styles.message}>{message}</Text>
-      <Text style={styles.timeStamp}>{timeStamp}</Text>
+      <Text style={styles.timeStamp}>{moment(timeStamp).fromNow()}</Text>
     </View>
   );
 }

@@ -14,13 +14,11 @@ export const foldersTypes = {
   private: 'Private',
 };
 
-export const decalreOptions = [
-  {
-    key: '1',
-    value: 'None',
-  },
-  {
-    key: '2',
-    value: 'Default',
-  },
-];
+export const documentTypes = {
+  General: 'General',
+  Correspondence: 'Correspondence',
+  Emails: 'Email(s)',
+  Applications: 'Applications',
+  Pictures: 'Pictures',
+  Notifications: 'Notifications',
+};

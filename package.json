@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "lint": "eslint .",
+    "ios": "react-native run-ios  --simulator='iPhone 8 Plus'",
     "start": "react-native start",
+    "android:build:release": "cd android && gradlew assembleRelease && cd ..",
     "test": "jest"
   },
   "dependencies": {
@@ -17,11 +17,16 @@
     "@react-navigation/stack": "^6.3.12",
     "@reduxjs/toolkit": "^1.9.2",
     "axios": "^1.3.4",
+    "calendarize": "^1.1.1",
+    "dayjs": "^1.11.7",
     "lodash": "^4.17.21",
+    "merge-anything": "^5.1.4",
     "moment": "^2.29.4",
+    "net": "^1.0.2",
     "react": "18.2.0",
     "react-native": "0.71.2",
     "react-native-asset": "^2.1.0",
+    "react-native-big-calendar": "^3.4.1",
     "react-native-date-picker": "^4.2.9",
     "react-native-dropdown-select-list": "^2.0.4",
     "react-native-eject": "^0.2.0",
@@ -37,7 +42,9 @@
     "react-redux": "^8.0.5",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
-    "redux-thunk": "^2.4.2"
+    "redux-thunk": "^2.4.2",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

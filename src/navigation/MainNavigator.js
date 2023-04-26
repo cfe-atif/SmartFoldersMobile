@@ -9,18 +9,18 @@ import AppRoutes from '../helpers/AppRoutes';
 
 const StackNavigator = createStackNavigator();
 
-const AppContainer = ({props, navigation}) => {
-  var initialRoute = AppRoutes.BottomNavigation;
-
+const AppContainer = () => {
   const dispatch = useDispatch();
 
   const {user} = useSelector(state => state.AuthenticationReducer);
+
+  var initialRoute = AppRoutes.Login;
 
   useEffect(() => {
     dispatch(stopLoaderAndError());
   }, []);
 
-  if (user != null) {
+  if (user) {
     initialRoute = AppRoutes.BottomNavigation;
   }
 
@@ -37,7 +37,7 @@ const AppContainer = ({props, navigation}) => {
             name={s}
             component={NavigationScreens[s].screen}
             key={i}
-            options={({navigation}) => NavigationScreens[s].options}
+            options={({}) => NavigationScreens[s].options}
           />
         ))}
       </StackNavigator.Navigator>

@@ -1,53 +1,124 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {get} from 'lodash';
+import {
+  showFaliureToast,
+  showSuccessToast,
+} from '../../../../helpers/AppToasts';
+import {
+  isUnAuthenticatedUser,
+  mapAPICallError,
+} from '../../../../utils/HelperFunctions';
+import {
+  createUserGroupRequest,
+  getUsersListRequest,
+} from '../../../../redux/reducers/SmartChatReducer';
+import AppConstants from '../../../../helpers/AppConstants';
 import AppColors from '../../../../helpers/AppColors';
 import Applogger from '../../../../helpers/AppLogger';
 import Header from '../../../../components/headers/Header';
+import PrimaryButton from '../../../../components/buttons/PrimaryButton';
 import PrimaryTextField from '../../../../components/textFields/PrimaryTextField';
 import ChatGroupDropDown from '../../../../components/dropdowns/ChatGroupDropDown';
-import PrimaryButton from '../../../../components/buttons/PrimaryButton';
+import SFLoader from './../../../../components/loaders/SFLoader';
 
 export default function AddOrUpdateGroup({navigation}) {
+  const dispatch = useDispatch();
+
+  const {user} = useSelector(state => state.AuthenticationReducer);
+  const {loading, usersList} = useSelector(state => state.SmartChatReducer);
+
   const [title, setTitle] = useState('');
-  const usersList = [
-    {
-      value: 'System Administrator 1',
-      key: '1',
-    },
-    {
-      value: 'System Administrator 2',
-      key: '2',
-    },
-    {
-      value: 'System Administrator 3',
-      key: '3',
-    },
-    {
-      value: 'System Administrator 4',
-      key: '4',
-    },
-    {
-      value: 'System Administrator 5',
-      key: '5',
-    },
-    {
-      value: 'System Administrator 6',
-      key: '6',
-    },
-  ];
+  const [dropDownItems, setDropDownItems] = useState([]);
+  const [selectedUsersList, setSelectedUsersList] = useState([]);
 
-  const handleSave = () => {};
+  useEffect(() => {
+    if (!usersList.length > 0) {
+      handlGetUsersListRequest();
+    } else {
+      createDrpDownArray();
+    }
+  }, [usersList]);
 
-  const handleSelectUsers = users => {
-    Applogger('Users handleSelectUsers: ', users);
+  const createDrpDownArray = () => {
+    const convertedArray = usersList.map(
+      ({No: key, userName: value, ...rest}) => ({
+        key,
+        value,
+        ...rest,
+      }),
+    );
+    const filteredOptions = convertedArray.filter(o => {
+      return o?.key != get(user, 'No', '');
+    });
+    setDropDownItems(filteredOptions);
   };
 
-  const handleOnSelect = users => {
-    Applogger('Users handleOnSelect: ', users);
+  const handlGetUsersListRequest = () => {
+    dispatch(getUsersListRequest())
+      .then(unwrapResult)
+      .then(res => {
+        handleSuccessToastAndLogs('getUsersListRequest', res);
+      })
+      .catch(err => {
+        handleFaliureToastAndLogs('getUsersListRequest', err);
+      });
+  };
+
+  const handleSave = () => {
+    handleCreateGroupRequest();
+  };
+
+  const handleCreateGroupRequest = () => {
+    if (!title) {
+      showFaliureToast('Warning', 'Please enter group name');
+    } else if (!selectedUsersList.length > 0) {
+      showFaliureToast('Warning', 'Please select users for group');
+    } else {
+      let groupUsers = selectedUsersList;
+      if (!selectedUsersList.includes(get(user, 'No', ''))) {
+        selectedUsersList.push(get(user, 'No', ''));
+      }
+      const createGroupBody = {
+        name: title,
+        userIds: groupUsers,
+      };
+
+      dispatch(createUserGroupRequest({createGroupBody}))
+        .then(unwrapResult)
+        .then(res => {
+          showSuccessToast(AppConstants.toastMessages.groupCreated);
+          handleSuccessToastAndLogs('createUserGroupRequest', res);
+          navigation.goBack();
+        })
+        .catch(err => {
+          showFaliureToast(mapAPICallError(err.message));
+          handleFaliureToastAndLogs('createUserGroupRequest', err);
+        });
+    }
+  };
+
+  const handleSuccessToastAndLogs = (message, res) => {
+    Applogger('Response at ' + message, res);
+    if (isUnAuthenticatedUser(res)) {
+      navigation.navigate(AppRoutes.Login);
+      showFaliureToast(mapAPICallError(res));
+    }
+  };
+
+  const handleFaliureToastAndLogs = (message, err) => {
+    Applogger('Error at ' + message, err);
+    if (isUnAuthenticatedUser(err)) {
+      navigation.navigate(AppRoutes.Login);
+      showFaliureToast(mapAPICallError(err));
+    }
   };
 
   return (
     <View style={styles.container}>
+      {loading && <SFLoader />}
       <Header
         title={'Create Group'}
         backButton={true}
@@ -57,13 +128,16 @@ export default function AddOrUpdateGroup({navigation}) {
         <PrimaryTextField
           value={title}
           onChange={text => setTitle(text)}
-          placeholder="Enter Name"
+          placeholder="Group Name"
         />
         <ChatGroupDropDown
-          options={usersList}
-          title="Search or select users"
-          setSelected={text => handleSelectUsers(text)}
-          handleOnSelect={text => handleOnSelect(text)}
+          options={dropDownItems}
+          title={
+            selectedUsersList.length > 0
+              ? 'Selected Users'
+              : 'Search or select users'
+          }
+          setSelected={val => setSelectedUsersList(val)}
         />
       </View>
       <PrimaryButton title="Save" onPress={() => handleSave()} />

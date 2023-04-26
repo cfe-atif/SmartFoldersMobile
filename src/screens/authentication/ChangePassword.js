@@ -10,6 +10,7 @@ import {showFaliureToast, showSuccessToast} from '../../helpers/AppToasts';
 import Applogger from '../../helpers/AppLogger';
 import AppColors from '../../helpers/AppColors';
 import AppImages from '../../helpers/AppImages';
+import AppRoutes from './../../helpers/AppRoutes';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import PrimaryTextField from '../../components/textFields/PrimaryTextField';
 import SFLoader from '../../components/loaders/SFLoader';
@@ -40,8 +41,9 @@ export default function ChangePassword({navigation}) {
           Applogger('Response at changePasswordRequest', res);
           showSuccessToast(
             'Congrats',
-            'Password has been changed successfully',
+            'Password has been changed successfully, Login again to continue',
           );
+          navigation.navigate(AppRoutes.Login);
         }
       })
       .catch(err => {
@@ -63,11 +65,13 @@ export default function ChangePassword({navigation}) {
         placeholder={'Password'}
         value={password}
         onChange={text => setPassword(text)}
+        isSecure={true}
       />
       <PrimaryTextField
         placeholder={'Confirm Password'}
         value={confirmPassword}
         onChange={text => setConfirmPassword(text)}
+        isSecure={true}
       />
       <PrimaryButton title="Submit" onPress={() => handleSubmitPress()} />
     </KeyboardAwareScrollView>

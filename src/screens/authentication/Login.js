@@ -1,9 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Image, StyleSheet} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useDispatch, useSelector} from 'react-redux';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {loginRequest} from '../../redux/reducers/AuthenticationReducer';
+import {
+  changeDBNumber,
+  loginRequest,
+  changeDBName,
+  clearStore,
+} from '../../redux/reducers/AuthenticationReducer';
 import {mapAPICallError, responseHasError} from '../../utils/HelperFunctions';
 import {showFaliureToast} from '../../helpers/AppToasts';
 import Applogger from '../../helpers/AppLogger';
@@ -24,7 +29,37 @@ export default function Login({navigation}) {
   const [loginBody, setLoginBody] = useState({
     username: 'sysadmin',
     password: 'psl2023',
+    // username: '',
+    // password: '',
   });
+
+  useEffect(() => {
+    dispatch(clearStore());
+  }, []);
+
+  const handleChangeDBNumber = dbNumber => {
+    dispatch(changeDBNumber(dbNumber))
+      .then(unwrapResult)
+      .then(res => {
+        Applogger('DB Number updated Successfully', res);
+        navigation.navigate(AppRoutes.BottomNavigation);
+      })
+      .catch(err => {
+        Applogger('Error at updating DB Number', err);
+      });
+  };
+
+  const handleChangeDBName = dbName => {
+    dispatch(changeDBName(dbName))
+      .then(unwrapResult)
+      .then(res => {
+        Applogger('DB Name updated Successfully', res);
+        navigation.navigate(AppRoutes.BottomNavigation);
+      })
+      .catch(err => {
+        Applogger('Error at updating DB Name', err);
+      });
+  };
 
   const handleLoginPress = () => {
     if (!loginBody.username || !loginBody.password) {
@@ -41,7 +76,7 @@ export default function Login({navigation}) {
       .then(res => {
         if (responseHasError(res)) {
           Applogger('Error at loginRequest Response', res);
-          showFaliureToast(mapAPICallError(err, true));
+          showFaliureToast('Error', mapAPICallError(res, true));
         } else {
           Applogger('Response at loginRequest', res);
           if (res.hasOwnProperty('PasswordExpired')) {
@@ -50,9 +85,8 @@ export default function Login({navigation}) {
             if (Array.isArray(res.Database) > 0) {
               navigation.navigate(AppRoutes.SelectDatabase);
             } else {
-              navigation.navigate(AppRoutes.SelectDatabase, {
-                databaseNumber: res.Database.Number,
-              });
+              handleChangeDBNumber(get(res, 'Database.Number'), '');
+              handleChangeDBName(get(res, 'Database.Name'), '');
             }
           }
         }

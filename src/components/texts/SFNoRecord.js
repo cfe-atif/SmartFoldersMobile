@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
@@ -9,11 +9,19 @@ export default function SFNoRecord({
   containerStyle = {},
   textStyle = {},
 }) {
-  return (
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShow(true);
+    }, 250);
+  }, []);
+
+  return show ? (
     <View style={[styles.container, containerStyle]}>
       <Text style={[styles.heading, textStyle]}>{title}</Text>
     </View>
-  );
+  ) : null;
 }
 
 const styles = StyleSheet.create({

@@ -106,7 +106,6 @@ function apiSingleChatMessageReadAll(payload) {
 
 export const SmartChatAPIServices = {
   apiGetUserChatsListRequest,
-  apiCreateMessagesRequestBetween2Users,
   apiGetSingleMessageHistoryRequest,
   apiDeleteUserGroupRequest,
   apiExitFromGroupRequest,

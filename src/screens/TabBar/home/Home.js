@@ -1,6 +1,19 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
 import {menuTypes, foldersTypes} from './Constants';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {useDispatch, useSelector} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import {
+  treeAPIData,
+  treeAPIRRData,
+} from '../../../redux/reducers/DocumentsReducer';
+import {
+  mapAPICallError,
+  responseHasError,
+  isUnAuthenticatedUser,
+} from '../../../utils/HelperFunctions';
+import {showFaliureToast} from '../../../helpers/AppToasts';
 import moment from 'moment';
 import Applogger from '../../../helpers/AppLogger';
 import AppImages from './../../../helpers/AppImages';
@@ -10,36 +23,45 @@ import AppConstants from './../../../helpers/AppConstants';
 import Header from '../../../components/headers/Header';
 import SearchBar from '../../../components/search/SearchBar';
 import FileCell from './../../../components/cells/FileCell';
-import FolderCell from './../../../components/cells/FolderCell';
+import SFLoader from './../../../components/loaders/SFLoader';
 import MenuButton from '../../../components/buttons/MenuButton';
+import FolderCell from './../../../components/cells/FolderCell';
 import FolderTypeButton from './../../../components/buttons/FolderTypeButton';
 import FolderNavigationButton from './../../../components/buttons/FolderNavigationButton';
 
 export default function Home({navigation}) {
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+
+  const {user, dataBaseNumber} = useSelector(
+    state => state.AuthenticationReducer,
+  );
+  const {treeData, loading} = useSelector(state => state.DocumentsReducer);
+
   const menulistRef = useRef(null);
   const folderNavlistRef = useRef(null);
 
   const [searchText, setSearchText] = useState('');
   const [selectedMenu, setSelectedMenu] = useState('');
   const [foldersType, setFoldersType] = useState(foldersTypes.public);
-
+  const [folderPath, setFolderPath] = useState('');
   const [currentFoldersData, setCurrentFoldersData] = useState([
-    {title: 'Nayyer', folder: false},
+    {title: 'Junaid', folder: true},
+    {title: 'Nayyer', folder: true},
+    {title: 'Atif Jamil', folder: true},
     {
       title: 'Usman',
-      folder: true,
+      folder: false,
       date: moment(new Date()).format(AppConstants.dateFormat),
       description: 'This is file description',
     },
-    {title: 'Junaid', folder: false},
     {
       title: 'Shahab',
-      folder: true,
+      folder: false,
       date: moment(new Date()).format(AppConstants.dateFormat),
       description:
         'This is file description which has multiple lines to truncate',
     },
-    {title: 'Atif Jamil', folder: false},
   ]);
 
   const [folderNavigation, setFolderNavigation] = useState([
@@ -47,12 +69,6 @@ export default function Home({navigation}) {
     {title: 'Usman'},
     {title: 'Junaid'},
     {title: 'Shahab'},
-    {title: 'Atif Jamil'},
-    {title: 'Nayyer'},
-    {title: 'Usman'},
-    {title: 'Junaid'},
-    {title: 'Shahab'},
-    {title: 'Atif Jamil'},
   ]);
 
   const menuItems = [
@@ -62,7 +78,9 @@ export default function Home({navigation}) {
       onPress: () => {
         Applogger('Clicked Add Document');
         // setSelectedMenu(menuTypes.addDocument);
-        navigation.navigate(AppRoutes.AddDocument);
+        navigation.navigate(AppRoutes.AddDocument, {
+          folderPath: foldersType == foldersTypes.private ? 'P' : 'G',
+        });
       },
     },
     {
@@ -75,29 +93,21 @@ export default function Home({navigation}) {
       },
     },
     {
-      title: 'Refresh',
-      image: AppImages.refresh,
-      onPress: () => {
-        Applogger('Clicked Refresh');
-        setSelectedMenu(menuTypes.refresh);
-      },
-    },
-    {
       title: 'Add Reminder',
       image: AppImages.addReminder,
       onPress: () => {
         Applogger('Clicked Add Reminder');
         setSelectedMenu('');
-
         navigation.navigate(AppRoutes.AddOrUpdateReminder);
       },
     },
     {
-      title: 'Email',
-      image: AppImages.email,
+      title: 'Reminders',
+      image: AppImages.reminders,
       onPress: () => {
-        Applogger('Clicked Email');
-        setSelectedMenu(menuTypes.email);
+        Applogger('Clicked Reminders');
+        setSelectedMenu('');
+        navigation.navigate(AppRoutes.Reminders);
       },
     },
     {
@@ -110,23 +120,107 @@ export default function Home({navigation}) {
       },
     },
     {
-      title: 'PDF',
-      image: AppImages.pdf,
+      title: 'Refresh',
+      image: AppImages.refresh,
       onPress: () => {
-        Applogger('Clicked PDF');
-        setSelectedMenu(menuTypes.pdf);
+        Applogger('Clicked Refresh');
+        setSelectedMenu(menuTypes.refresh);
       },
     },
-    {
-      title: 'Reminders',
-      image: AppImages.reminders,
-      onPress: () => {
-        Applogger('Clicked Reminders');
-        setSelectedMenu('');
-        navigation.navigate(AppRoutes.Reminders);
-      },
-    },
+    // {
+    //   title: 'Email',
+    //   image: AppImages.email,
+    //   onPress: () => {
+    //     Applogger('Clicked Email');
+    //     setSelectedMenu(menuTypes.email);
+    //   },
+    // },
+    // {
+    //   title: 'PDF',
+    //   image: AppImages.pdf,
+    //   onPress: () => {
+    //     Applogger('Clicked PDF');
+    //     setSelectedMenu(menuTypes.pdf);
+    //   },
+    // },
   ];
+
+  useEffect(() => {
+    if (isFocused) {
+      if (user !== null && dataBaseNumber != null) {
+        getTreeData();
+      }
+    }
+  }, [dataBaseNumber, isFocused]);
+
+  const getTreeData = () => {
+    let firstChar = '';
+    if (folderPath !== null) {
+      firstChar = folderPath.charAt(0);
+    }
+
+    if (folderPath && firstChar !== 'P') {
+      fetchTreeAPIRRData(folderPath);
+    } else {
+      fetchTreeAPIData();
+    }
+  };
+
+  const fetchTreeAPIRRData = folderPath => {
+    dispatch(
+      treeAPIRRData({
+        dataBaseNumber,
+        folderPath,
+        user,
+      }),
+    )
+      .then(unwrapResult)
+      .then(res => {
+        if (isUnAuthenticatedUser(res)) {
+          navigation.navigate(AppRoutes.Login);
+          showFaliureToast(mapAPICallError(res));
+        } else {
+          if (responseHasError(res)) {
+            showFaliureToast(mapAPICallError(res));
+          }
+        }
+        Applogger('Response at fetchTreeAPIRRData', res);
+      })
+      .catch(err => {
+        Applogger('Error at fetchTreeAPIRRData', err);
+        showFaliureToast(mapAPICallError(err));
+      });
+  };
+
+  const fetchTreeAPIData = () => {
+    dispatch(
+      treeAPIData({
+        dataBaseNumber,
+        user,
+      }),
+    )
+      .then(unwrapResult)
+      .then(res => {
+        if (isUnAuthenticatedUser(res)) {
+          navigate(AppRoutes.Login);
+          showFaliureToast(mapAPICallError(res));
+        } else {
+          if (responseHasError(res)) {
+            showFaliureToast(mapAPICallError(res));
+          }
+        }
+        Applogger('Response at fetchTreeAPIData', res);
+      })
+      .catch(err => {
+        if (isUnAuthenticatedUser(err)) {
+          navigate(AppRoutes.Login);
+          showFaliureToast(mapAPICallError(err));
+        } else {
+          showFaliureToast(mapAPICallError(err));
+        }
+        Applogger('Error at fetchTreeAPIData', err);
+      });
+  };
 
   const renderMenuItems = ({item, index}) => {
     const {title, image, onPress} = item;
@@ -162,6 +256,8 @@ export default function Home({navigation}) {
   const renderFolderFileItem = ({item, index}) => {
     const {title, folder, date, description} = item;
     if (folder) {
+      return <FolderCell key={index} title={title} onPress={null} />;
+    } else {
       return (
         <FileCell
           key={index}
@@ -175,13 +271,12 @@ export default function Home({navigation}) {
           }
         />
       );
-    } else {
-      return <FolderCell key={index} title={title} onPress={null} />;
     }
   };
 
   return (
     <View style={styles.container}>
+      {loading && <SFLoader />}
       <View>
         <Header title="Home" />
         <SearchBar

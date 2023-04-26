@@ -17,6 +17,8 @@ const AppRoutes = {
   AddFolder: 'AddFolder',
   RecentSearches: 'RecentSearches',
   DocumentDetails: 'DocumentDetails',
+  ReminderDetails: 'ReminderDetails',
+  AddUserToGroup: 'AddUserToGroup',
 };
 
 export default AppRoutes;
