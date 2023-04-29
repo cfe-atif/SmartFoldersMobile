@@ -202,7 +202,7 @@ export default function Home({navigation}) {
       .then(unwrapResult)
       .then(res => {
         if (isUnAuthenticatedUser(res)) {
-          navigate(AppRoutes.Login);
+          navigation.navigate(AppRoutes.Login);
           showFaliureToast(mapAPICallError(res));
         } else {
           if (responseHasError(res)) {
@@ -213,7 +213,7 @@ export default function Home({navigation}) {
       })
       .catch(err => {
         if (isUnAuthenticatedUser(err)) {
-          navigate(AppRoutes.Login);
+          navigation.navigate(AppRoutes.Login);
           showFaliureToast(mapAPICallError(err));
         } else {
           showFaliureToast(mapAPICallError(err));

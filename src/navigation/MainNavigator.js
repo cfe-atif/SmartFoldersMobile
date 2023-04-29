@@ -20,9 +20,9 @@ const AppContainer = () => {
     dispatch(stopLoaderAndError());
   }, []);
 
-  if (user) {
-    initialRoute = AppRoutes.BottomNavigation;
-  }
+  // if (user) {
+  //   initialRoute = AppRoutes.SelectDatabase;
+  // }
 
   return (
     <NavigationContainer>

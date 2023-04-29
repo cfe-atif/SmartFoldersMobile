@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: AppFontFamily.bold,
     color: AppColors.gray,
+    paddingHorizontal: 5,
   },
   textField: {
     height: 50,

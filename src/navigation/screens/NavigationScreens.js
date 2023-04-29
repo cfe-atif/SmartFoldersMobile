@@ -24,20 +24,20 @@ const headerOptions = {
 };
 
 const NavigationScreens = {
-  ChangePassword: {
-    screen: ChangePassword,
-    options: headerOptions,
-  },
-  ForgotPassword: {
-    screen: ForgotPassword,
-    options: headerOptions,
-  },
   Login: {
     screen: Login,
     options: headerOptions,
   },
   SelectDatabase: {
     screen: SelectDatabase,
+    options: headerOptions,
+  },
+  ChangePassword: {
+    screen: ChangePassword,
+    options: headerOptions,
+  },
+  ForgotPassword: {
+    screen: ForgotPassword,
     options: headerOptions,
   },
   Chats: {

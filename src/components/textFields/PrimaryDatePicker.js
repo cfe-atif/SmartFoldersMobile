@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: AppColors.gray,
     fontFamily: AppFontFamily.bold,
+    paddingHorizontal: 5,
   },
   dateText: {
     color: AppColors.gray,

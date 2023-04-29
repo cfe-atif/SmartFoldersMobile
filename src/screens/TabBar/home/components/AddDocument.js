@@ -64,18 +64,18 @@ export default function AddDocument({navigation, route}) {
         />
         <FlatList
           ref={docTypeListRef}
-          style={{alignSelf: 'center'}}
           horizontal={true}
           data={documentOptions}
           renderItem={renderDocumentTypeItem}
         />
-        {selectedDocType && (
-          <DocumentView
-            selectedDocType={selectedDocType}
-            folderPath={folderPath}
-          />
-        )}
       </View>
+      {selectedDocType && (
+        <DocumentView
+          navigation={navigation}
+          selectedDocType={selectedDocType}
+          folderPath={folderPath}
+        />
+      )}
     </View>
   );
 }
@@ -89,6 +89,8 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     fontFamily: AppFontFamily.regular,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   docTypeTitle: {
     color: AppColors.black,

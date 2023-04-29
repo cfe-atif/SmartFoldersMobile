@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {decalreOptions} from './Constants';
+import {fieldTypes} from './Constants';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -23,13 +23,17 @@ import PrimaryTextField from '../textFields/PrimaryTextField';
 import SFLoader from '../loaders/SFLoader';
 import SFNoRecord from './../texts/SFNoRecord';
 
-export default function DocumentView({selectedDocType, folderPath}) {
+export default function DocumentView({
+  navigation,
+  selectedDocType,
+  folderPath,
+}) {
   const dispatch = useDispatch();
 
   const {user, dataBaseNumber} = useSelector(
     state => state.AuthenticationReducer,
   );
-  const {treeData, newDocumentData, loading} = useSelector(
+  const {loading, newDocumentData} = useSelector(
     state => state.DocumentsReducer,
   );
 
@@ -48,9 +52,6 @@ export default function DocumentView({selectedDocType, folderPath}) {
   }, [selectedDocType]);
 
   const handleCreateNewDocumentData = () => {
-    console.log('====================================');
-    console.log('user: ', user);
-    console.log('====================================');
     dispatch(
       createNewDocumentData({
         bunPath: folderPath,
@@ -81,62 +82,62 @@ export default function DocumentView({selectedDocType, folderPath}) {
     Applogger('Called handleAddDocument');
   };
 
+  const documentFields = Array.isArray(
+    get(newDocumentData, 'Document.Fields.User.Field', []),
+  )
+    ? get(newDocumentData, 'Document.Fields.User.Field', [])
+    : [get(newDocumentData, 'Document.Fields.User.Field', [])];
+
   return (
-    <KeyboardAwareScrollView>
-      {loading && <SFLoader />}
+    <View style={styles.container}>
       {newDocumentData ? (
-        <View style={styles.container}>
-          <PrimaryTextField
-            placeholder="Title"
-            value={addDocumentBody.title}
-            onChange={text =>
-              setAddDocumentBody({...addDocumentBody, title: text})
-            }
-          />
-          <PrimaryTextField
-            placeholder="Subject"
-            value={addDocumentBody.subject}
-            onChange={text =>
-              setAddDocumentBody({...addDocumentBody, subject: text})
-            }
-          />
-          <PrimaryTextField
-            placeholder="Description"
-            value={addDocumentBody.description}
-            onChange={text =>
-              setAddDocumentBody({...addDocumentBody, description: text})
-            }
-          />
-          <PrimaryDatePicker
-            placeholder="Received Date"
-            openDatePicker={openDatePicker}
-            setOpenDatePicker={setOpenDatePicker}
-            date={addDocumentBody.receivedDate}
-            dateMode={AppConstants.datePicker.dateTime}
-            value={moment(addDocumentBody.receivedDate).format(
-              AppConstants.dateTimeFormat,
-            )}
-            onChange={date =>
-              setAddDocumentBody({
-                ...addDocumentBody,
-                receivedDate: date,
-              })
-            }
-          />
-          <PrimaryTextField
-            placeholder="Addressee"
-            value={addDocumentBody.addressee}
-            onChange={text =>
-              setAddDocumentBody({...addDocumentBody, addressee: text})
-            }
-          />
-          <PrimaryDropDown
-            title="Declared as Record Type"
-            options={decalreOptions}
-            setSelected={declareType =>
-              setAddDocumentBody({...addDocumentBody, recordType: declareType})
-            }
-          />
+        <View style={{flex: 1}}>
+          <KeyboardAwareScrollView>
+            {get(newDocumentData, 'Document.Fields.User', null) &&
+              documentFields.map((document, index) => {
+                if (get(document, 'Type', '') == fieldTypes.edit) {
+                  return (
+                    <PrimaryTextField
+                      key={index}
+                      placeholder={get(document, 'Label', '')}
+                      value={addDocumentBody.title}
+                      onChange={text =>
+                        setAddDocumentBody({...addDocumentBody, title: text})
+                      }
+                    />
+                  );
+                } else if (get(document, 'Type', '') == fieldTypes.date) {
+                  return (
+                    <PrimaryDatePicker
+                      placeholder={get(document, 'Label', '')}
+                      openDatePicker={openDatePicker}
+                      setOpenDatePicker={setOpenDatePicker}
+                      date={addDocumentBody.receivedDate}
+                      dateMode={AppConstants.datePicker.dateTime}
+                      value={moment(addDocumentBody.receivedDate).format(
+                        AppConstants.dateTimeFormat,
+                      )}
+                      onChange={date =>
+                        setAddDocumentBody({
+                          ...addDocumentBody,
+                          receivedDate: date,
+                        })
+                      }
+                    />
+                  );
+                } else if (get(document, 'Type', '') == fieldTypes.combo) {
+                  return null;
+                } else if (get(document, 'Type', '') == fieldTypes.checkbox) {
+                  return null;
+                } else if (get(document, 'Type', '') == fieldTypes.radioGroup) {
+                  return null;
+                } else if (get(document, 'Type', '') == fieldTypes.grid) {
+                  return null;
+                } else {
+                  return null;
+                }
+              })}
+          </KeyboardAwareScrollView>
           <PrimaryButton title="Add" onPress={() => handleAddDocument()} />
         </View>
       ) : loading ? (
@@ -144,12 +145,12 @@ export default function DocumentView({selectedDocType, folderPath}) {
       ) : (
         <SFNoRecord title={'Record not found'} />
       )}
-    </KeyboardAwareScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: '75%',
   },
 });
