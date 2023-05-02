@@ -7,11 +7,23 @@ import AppImages from './../../helpers/AppImages';
 import AppFontSize from './../../helpers/AppFontSize';
 import AppFontFamily from './../../helpers/AppFontFamily';
 
-export default function FolderCell({title = '', onPress = () => {}}) {
+export default function FolderCell({
+  title = '',
+  nestedItems = 0,
+  onPress = () => {},
+}) {
+  const getTitle = () => {
+    if (nestedItems > 0) {
+      return `${title} (${nestedItems})`;
+    } else {
+      return title;
+    }
+  };
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={AppImages.folder} style={styles.image} />
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title}>{getTitle()}</Text>
       <Icon name={AppIcons.arrowRight} color={AppColors.customBlue} size={25} />
     </TouchableOpacity>
   );

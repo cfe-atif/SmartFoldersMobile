@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   heading: {
     textAlign: 'center',
     color: AppColors.black,
-    fontSize: AppFontSize.size20,
+    fontSize: AppFontSize.size16,
     fontFamily: AppFontFamily.bold,
   },
 });

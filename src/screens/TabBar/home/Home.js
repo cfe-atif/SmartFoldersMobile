@@ -14,6 +14,7 @@ import {
   isUnAuthenticatedUser,
 } from '../../../utils/HelperFunctions';
 import {showFaliureToast} from '../../../helpers/AppToasts';
+import {get} from 'lodash';
 import moment from 'moment';
 import Applogger from '../../../helpers/AppLogger';
 import AppImages from './../../../helpers/AppImages';
@@ -28,6 +29,8 @@ import MenuButton from '../../../components/buttons/MenuButton';
 import FolderCell from './../../../components/cells/FolderCell';
 import FolderTypeButton from './../../../components/buttons/FolderTypeButton';
 import FolderNavigationButton from './../../../components/buttons/FolderNavigationButton';
+import SFNoRecord from '../../../components/texts/SFNoRecord';
+import AppFontSize from '../../../helpers/AppFontSize';
 
 export default function Home({navigation}) {
   const dispatch = useDispatch();
@@ -40,29 +43,15 @@ export default function Home({navigation}) {
 
   const menulistRef = useRef(null);
   const folderNavlistRef = useRef(null);
+  const folderTypesRef = useRef(null);
 
+  const [folderTypeItems, setFolderTypeItems] = useState([]);
+  const [globalTreeData, setGlobalTreeData] = useState([]);
+  const [privateTreeData, setPrivateTreeData] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedMenu, setSelectedMenu] = useState('');
-  const [foldersType, setFoldersType] = useState(foldersTypes.public);
+  const [selectedFoldersType, setSelectedFoldersType] = useState(null);
   const [folderPath, setFolderPath] = useState('');
-  const [currentFoldersData, setCurrentFoldersData] = useState([
-    {title: 'Junaid', folder: true},
-    {title: 'Nayyer', folder: true},
-    {title: 'Atif Jamil', folder: true},
-    {
-      title: 'Usman',
-      folder: false,
-      date: moment(new Date()).format(AppConstants.dateFormat),
-      description: 'This is file description',
-    },
-    {
-      title: 'Shahab',
-      folder: false,
-      date: moment(new Date()).format(AppConstants.dateFormat),
-      description:
-        'This is file description which has multiple lines to truncate',
-    },
-  ]);
 
   const [folderNavigation, setFolderNavigation] = useState([
     {title: 'Nayyer'},
@@ -79,7 +68,7 @@ export default function Home({navigation}) {
         Applogger('Clicked Add Document');
         // setSelectedMenu(menuTypes.addDocument);
         navigation.navigate(AppRoutes.AddDocument, {
-          folderPath: foldersType == foldersTypes.private ? 'P' : 'G',
+          folderPath: selectedFoldersType == foldersTypes.private ? 'P' : 'G',
         });
       },
     },
@@ -146,12 +135,24 @@ export default function Home({navigation}) {
   ];
 
   useEffect(() => {
+    getTreeDataForNavBar();
+  }, [treeData]);
+
+  useEffect(() => {
     if (isFocused) {
       if (user !== null && dataBaseNumber != null) {
         getTreeData();
       }
     }
   }, [dataBaseNumber, isFocused]);
+
+  useEffect(() => {
+    setSelectedFoldersType(get(folderTypeItems, '[0]', null));
+  }, [folderTypeItems]);
+
+  useEffect(() => {
+    handleLocalData();
+  }, [selectedFoldersType]);
 
   const getTreeData = () => {
     let firstChar = '';
@@ -222,6 +223,72 @@ export default function Home({navigation}) {
       });
   };
 
+  const getTreeDataForNavBar = () => {
+    var finalTreeData = [];
+
+    if (treeData != null) {
+      if (treeData.hasOwnProperty('f') && treeData.f.hasOwnProperty('f')) {
+        finalTreeData = treeData.f.f;
+      } else if (treeData.hasOwnProperty('f')) {
+        finalTreeData = treeData.f;
+      }
+    }
+
+    if (Array.isArray(finalTreeData)) {
+      finalTreeData = [...finalTreeData].sort(function (a, b) {
+        if (a.ph == '/1/') {
+          return dataSorting(a.n, b.n);
+        } else {
+          return a.n
+            .toString()
+            .localeCompare(b.n.toString(), 'en', {numeric: true});
+        }
+      });
+    } else {
+      finalTreeData = [finalTreeData];
+    }
+    setFolderTypeItems(finalTreeData);
+  };
+
+  const handleLocalData = () => {
+    let privateData = [];
+    let globalData = [];
+    if (folderTypeItems) {
+      folderTypeItems.forEach(treeItem => {
+        if (treeItem.gbl == true) {
+          globalData = get(treeItem, 'f', []);
+        } else if (treeItem.gbl == false) {
+          privateData = get(treeItem, 'f', []);
+        }
+      });
+    }
+
+    globalData = [...globalData].sort((a, b) => {
+      const nameA = get(a, 'n', '').toString().toLowerCase();
+      const nameB = get(b, 'n', '').toString().toLowerCase();
+      return nameA > nameB ? 1 : -1;
+    });
+
+    privateData = [...privateData].sort((a, b) => {
+      const nameA = get(a, 'n', '').toString().toLowerCase();
+      const nameB = get(b, 'n', '').toString().toLowerCase();
+      return nameA > nameB ? 1 : -1;
+    });
+
+    setPrivateTreeData(privateData);
+    setGlobalTreeData(globalData);
+  };
+
+  const dataSorting = (a, b) => {
+    // Assuming you want case-insensitive comparison
+    if (a === 'Private') return 1;
+    if (b === 'Private') return 1;
+    a = a.toString().toLowerCase();
+    b = b.toString().toLowerCase();
+
+    return a < b ? -1 : a > b ? 1 : 0;
+  };
+
   const renderMenuItems = ({item, index}) => {
     const {title, image, onPress} = item;
     return (
@@ -254,14 +321,16 @@ export default function Home({navigation}) {
   };
 
   const renderFolderFileItem = ({item, index}) => {
-    const {title, folder, date, description} = item;
-    if (folder) {
-      return <FolderCell key={index} title={title} onPress={null} />;
+    const {n, gbl, dc, date, description} = item;
+    if (gbl) {
+      return (
+        <FolderCell key={index} title={n} onPress={null} nestedItems={dc} />
+      );
     } else {
       return (
         <FileCell
           key={index}
-          title={title}
+          title={n}
           date={date}
           description={description}
           onPress={() =>
@@ -271,6 +340,35 @@ export default function Home({navigation}) {
           }
         />
       );
+    }
+  };
+
+  const renderFolderTypeItems = ({item, index}) => {
+    const {n} = item;
+    return (
+      <FolderTypeButton
+        key={index}
+        title={n}
+        isSelected={get(selectedFoldersType, 'n', '') == n}
+        onPress={() => setSelectedFoldersType(item)}
+      />
+    );
+  };
+
+  const handleNoRecordView = () => {
+    if (get(selectedFoldersType, 'gbl', false) && !globalTreeData.length > 0) {
+      return (
+        <SFNoRecord title={`No Record Found`} textStyle={styles.noRecord} />
+      );
+    } else if (
+      !get(selectedFoldersType, 'gbl', true) &&
+      !privateTreeData.length > 0
+    ) {
+      return (
+        <SFNoRecord title={`No Record Found`} textStyle={styles.noRecord} />
+      );
+    } else {
+      return null;
     }
   };
 
@@ -296,20 +394,23 @@ export default function Home({navigation}) {
         />
       </View>
       <View style={styles.buttonsContainer}>
-        <FolderTypeButton
-          title="Public"
-          isSelected={foldersType == foldersTypes.public}
-          onPress={() => setFoldersType(foldersTypes.public)}
-        />
-        <FolderTypeButton
-          title="Private"
-          isSelected={foldersType == foldersTypes.private}
-          onPress={() => setFoldersType(foldersTypes.private)}
+        <FlatList
+          ref={folderTypesRef}
+          data={folderTypeItems}
+          horizontal={true}
+          renderItem={renderFolderTypeItems}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
         />
       </View>
       <View style={styles.foldersContainer}>
+        {handleNoRecordView()}
         <FlatList
-          data={currentFoldersData}
+          data={
+            get(selectedFoldersType, 'gbl', false)
+              ? globalTreeData
+              : privateTreeData
+          }
           renderItem={renderFolderFileItem}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
@@ -344,11 +445,15 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     padding: 10,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   folderNavCon: {
     padding: 10,
     marginTop: 0,
     backgroundColor: AppColors.white,
+  },
+  noRecord: {
+    fontSize: AppFontSize.size14,
   },
 });

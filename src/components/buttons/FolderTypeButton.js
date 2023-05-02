@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     backgroundColor: AppColors.customBlue,
     borderColor: AppColors.customBlue,
+    marginHorizontal: 10,
   },
   folderButton: {
     flexDirection: 'row',
@@ -45,6 +46,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     backgroundColor: AppColors.white,
     borderColor: AppColors.customBlue,
+    marginHorizontal: 10,
   },
   selFolderButtonText: {
     fontSize: AppFontSize.size16,
