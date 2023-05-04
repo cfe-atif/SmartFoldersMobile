@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, forceUpdate} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
 import {menuTypes, foldersTypes} from './Constants';
 import {unwrapResult} from '@reduxjs/toolkit';
@@ -48,17 +48,12 @@ export default function Home({navigation}) {
   const [folderTypeItems, setFolderTypeItems] = useState([]);
   const [globalTreeData, setGlobalTreeData] = useState([]);
   const [privateTreeData, setPrivateTreeData] = useState([]);
+  const [folderNav, setFolderNav] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedMenu, setSelectedMenu] = useState('');
-  const [selectedFoldersType, setSelectedFoldersType] = useState(null);
   const [folderPath, setFolderPath] = useState('');
-
-  const [folderNavigation, setFolderNavigation] = useState([
-    {title: 'Nayyer'},
-    {title: 'Usman'},
-    {title: 'Junaid'},
-    {title: 'Shahab'},
-  ]);
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [selectedFoldersType, setSelectedFoldersType] = useState(null);
 
   const menuItems = [
     {
@@ -148,11 +143,23 @@ export default function Home({navigation}) {
 
   useEffect(() => {
     setSelectedFoldersType(get(folderTypeItems, '[0]', null));
+    if (folderTypeItems.length > 0) {
+      setFolderNav([get(folderTypeItems, '[0]', null)]);
+    }
   }, [folderTypeItems]);
 
   useEffect(() => {
     handleLocalData();
   }, [selectedFoldersType]);
+
+  useEffect(() => {
+    setFolderPath(get(folderNav, `[${folderNav.length - 1}].ph`));
+    setSelectedFolder(get(folderNav, `[${folderNav.length - 1}]`, null));
+  }, [folderNav]);
+
+  useEffect(() => {
+    console.log('folderPath', folderPath);
+  }, [folderPath, selectedFolder]);
 
   const getTreeData = () => {
     let firstChar = '';
@@ -223,6 +230,41 @@ export default function Home({navigation}) {
       });
   };
 
+  const callTreeAPIFolderRequest = (f_path, f_class, state) => {
+    dispatch(
+      treeFolderRequest({
+        dataBaseNumber,
+        user,
+        f_path: get(selectedFoldersType, 'gbl', false)
+          ? `G${f_path}`
+          : `P${f_path}`,
+        f_class,
+        state: 'open',
+      }),
+    )
+      .then(unwrapResult)
+      .then(res => {
+        Applogger('Response at treeFolderRequest NavBar', res);
+        if (isUnAuthenticatedUser(res)) {
+          navigate(AppRoutes.login);
+          showFaliureToast(mapAPICallError(res));
+        } else {
+          if (!responseHasError(res)) {
+            handleUrlForUpdateResponse(
+              `${APIConstants.baseUrl}servlets.CH_VaultJson?DB=${dataBaseNumber}&USER=${user.No}&INT=232&BUN=${f_path}&START=1&END=15&GETQUICK=true&FOLDERCLASS=${f_class}&FOLDERSTATE=${state}`,
+            );
+          }
+        }
+      })
+      .catch(err => {
+        if (isUnAuthenticatedUser(err)) {
+          navigate(AppRoutes.login);
+          showFaliureToast(mapAPICallError(err));
+        }
+        Applogger('Error at treeFolderRequest NavBar', err);
+      });
+  };
+
   const getTreeDataForNavBar = () => {
     var finalTreeData = [];
 
@@ -279,6 +321,25 @@ export default function Home({navigation}) {
     setGlobalTreeData(globalData);
   };
 
+  function handleFolderNavItemsList(document) {
+    setFolderNav(prevFolderNav => {
+      let filteredArray = prevFolderNav.slice(); // make a copy of the previous array
+
+      if (filteredArray.includes(document)) {
+        const currentIndex = filteredArray.findIndex(val => {
+          return get(val, 'ph', '') == get(document, 'ph', null);
+        });
+        if (currentIndex + 1) {
+          var filteredArrayLength = filteredArray.length - currentIndex;
+          filteredArray.splice(currentIndex + 1, filteredArrayLength + 1);
+        }
+      } else {
+        filteredArray.push(document);
+      }
+      return filteredArray;
+    });
+  }
+
   const dataSorting = (a, b) => {
     // Assuming you want case-insensitive comparison
     if (a === 'Private') return 1;
@@ -305,12 +366,13 @@ export default function Home({navigation}) {
   };
 
   const renderFolderNavigationitem = ({item, index}) => {
-    const {title} = item;
+    const {n} = item;
     return (
       <FolderNavigationButton
-        title={index == 0 ? `/${title}/` : `${title}/`}
-        isSelected={index == folderNavigation.length - 1}
+        title={index == 0 ? `/${n}/` : `${n}/`}
+        isSelected={index == folderNav.length - 1}
         onPress={() => {
+          handleFolderNavItemsList(item);
           folderNavlistRef?.current.scrollToIndex({
             animated: true,
             index: index,
@@ -324,7 +386,15 @@ export default function Home({navigation}) {
     const {n, gbl, dc, date, description} = item;
     if (gbl) {
       return (
-        <FolderCell key={index} title={n} onPress={null} nestedItems={dc} />
+        <FolderCell
+          key={index}
+          title={n}
+          onPress={() => {
+            handleFolderNavItemsList(item);
+            // setFolderNav(oldArray => [...oldArray, item]);
+          }}
+          nestedItems={dc}
+        />
       );
     } else {
       return (
@@ -350,7 +420,10 @@ export default function Home({navigation}) {
         key={index}
         title={n}
         isSelected={get(selectedFoldersType, 'n', '') == n}
-        onPress={() => setSelectedFoldersType(item)}
+        onPress={() => {
+          setFolderNav([item]);
+          setSelectedFoldersType(item);
+        }}
       />
     );
   };
@@ -419,7 +492,7 @@ export default function Home({navigation}) {
       <View style={styles.folderNavCon}>
         <FlatList
           ref={folderNavlistRef}
-          data={folderNavigation}
+          data={folderNav}
           renderItem={renderFolderNavigationitem}
           horizontal={true}
           showsHorizontalScrollIndicator={false}

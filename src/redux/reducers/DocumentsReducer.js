@@ -102,7 +102,7 @@ export const DocumentsReducer = createReducer(initialState, {
   [treeAPIRRData.rejected]: (state, _) => {
     return {
       ...state,
-      loading: true,
+      loading: false,
       error: null,
     };
   },
