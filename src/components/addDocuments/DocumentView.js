@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {SectionList, StyleSheet, View, Text, FlatList} from 'react-native';
 import {fieldTypes} from './Constants';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
@@ -22,6 +22,8 @@ import PrimaryDropDown from '../dropdowns/PrimaryDropDown';
 import PrimaryTextField from '../textFields/PrimaryTextField';
 import SFLoader from '../loaders/SFLoader';
 import SFNoRecord from './../texts/SFNoRecord';
+import SFHeading from '../texts/SFHeading';
+import PrimaryCheckbox from '../checkbox/PrimaryCheckbox';
 
 export default function DocumentView({
   navigation,
@@ -88,56 +90,88 @@ export default function DocumentView({
     ? get(newDocumentData, 'Document.Fields.User.Field', [])
     : [get(newDocumentData, 'Document.Fields.User.Field', [])];
 
+  const documentProfiles = Array.isArray(
+    get(newDocumentData, 'Document.Profiles.Profile', []),
+  )
+    ? get(newDocumentData, 'Document.Profiles.Profile', [])
+    : [get(newDocumentData, 'Document.Profiles.Profile.Field', [])];
+
+  const getSectionTitle = fieldNumber => {
+    const sectionTitles = new Set();
+    for (const profile of documentProfiles) {
+      if (Array.isArray(profile.Field) && profile.Field.includes(fieldNumber)) {
+        return profile.Name;
+      } else if (profile.Field === fieldNumber) {
+        return profile.Name;
+      }
+    }
+
+    return ''; // Return a default value if no section matches the fieldNumber
+  };
+
+  const handleDocumentFieldItems = ({item, index}) => {
+    const document = item;
+    if (get(document, 'Type', '') == fieldTypes.edit) {
+      return (
+        <PrimaryTextField
+          key={index}
+          placeholder={get(document, 'Label', '')}
+          value={addDocumentBody.title}
+          onChange={text =>
+            setAddDocumentBody({...addDocumentBody, title: text})
+          }
+        />
+      );
+    } else if (get(document, 'Type', '') == fieldTypes.date) {
+      return (
+        <PrimaryDatePicker
+          placeholder={get(document, 'Label', '')}
+          openDatePicker={openDatePicker}
+          setOpenDatePicker={setOpenDatePicker}
+          date={addDocumentBody.receivedDate}
+          dateMode={AppConstants.datePicker.dateTime}
+          value={moment(addDocumentBody.receivedDate).format(
+            AppConstants.dateTimeFormat,
+          )}
+          onChange={date =>
+            setAddDocumentBody({
+              ...addDocumentBody,
+              receivedDate: date,
+            })
+          }
+        />
+      );
+    } else if (get(document, 'Type', '') == fieldTypes.combo) {
+      return null;
+    } else if (get(document, 'Type', '') == fieldTypes.checkbox) {
+      return (
+        <PrimaryCheckbox
+          key={index}
+          placeholder={get(document, 'Label', '')}
+          value={addDocumentBody.title}
+          onChange={text =>
+            setAddDocumentBody({...addDocumentBody, title: text})
+          }
+        />
+      );
+    } else if (get(document, 'Type', '') == fieldTypes.radioGroup) {
+      return null;
+    } else if (get(document, 'Type', '') == fieldTypes.grid) {
+      return null;
+    } else {
+      return null;
+    }
+  };
+
   return (
     <View style={styles.container}>
       {newDocumentData ? (
         <View style={{flex: 1}}>
-          <KeyboardAwareScrollView>
-            {get(newDocumentData, 'Document.Fields.User', null) &&
-              documentFields.map((document, index) => {
-                if (get(document, 'Type', '') == fieldTypes.edit) {
-                  return (
-                    <PrimaryTextField
-                      key={index}
-                      placeholder={get(document, 'Label', '')}
-                      value={addDocumentBody.title}
-                      onChange={text =>
-                        setAddDocumentBody({...addDocumentBody, title: text})
-                      }
-                    />
-                  );
-                } else if (get(document, 'Type', '') == fieldTypes.date) {
-                  return (
-                    <PrimaryDatePicker
-                      placeholder={get(document, 'Label', '')}
-                      openDatePicker={openDatePicker}
-                      setOpenDatePicker={setOpenDatePicker}
-                      date={addDocumentBody.receivedDate}
-                      dateMode={AppConstants.datePicker.dateTime}
-                      value={moment(addDocumentBody.receivedDate).format(
-                        AppConstants.dateTimeFormat,
-                      )}
-                      onChange={date =>
-                        setAddDocumentBody({
-                          ...addDocumentBody,
-                          receivedDate: date,
-                        })
-                      }
-                    />
-                  );
-                } else if (get(document, 'Type', '') == fieldTypes.combo) {
-                  return null;
-                } else if (get(document, 'Type', '') == fieldTypes.checkbox) {
-                  return null;
-                } else if (get(document, 'Type', '') == fieldTypes.radioGroup) {
-                  return null;
-                } else if (get(document, 'Type', '') == fieldTypes.grid) {
-                  return null;
-                } else {
-                  return null;
-                }
-              })}
-          </KeyboardAwareScrollView>
+          <FlatList
+            data={documentFields}
+            renderItem={handleDocumentFieldItems}
+            keyExtractor={(_, index) => index}
+          />
           <PrimaryButton title="Add" onPress={() => handleAddDocument()} />
         </View>
       ) : loading ? (

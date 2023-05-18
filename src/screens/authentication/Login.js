@@ -27,10 +27,10 @@ export default function Login({navigation}) {
   const {loading} = useSelector(state => state.AuthenticationReducer);
 
   const [loginBody, setLoginBody] = useState({
-    username: 'sysadmin',
-    password: 'psl2023',
-    // username: '',
-    // password: '',
+    // username: 'sysadmin',
+    // password: 'psl2023',
+    username: '',
+    password: '',
   });
 
   useEffect(() => {

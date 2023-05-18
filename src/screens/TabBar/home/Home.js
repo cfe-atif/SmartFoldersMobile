@@ -1,29 +1,27 @@
-import React, {useState, useEffect, useRef, forceUpdate} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
 import {menuTypes, foldersTypes} from './Constants';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
+import {showFaliureToast} from '../../../helpers/AppToasts';
+import {get} from 'lodash';
 import {
   treeAPIData,
   treeAPIRRData,
+  treeFoldersRequest,
 } from '../../../redux/reducers/DocumentsReducer';
 import {
   mapAPICallError,
   responseHasError,
   isUnAuthenticatedUser,
 } from '../../../utils/HelperFunctions';
-import {showFaliureToast} from '../../../helpers/AppToasts';
-import {get} from 'lodash';
-import moment from 'moment';
 import Applogger from '../../../helpers/AppLogger';
 import AppImages from './../../../helpers/AppImages';
 import AppRoutes from './../../../helpers/AppRoutes';
 import AppColors from './../../../helpers/AppColors';
-import AppConstants from './../../../helpers/AppConstants';
 import Header from '../../../components/headers/Header';
 import SearchBar from '../../../components/search/SearchBar';
-import FileCell from './../../../components/cells/FileCell';
 import SFLoader from './../../../components/loaders/SFLoader';
 import MenuButton from '../../../components/buttons/MenuButton';
 import FolderCell from './../../../components/cells/FolderCell';
@@ -39,12 +37,15 @@ export default function Home({navigation}) {
   const {user, dataBaseNumber} = useSelector(
     state => state.AuthenticationReducer,
   );
-  const {treeData, loading} = useSelector(state => state.DocumentsReducer);
+  const {treeData, folders, loading} = useSelector(
+    state => state.DocumentsReducer,
+  );
 
   const menulistRef = useRef(null);
   const folderNavlistRef = useRef(null);
   const folderTypesRef = useRef(null);
 
+  const [localFoldersList, setLocalFoldersList] = useState([]);
   const [folderTypeItems, setFolderTypeItems] = useState([]);
   const [globalTreeData, setGlobalTreeData] = useState([]);
   const [privateTreeData, setPrivateTreeData] = useState([]);
@@ -52,7 +53,6 @@ export default function Home({navigation}) {
   const [searchText, setSearchText] = useState('');
   const [selectedMenu, setSelectedMenu] = useState('');
   const [folderPath, setFolderPath] = useState('');
-  const [selectedFolder, setSelectedFolder] = useState(null);
   const [selectedFoldersType, setSelectedFoldersType] = useState(null);
 
   const menuItems = [
@@ -154,12 +154,23 @@ export default function Home({navigation}) {
 
   useEffect(() => {
     setFolderPath(get(folderNav, `[${folderNav.length - 1}].ph`));
-    setSelectedFolder(get(folderNav, `[${folderNav.length - 1}]`, null));
+    if (folderNav.length > 0) {
+      const lastItem = get(folderNav, folderNav.length - 1, null);
+      const folderPath = get(lastItem, 'gbl', false)
+        ? `G${get(lastItem, 'ph', false)}`
+        : `P${get(lastItem, 'ph', false)}`;
+      callTreeAPIFolderRequest(folderPath);
+    }
   }, [folderNav]);
 
   useEffect(() => {
-    console.log('folderPath', folderPath);
-  }, [folderPath, selectedFolder]);
+    if (folders) {
+      const localArray = Array.isArray(get(folders, 'WebDocument.f', []))
+        ? get(folders, 'WebDocument.f', [])
+        : [get(folders, 'WebDocument.f', [])];
+      setLocalFoldersList(localArray);
+    }
+  }, [folders]);
 
   const getTreeData = () => {
     let firstChar = '';
@@ -230,38 +241,33 @@ export default function Home({navigation}) {
       });
   };
 
-  const callTreeAPIFolderRequest = (f_path, f_class, state) => {
+  const callTreeAPIFolderRequest = f_path => {
     dispatch(
-      treeFolderRequest({
+      treeFoldersRequest({
         dataBaseNumber,
         user,
         f_path: get(selectedFoldersType, 'gbl', false)
           ? `G${f_path}`
           : `P${f_path}`,
-        f_class,
-        state: 'open',
       }),
     )
       .then(unwrapResult)
       .then(res => {
-        Applogger('Response at treeFolderRequest NavBar', res);
+        Applogger('Response at treeFoldersRequest NavBar', res);
         if (isUnAuthenticatedUser(res)) {
-          navigate(AppRoutes.login);
+          navigation.navigate(AppRoutes.Login);
           showFaliureToast(mapAPICallError(res));
         } else {
           if (!responseHasError(res)) {
-            handleUrlForUpdateResponse(
-              `${APIConstants.baseUrl}servlets.CH_VaultJson?DB=${dataBaseNumber}&USER=${user.No}&INT=232&BUN=${f_path}&START=1&END=15&GETQUICK=true&FOLDERCLASS=${f_class}&FOLDERSTATE=${state}`,
-            );
           }
         }
       })
       .catch(err => {
         if (isUnAuthenticatedUser(err)) {
-          navigate(AppRoutes.login);
+          navigation.navigate(AppRoutes.Login);
           showFaliureToast(mapAPICallError(err));
         }
-        Applogger('Error at treeFolderRequest NavBar', err);
+        Applogger('Error at treeFoldersRequest NavBar', err);
       });
   };
 
@@ -289,7 +295,9 @@ export default function Home({navigation}) {
     } else {
       finalTreeData = [finalTreeData];
     }
-    setFolderTypeItems(finalTreeData);
+    if (!folderTypeItems.length > 0) {
+      setFolderTypeItems(finalTreeData);
+    }
   };
 
   const handleLocalData = () => {
@@ -338,6 +346,10 @@ export default function Home({navigation}) {
       }
       return filteredArray;
     });
+    folderNavlistRef?.current.scrollToIndex({
+      animated: true,
+      index: folderNav.length - 1,
+    });
   }
 
   const dataSorting = (a, b) => {
@@ -382,35 +394,24 @@ export default function Home({navigation}) {
     );
   };
 
-  const renderFolderFileItem = ({item, index}) => {
-    const {n, gbl, dc, date, description} = item;
-    if (gbl) {
-      return (
-        <FolderCell
-          key={index}
-          title={n}
-          onPress={() => {
-            handleFolderNavItemsList(item);
-            // setFolderNav(oldArray => [...oldArray, item]);
-          }}
-          nestedItems={dc}
-        />
-      );
-    } else {
-      return (
-        <FileCell
-          key={index}
-          title={n}
-          date={date}
-          description={description}
-          onPress={() =>
-            navigation.navigate(AppRoutes.DocumentDetails, {
-              document: item,
-            })
-          }
-        />
-      );
-    }
+  const renderFolderItems = ({item, index}) => {
+    const {n, dc, ph} = item;
+    return (
+      <FolderCell
+        key={index}
+        title={n}
+        onPressFolder={() => {
+          handleFolderNavItemsList(item);
+          callTreeAPIFolderRequest(ph);
+        }}
+        onPressFiles={() => {
+          navigation.navigate(AppRoutes.DocumentsList, {
+            selectedFolder: item,
+          });
+        }}
+        nestedItems={dc}
+      />
+    );
   };
 
   const renderFolderTypeItems = ({item, index}) => {
@@ -429,19 +430,28 @@ export default function Home({navigation}) {
   };
 
   const handleNoRecordView = () => {
-    if (get(selectedFoldersType, 'gbl', false) && !globalTreeData.length > 0) {
+    if (folderNav.length > 1 && !localFoldersList.length > 0) {
       return (
-        <SFNoRecord title={`No Record Found`} textStyle={styles.noRecord} />
-      );
-    } else if (
-      !get(selectedFoldersType, 'gbl', true) &&
-      !privateTreeData.length > 0
-    ) {
-      return (
-        <SFNoRecord title={`No Record Found`} textStyle={styles.noRecord} />
+        <SFNoRecord title={`No Child Folders`} textStyle={styles.noRecord} />
       );
     } else {
-      return null;
+      if (
+        get(selectedFoldersType, 'gbl', false) &&
+        !globalTreeData.length > 0
+      ) {
+        return (
+          <SFNoRecord title={`No Record Found`} textStyle={styles.noRecord} />
+        );
+      } else if (
+        !get(selectedFoldersType, 'gbl', true) &&
+        !privateTreeData.length > 0
+      ) {
+        return (
+          <SFNoRecord title={`No Record Found`} textStyle={styles.noRecord} />
+        );
+      } else {
+        return null;
+      }
     }
   };
 
@@ -480,11 +490,13 @@ export default function Home({navigation}) {
         {handleNoRecordView()}
         <FlatList
           data={
-            get(selectedFoldersType, 'gbl', false)
+            folderNav.length > 1
+              ? localFoldersList
+              : get(selectedFoldersType, 'gbl', false)
               ? globalTreeData
               : privateTreeData
           }
-          renderItem={renderFolderFileItem}
+          renderItem={renderFolderItems}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
         />

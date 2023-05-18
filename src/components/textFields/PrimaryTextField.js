@@ -60,7 +60,7 @@ import AppFontFamily from '../../helpers/AppFontFamily';
 
 export default function PrimaryTextField({
   value = '',
-  placeholder = 'Type here...',
+  placeholder = '',
   onChange = () => {},
   isSecure = false,
   multiline = false,

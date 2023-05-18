@@ -14,7 +14,7 @@ export default function SFNoRecord({
   useEffect(() => {
     setTimeout(() => {
       setShow(true);
-    }, 250);
+    }, 100);
   }, []);
 
   return show ? (

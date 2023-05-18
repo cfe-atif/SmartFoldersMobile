@@ -18,6 +18,7 @@ import RecentSearches from '../../screens/TabBar/home/components/RecentSearches'
 import DocumentDetails from '../../screens/TabBar/home/components/DocumentDetails';
 import ReminderDetails from '../../screens/TabBar/reminders/components/ReminderDetails';
 import AddUserToGroup from '../../screens/TabBar/chat/components/AddUserToGroup';
+import DocumentsList from '../../screens/TabBar/home/components/DocumentsList';
 
 const headerOptions = {
   headerShown: false,
@@ -90,6 +91,10 @@ const NavigationScreens = {
   },
   DocumentDetails: {
     screen: DocumentDetails,
+    options: headerOptions,
+  },
+  DocumentsList: {
+    screen: DocumentsList,
     options: headerOptions,
   },
   ReminderDetails: {

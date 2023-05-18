@@ -19,6 +19,7 @@ const AppRoutes = {
   DocumentDetails: 'DocumentDetails',
   ReminderDetails: 'ReminderDetails',
   AddUserToGroup: 'AddUserToGroup',
+  DocumentsList: 'DocumentsList',
 };
 
 export default AppRoutes;

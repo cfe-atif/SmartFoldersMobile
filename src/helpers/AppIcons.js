@@ -19,6 +19,7 @@ const AppIcons = {
   close: 'ios-close',
   // Folders Cell
   arrowRight: 'chevron-forward',
+  documents: 'documents',
   // File Cell
   fileIcon: 'document-sharp',
   infoIcon: 'information-circle-outline',

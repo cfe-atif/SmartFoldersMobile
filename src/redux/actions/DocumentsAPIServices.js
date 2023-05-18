@@ -12,8 +12,24 @@ function apiTreeAPIData(payload) {
 function apiTreeAPIRRData(payload) {
   Applogger('Payload at apiTreeAPIRRData', payload);
   const {folderPath, dataBaseNumber, user} = payload;
-  const path = `servlets.CH_VaultJson?INT=475&USER=${user.No}&DB=${dataBaseNumber}&BUN=${folderPath}&FOLDER=${getFolderPath}&VALIDTREE=true&BRANCH=true&REDIRECT=false`;
+  const path = `servlets.CH_VaultJson?INT=475&USER=${user.No}&DB=${dataBaseNumber}&BUN=${folderPath}&FOLDER=${folderPath}&VALIDTREE=true&BRANCH=true&REDIRECT=false`;
   Applogger('Path at apiTreeAPIRRData', path);
+  return AxiosEvent.get(path);
+}
+
+function apiTreeFolderDocsRequest(payload) {
+  Applogger('Payload at apiTreeFolderDocsRequest', payload);
+  const {dataBaseNumber, user, f_path, f_class, state} = payload;
+  const path = `servlets.CH_VaultJson?DB=${dataBaseNumber}&USER=${user.No}&INT=232&BUN=${f_path}&START=1&END=15&GETQUICK=true&FOLDERCLASS=${f_class}&FOLDERSTATE=${state}`;
+  Applogger('Path at apiTreeFolderDocsRequest', path);
+  return AxiosEvent.get(path);
+}
+
+function apiTreeFoldersRequest(payload) {
+  Applogger('Payload at apiTreeFoldersRequest', payload);
+  const {dataBaseNumber, user, f_path} = payload;
+  const path = `servlets.CH_VaultJson?DB=${dataBaseNumber}&USER=${user.No}&INT=475&BUN=${f_path}&FOLDER=${f_path}&BRANCH=true&PARENTID=%23parentid%23&UseTimeoutStyleSheet=false`;
+  Applogger('Path at apiTreeFoldersRequest', path);
   return AxiosEvent.get(path);
 }
 
@@ -36,6 +52,8 @@ function apiCreateNewDocumentData(payload) {
 export const DocumentsAPIServices = {
   apiTreeAPIData,
   apiTreeAPIRRData,
+  apiTreeFolderDocsRequest,
+  apiTreeFoldersRequest,
   apiCreateNewFolderData,
   apiCreateNewDocumentData,
 };

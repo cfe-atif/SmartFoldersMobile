@@ -20,6 +20,24 @@ export const treeAPIRRData = createAsyncThunk(
   },
 );
 
+export const treeFolderDocsRequest = createAsyncThunk(
+  'DocumentsReducer/treeFolderDocsRequest',
+  async payload => {
+    const response = await DocumentsAPIServices.apiTreeFolderDocsRequest(
+      payload,
+    );
+    return response.data;
+  },
+);
+
+export const treeFoldersRequest = createAsyncThunk(
+  'DocumentsReducer/treeFoldersRequest',
+  async payload => {
+    const response = await DocumentsAPIServices.apiTreeFoldersRequest(payload);
+    return response.data;
+  },
+);
+
 export const createNewFolderData = createAsyncThunk(
   'DocumentsReducer/createNewFolderData',
   async payload => {
@@ -46,6 +64,8 @@ const initialState = {
   treeData: null,
   newDocumentData: null,
   newFolderData: null,
+  folders: null,
+  folderDocuments: null,
 };
 
 export const DocumentsReducer = createReducer(initialState, {
@@ -71,6 +91,7 @@ export const DocumentsReducer = createReducer(initialState, {
       folderType: responseHasError(action.payload)
         ? null
         : action.payload.Document.sys.ftl,
+      folders: null,
     };
   },
   [treeAPIData.rejected]: (state, _) => {
@@ -97,9 +118,58 @@ export const DocumentsReducer = createReducer(initialState, {
       treeData: action.payload.hasOwnProperty('Document')
         ? action.payload.Document
         : action.payload,
+      folders: null,
     };
   },
   [treeAPIRRData.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [treeFolderDocsRequest.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      folderDocuments: null,
+    };
+  },
+  [treeFolderDocsRequest.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      folderDocuments: action.payload,
+    };
+  },
+  [treeFolderDocsRequest.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [treeFoldersRequest.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      folders: null,
+    };
+  },
+  [treeFoldersRequest.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      folders: action.payload,
+    };
+  },
+  [treeFoldersRequest.rejected]: (state, _) => {
     return {
       ...state,
       loading: false,
