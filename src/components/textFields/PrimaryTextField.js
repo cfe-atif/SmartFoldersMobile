@@ -64,6 +64,7 @@ export default function PrimaryTextField({
   onChange = () => {},
   isSecure = false,
   multiline = false,
+  editable = true,
 }) {
   return (
     <View style={styles.container}>
@@ -76,6 +77,7 @@ export default function PrimaryTextField({
         onChangeText={onChange}
         secureTextEntry={isSecure}
         multiline={multiline}
+        editable={editable}
       />
     </View>
   );

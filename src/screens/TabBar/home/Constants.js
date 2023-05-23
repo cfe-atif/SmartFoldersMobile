@@ -11,7 +11,7 @@ export const menuTypes = {
 
 export const foldersTypes = {
   public: 'Public',
-  private: 'Private',
+  // private: 'Private',
 };
 
 export const documentTypes = {

@@ -32,6 +32,7 @@ import PrimaryTextField from '../../../../components/textFields/PrimaryTextField
 import PrimaryButton from '../../../../components/buttons/PrimaryButton';
 import PrimaryDatePicker from './../../../../components/textFields/PrimaryDatePicker';
 import SFLoader from './../../../../components/loaders/SFLoader';
+import ReminderDropDown from './../../../../components/dropdowns/ReminderDropDown';
 
 export default function AddOrUpdateReminder({navigation, route}) {
   const dispatch = useDispatch();
@@ -51,11 +52,15 @@ export default function AddOrUpdateReminder({navigation, route}) {
     DATABASE: null,
     DOC_NUM: null,
     ID: null,
+    STATE: reminderStates.open,
   });
 
   const reminderToUpdate = get(route, 'params.reminderToUpdate', null);
 
   useEffect(() => {
+    console.log('====================================');
+    console.log('reminder To update: ', reminderToUpdate);
+    console.log('====================================');
     handleInitialValues();
   }, []);
 
@@ -71,6 +76,7 @@ export default function AddOrUpdateReminder({navigation, route}) {
       addReminderBody.ALERT_DATE_VALUE = get(reminderToUpdate, 'AlertDate', '')
         ? get(reminderToUpdate, 'AlertDate', '')
         : null;
+      addReminderBody.STATE = get(reminderToUpdate, 'State', '');
       addReminderBody.DATABASE = get(reminderToUpdate, 'Database.Name', '');
       addReminderBody.DOC_NUM = get(reminderToUpdate, 'DocumentNo', '');
       addReminderBody.ID = get(reminderToUpdate, 'ID', '');
@@ -99,9 +105,7 @@ export default function AddOrUpdateReminder({navigation, route}) {
         ? reminderActions.update
         : reminderActions.add,
       USER: user.No,
-      STATE: reminderToUpdate
-        ? get(reminderToUpdate, 'State', '')
-        : reminderStates.open,
+      STATE: addReminderBody.STATE,
       SUBJECT: addReminderBody.SUBJECT,
       DETAILS: addReminderBody.DETAILS,
       DUE_DATE: moment(addReminderBody.DUE_DATE).format(
@@ -258,6 +262,33 @@ export default function AddOrUpdateReminder({navigation, route}) {
             })
           }
         />
+        {reminderToUpdate && (
+          <ReminderDropDown
+            title="Set State"
+            defaultKey={get(reminderToUpdate, 'State', '')}
+            defaultValue={get(reminderToUpdate, 'State', '').toUpperCase()}
+            options={[
+              {
+                key: 'DISMISS',
+                value: 'Dismiss',
+              },
+              {
+                key: 'COMPLETE',
+                value: 'Complete',
+              },
+              {
+                key: 'OPEN',
+                value: 'Open',
+              },
+            ]}
+            setSelected={state =>
+              setAddReminderBody({
+                ...addReminderBody,
+                STATE: state,
+              })
+            }
+          />
+        )}
       </KeyboardAwareScrollView>
       <PrimaryButton title="Save" onPress={() => handleAddPress()} />
     </View>

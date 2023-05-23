@@ -71,19 +71,18 @@ export default function Reminders({navigation}) {
   const getFinalRemindersList = () => {
     let finalList = remindersList;
     if (Array.isArray(remindersList)) {
-      if (filterType == filterTypes.active) {
-        finalList = [...finalList].filter(reminder => {
-          return (
-            reminder.State == reminderStates.open ||
-            reminder.State == reminderStates.snooze
-          );
-        });
-      }
       if (filterType == filterTypes.completed) {
         finalList = [...finalList].filter(reminder => {
           return (
             reminder.State == reminderStates.completed ||
             reminder.State == reminderStates.dismiss
+          );
+        });
+      } else {
+        finalList = [...finalList].filter(reminder => {
+          return (
+            reminder.State == reminderStates.open ||
+            reminder.State == reminderStates.snooze
           );
         });
       }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
@@ -10,11 +10,11 @@ export default function FileCell({
   title = '',
   date = '',
   description = '',
+  suffix = null,
   onPress = () => {},
 }) {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Icon name={AppIcons.fileIcon} color={AppColors.customBlue} size={30} />
       <View style={styles.textContainer}>
         <Text style={styles.title} numberOfLines={1}>
           {title}
@@ -23,6 +23,9 @@ export default function FileCell({
           {description}
         </Text>
       </View>
+      {suffix && (
+        <Image source={suffix} resizeMode="contain" style={styles.image} />
+      )}
       <Text style={styles.date}>{date}</Text>
       <Icon name={AppIcons.infoIcon} color={AppColors.customBlue} size={25} />
     </TouchableOpacity>
@@ -41,6 +44,11 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
+  },
+  image: {
+    marginHorizontal: 10,
+    height: 25,
+    width: 25,
   },
   title: {
     marginHorizontal: 10,

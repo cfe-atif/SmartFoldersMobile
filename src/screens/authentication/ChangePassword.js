@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
   image: {
     height: 150,
     aspectRatio: 1,
-    margin: 20,
     marginTop: 100,
     alignSelf: 'center',
   },

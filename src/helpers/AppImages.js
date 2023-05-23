@@ -1,6 +1,6 @@
 const AppImages = {
   logoWhite: require('../assets/images/logo-white.png'),
-  logoColor: require('../assets/images/logo-color.jpeg'),
+  logoColor: require('../assets/images/logo-color.png'),
   addDocument: require('../assets/images/add-file.png'),
   addFolder: require('../assets/images/add-folder.png'),
   recentSearches: require('../assets/images/recent-search.png'),
@@ -10,6 +10,8 @@ const AppImages = {
   pdf: require('../assets/images/pdf.png'),
   refresh: require('../assets/images/refresh.png'),
   folder: require('../assets/images/colored-folder.png'),
+  adt: require('../assets/docImages/adt.png'),
+  docx: require('../assets/docImages/docx.png'),
+  pptx: require('../assets/docImages/copy.png'),
 };
-
 export default AppImages;

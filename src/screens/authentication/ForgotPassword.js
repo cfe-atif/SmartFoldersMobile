@@ -3,7 +3,6 @@ import {Image, StyleSheet} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AppColors from '../../helpers/AppColors';
 import AppImages from '../../helpers/AppImages';
-import AppRoutes from './../../helpers/AppRoutes';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import PrimaryTextField from '../../components/textFields/PrimaryTextField';
 import SFLoader from '../../components/loaders/SFLoader';
@@ -46,7 +45,6 @@ const styles = StyleSheet.create({
   image: {
     height: 150,
     aspectRatio: 1,
-    margin: 20,
     marginTop: 100,
     alignSelf: 'center',
   },

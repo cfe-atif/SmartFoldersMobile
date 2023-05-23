@@ -1,8 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
-import {useIsFocused} from '@react-navigation/native';
 import {showFaliureToast} from '../../../../helpers/AppToasts';
 import {get} from 'lodash';
 import {treeFolderDocsRequest} from '../../../../redux/reducers/DocumentsReducer';
@@ -18,11 +17,9 @@ import SFNoRecord from '../../../../components/texts/SFNoRecord';
 import Applogger from '../../../../helpers/AppLogger';
 import AppImages from './../../../../helpers/AppImages';
 import AppRoutes from './../../../../helpers/AppRoutes';
-import AppColors from './../../../../helpers/AppColors';
 
 export default function DocumentsList({navigation, route}) {
   const dispatch = useDispatch();
-  const isFocused = useIsFocused();
 
   const {user, dataBaseNumber} = useSelector(
     state => state.AuthenticationReducer,
@@ -43,7 +40,6 @@ export default function DocumentsList({navigation, route}) {
 
   useEffect(() => {
     if (selectedFolder) {
-      Applogger('selectedFolder', selectedFolder);
       callTreeAPIFolderDocsRequest();
     }
   }, []);
@@ -96,27 +92,71 @@ export default function DocumentsList({navigation, route}) {
   };
 
   const handleNoRecordView = () => {
-    console.log('====================================');
-    console.log('localDocumentsList:', localDocumentsList);
-    console.log('====================================');
     if (!localDocumentsList.length > 0) {
-      return (
-        <SFNoRecord title={`No Child Folders`} textStyle={styles.noRecord} />
-      );
+      return <SFNoRecord title={`No Documents`} textStyle={styles.noRecord} />;
+    } else {
+      return null;
+    }
+  };
+
+  const getSuffix = document => {
+    let suffix = null;
+    let docSuffix = null;
+    if (document) {
+      if (Array.isArray(get(document, 'Page', []))) {
+        docSuffix = get(document, 'Page[0].Suffix', null);
+        if (docSuffix) {
+          suffix = docSuffix;
+        }
+      } else {
+        docSuffix = get(document, 'Page.Suffix', null);
+        if (docSuffix) {
+          suffix = docSuffix;
+        }
+      }
+    }
+    return suffix;
+  };
+
+  const getFormattedDate = dateObj => {
+    if (get(dateObj, 'Date.Day', null)) {
+      const date = dateObj.Date;
+      let day = date.Day;
+      let month = date.Month;
+      let year = date.Year;
+      return `${day}/${month}/${year}`;
     } else {
       return null;
     }
   };
 
   const renderFileItems = ({item, index}) => {
-    const {n, dc, ph} = item;
+    // const {n, dc, ph} = item;
+    const suffix = getSuffix(item);
+    const imageSource = suffix ? `${AppImages[suffix]}` : null;
+    const {Field} = get(item, 'Column.User', null);
+
+    // Finding the desired field by its FieldNumber
+    const titleField = Field.find(field => field.FieldNumber === 21);
+    const descriptionField = Field.find(field => field.FieldNumber === 23);
+    const dateField = Field.find(field => field.FieldNumber === 24);
+
+    const titleData = titleField ? titleField.Data : '';
+    const descriptionData = descriptionField ? descriptionField.Data : '';
+    const dateData = dateField ? dateField.Data : '';
+
     return (
       <FileCell
         key={index}
-        title={'Doc Title'}
-        description={'Doc Description'}
-        date={'Doc Date'}
-        onPress={() => Applogger('Clicked File Cell', item)}
+        title={titleData}
+        description={descriptionData}
+        date={getFormattedDate(dateData)}
+        suffix={imageSource}
+        onPress={() => {
+          navigation.navigate(AppRoutes.DocumentDetails, {
+            selectedDocument: item,
+          });
+        }}
       />
     );
   };
@@ -126,7 +166,7 @@ export default function DocumentsList({navigation, route}) {
       {loading && <SFLoader />}
       <View>
         <Header
-          title="Documents List"
+          title={`${get(selectedFolder, 'n', 'Documents List')} `}
           backButton={true}
           onBackPress={() => navigation.goBack()}
         />

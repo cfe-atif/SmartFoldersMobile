@@ -21,7 +21,9 @@ export default function Header({
           <Icon name={AppIcons.backButton} color={AppColors.white} size={30} />
         </TouchableOpacity>
       )}
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title} adjustsFontSizeToFit={true} numberOfLines={2}>
+        {title}
+      </Text>
       {rightButton && (
         <TouchableOpacity
           style={styles.rightButton}

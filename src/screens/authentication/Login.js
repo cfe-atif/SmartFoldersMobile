@@ -27,10 +27,11 @@ export default function Login({navigation}) {
   const {loading} = useSelector(state => state.AuthenticationReducer);
 
   const [loginBody, setLoginBody] = useState({
-    // username: 'sysadmin',
-    // password: 'psl2023',
-    username: '',
-    password: '',
+    username: 'sysadmin',
+    password: 'psl2023',
+    server: '192.119.110.10:8081',
+    // username: '',
+    // password: '',
   });
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export default function Login({navigation}) {
   };
 
   const handleLoginPress = () => {
-    if (!loginBody.username || !loginBody.password) {
+    if (!loginBody.username || !loginBody.password || !loginBody.server) {
       showFaliureToast('Fields Error', 'Both fields are required');
       return;
     }
@@ -70,6 +71,7 @@ export default function Login({navigation}) {
       loginRequest({
         username: loginBody.username,
         password: loginBody.password,
+        server: loginBody.server,
       }),
     )
       .then(unwrapResult)
@@ -121,6 +123,11 @@ export default function Login({navigation}) {
         onChange={text => setLoginBody({...loginBody, password: text})}
         isSecure={true}
       />
+      <PrimaryTextField
+        placeholder={'Server'}
+        value={loginBody.server}
+        onChange={text => setLoginBody({...loginBody, server: text})}
+      />
       <SimpleButton
         title="Forgot Password ?"
         onPress={() => handleForgotPassword()}
@@ -139,7 +146,6 @@ const styles = StyleSheet.create({
   image: {
     height: 150,
     aspectRatio: 1,
-    margin: 20,
     marginTop: 100,
     alignSelf: 'center',
   },

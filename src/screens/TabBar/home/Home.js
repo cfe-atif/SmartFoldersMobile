@@ -295,6 +295,9 @@ export default function Home({navigation}) {
     } else {
       finalTreeData = [finalTreeData];
     }
+    finalTreeData = finalTreeData.filter(treeData => {
+      return treeData.gbl;
+    });
     if (!folderTypeItems.length > 0) {
       setFolderTypeItems(finalTreeData);
     }
