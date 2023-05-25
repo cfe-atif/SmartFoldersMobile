@@ -24,6 +24,7 @@ export default function SelectDatabase({navigation}) {
     state => state.AuthenticationReducer,
   );
 
+  const [localLoadinng, setLocalLoading] = useState(false);
   const [dropDownItems, setDropDownItems] = useState([]);
   const [selectedDatabase, setSelectedDatabase] = useState('');
 
@@ -57,12 +58,14 @@ export default function SelectDatabase({navigation}) {
     dispatch(changeDBName(selectedDatabase))
       .then(unwrapResult)
       .then(res => {
+        setLocalLoading(false);
         Applogger('DB Name updated Successfully', res);
         navigation.navigate(AppRoutes.BottomNavigation, {
           screen: AppRoutes.Home,
         });
       })
       .catch(err => {
+        setLocalLoading(false);
         Applogger('Error at updating DB Name', err);
       });
   };
@@ -75,12 +78,14 @@ export default function SelectDatabase({navigation}) {
         handleChangeDBName();
       })
       .catch(err => {
+        setLocalLoading(false);
         Applogger('Error at updating DB Number', err);
       });
   };
 
   const handleContinue = () => {
     if (selectedDatabase) {
+      setLocalLoading(true);
       handleChangeDBNumber();
     } else {
       showFaliureToast('Warning', 'Please select database to continue');
@@ -89,7 +94,7 @@ export default function SelectDatabase({navigation}) {
 
   return (
     <View style={styles.container}>
-      {loading && <SFLoader />}
+      {(loading || localLoadinng) && <SFLoader />}
       <View>
         <SFHeading title="Select Database" />
         <SelectList

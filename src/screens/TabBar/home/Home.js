@@ -20,15 +20,15 @@ import Applogger from '../../../helpers/AppLogger';
 import AppImages from './../../../helpers/AppImages';
 import AppRoutes from './../../../helpers/AppRoutes';
 import AppColors from './../../../helpers/AppColors';
+import AppFontSize from '../../../helpers/AppFontSize';
 import Header from '../../../components/headers/Header';
 import SearchBar from '../../../components/search/SearchBar';
 import SFLoader from './../../../components/loaders/SFLoader';
 import MenuButton from '../../../components/buttons/MenuButton';
+import SFNoRecord from '../../../components/texts/SFNoRecord';
 import FolderCell from './../../../components/cells/FolderCell';
 import FolderTypeButton from './../../../components/buttons/FolderTypeButton';
 import FolderNavigationButton from './../../../components/buttons/FolderNavigationButton';
-import SFNoRecord from '../../../components/texts/SFNoRecord';
-import AppFontSize from '../../../helpers/AppFontSize';
 
 export default function Home({navigation}) {
   const dispatch = useDispatch();
@@ -427,6 +427,10 @@ export default function Home({navigation}) {
         onPress={() => {
           setFolderNav([item]);
           setSelectedFoldersType(item);
+          folderTypesRef?.current.scrollToIndex({
+            animated: true,
+            index: index,
+          });
         }}
       />
     );

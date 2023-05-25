@@ -131,10 +131,10 @@ export default function DocumentsList({navigation, route}) {
   };
 
   const renderFileItems = ({item, index}) => {
-    // const {n, dc, ph} = item;
     const suffix = getSuffix(item);
     const imageSource = suffix ? `${AppImages[suffix]}` : null;
     const {Field} = get(item, 'Column.User', null);
+    const isDeclared = get(item, 'Declared', false);
 
     // Finding the desired field by its FieldNumber
     const titleField = Field.find(field => field.FieldNumber === 21);
@@ -152,6 +152,7 @@ export default function DocumentsList({navigation, route}) {
         description={descriptionData}
         date={getFormattedDate(dateData)}
         suffix={imageSource}
+        isDeclared={isDeclared}
         onPress={() => {
           navigation.navigate(AppRoutes.DocumentDetails, {
             selectedDocument: item,

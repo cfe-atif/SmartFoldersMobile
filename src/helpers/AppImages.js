@@ -13,5 +13,6 @@ const AppImages = {
   adt: require('../assets/docImages/adt.png'),
   docx: require('../assets/docImages/docx.png'),
   pptx: require('../assets/docImages/copy.png'),
+  declared: require('../assets/images/email.png'),
 };
 export default AppImages;

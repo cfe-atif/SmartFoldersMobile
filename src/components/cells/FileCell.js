@@ -5,12 +5,14 @@ import AppColors from './../../helpers/AppColors';
 import AppFontSize from './../../helpers/AppFontSize';
 import AppIcons from './../../helpers/AppIcons';
 import AppFontFamily from '../../helpers/AppFontFamily';
+import AppImages from '../../helpers/AppImages';
 
 export default function FileCell({
   title = '',
   date = '',
   description = '',
   suffix = null,
+  isDeclared = false,
   onPress = () => {},
 }) {
   return (
@@ -23,6 +25,13 @@ export default function FileCell({
           {description}
         </Text>
       </View>
+      {isDeclared && (
+        <Image
+          source={AppImages.declared}
+          resizeMode="contain"
+          style={styles.image}
+        />
+      )}
       {suffix && (
         <Image source={suffix} resizeMode="contain" style={styles.image} />
       )}
@@ -46,7 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     height: 25,
     width: 25,
   },
