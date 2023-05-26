@@ -142,33 +142,20 @@ export default function Home({navigation}) {
   }, [dataBaseNumber, isFocused]);
 
   useEffect(() => {
-    setSelectedFoldersType(get(folderTypeItems, '[0]', null));
-    if (folderTypeItems.length > 0) {
-      setFolderNav([get(folderTypeItems, '[0]', null)]);
-    }
-  }, [folderTypeItems]);
-
-  useEffect(() => {
     handleLocalData();
   }, [selectedFoldersType]);
 
   useEffect(() => {
-    setFolderPath(get(folderNav, `[${folderNav.length - 1}].ph`));
-    if (folderNav.length > 0) {
-      const lastItem = get(folderNav, folderNav.length - 1, null);
-      const folderPath = get(lastItem, 'gbl', false)
-        ? `G${get(lastItem, 'ph', false)}`
-        : `P${get(lastItem, 'ph', false)}`;
-      callTreeAPIFolderRequest(folderPath);
-    }
-  }, [folderNav]);
-
-  useEffect(() => {
     if (folders) {
-      const localArray = Array.isArray(get(folders, 'WebDocument.f', []))
-        ? get(folders, 'WebDocument.f', [])
-        : [get(folders, 'WebDocument.f', [])];
+      // const localArray = Array.isArray(get(folders, 'WebDocument.f', []))
+      //   ? get(folders, 'WebDocument.f', [])
+      //   : [get(folders, 'WebDocument.f', [])];
+      const localArray = Array.isArray(get(folders, 'f', []))
+        ? get(folders, 'f', [])
+        : [get(folders, 'f', [])];
       setLocalFoldersList(localArray);
+    } else {
+      setLocalFoldersList([]);
     }
   }, [folders]);
 
@@ -300,6 +287,8 @@ export default function Home({navigation}) {
     });
     if (!folderTypeItems.length > 0) {
       setFolderTypeItems(finalTreeData);
+      setFolderNav([get(finalTreeData, '[0]', [])]);
+      setSelectedFoldersType(get(finalTreeData, '[0]', null));
     }
   };
 
@@ -347,6 +336,14 @@ export default function Home({navigation}) {
       } else {
         filteredArray.push(document);
       }
+      setFolderPath(get(filteredArray, `[${filteredArray.length - 1}].ph`));
+      if (filteredArray.length > 0) {
+        const lastItem = get(filteredArray, filteredArray.length - 1, null);
+        const folderPath = get(lastItem, 'gbl', false)
+          ? `G${get(lastItem, 'ph', false)}`
+          : `P${get(lastItem, 'ph', false)}`;
+        callTreeAPIFolderRequest(folderPath);
+      }
       return filteredArray;
     });
     folderNavlistRef?.current.scrollToIndex({
@@ -356,7 +353,6 @@ export default function Home({navigation}) {
   }
 
   const dataSorting = (a, b) => {
-    // Assuming you want case-insensitive comparison
     if (a === 'Private') return 1;
     if (b === 'Private') return 1;
     a = a.toString().toLowerCase();
@@ -405,7 +401,7 @@ export default function Home({navigation}) {
         title={n}
         onPressFolder={() => {
           handleFolderNavItemsList(item);
-          callTreeAPIFolderRequest(ph);
+          // callTreeAPIFolderRequest(ph);
         }}
         onPressFiles={() => {
           navigation.navigate(AppRoutes.DocumentsList, {

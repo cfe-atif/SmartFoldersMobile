@@ -105,9 +105,9 @@ export const DocumentsReducer = createReducer(initialState, {
   [treeAPIRRData.pending]: (state, _) => {
     return {
       ...state,
-      treeData: null,
       loading: true,
       error: null,
+      treeData: null,
     };
   },
   [treeAPIRRData.fulfilled]: (state, action) => {
@@ -118,7 +118,9 @@ export const DocumentsReducer = createReducer(initialState, {
       treeData: action.payload.hasOwnProperty('Document')
         ? action.payload.Document
         : action.payload,
-      folders: null,
+      folders: action.payload.hasOwnProperty('Document')
+        ? action.payload.Document
+        : action.payload,
     };
   },
   [treeAPIRRData.rejected]: (state, _) => {

@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {get} from 'lodash';
 import AppImages from '../../../../helpers/AppImages';
 import AppColors from '../../../../helpers/AppColors';
+import Applogger from '../../../../helpers/AppLogger';
 import AppFontSize from '../../../../helpers/AppFontSize';
 import AppFontFamily from '../../../../helpers/AppFontFamily';
 import Header from '../../../../components/headers/Header';
@@ -26,7 +27,49 @@ export default function DocumentDetails({navigation, route}) {
 
   const menuItems = [
     {
-      title: 'Add Document',
+      title: 'Properties',
+      image: AppImages.addDocument,
+      onPress: () => {
+        Applogger('Clicked Add Document');
+      },
+    },
+    {
+      title: 'Edit',
+      image: AppImages.addDocument,
+      onPress: () => {
+        Applogger('Clicked Add Document');
+      },
+    },
+    {
+      title: 'Index Card',
+      image: AppImages.addDocument,
+      onPress: () => {
+        Applogger('Clicked Add Document');
+      },
+    },
+    {
+      title: 'Checkout',
+      image: AppImages.addDocument,
+      onPress: () => {
+        Applogger('Clicked Add Document');
+      },
+    },
+    {
+      title: 'Page Version info',
+      image: AppImages.addDocument,
+      onPress: () => {
+        Applogger('Clicked Add Document');
+      },
+    },
+    {
+      title: 'Add Reminder',
+      image: AppImages.addDocument,
+      onPress: () => {
+        Applogger('Clicked Add Document');
+      },
+    },
+    {
+      title: 'Sign',
       image: AppImages.addDocument,
       onPress: () => {
         Applogger('Clicked Add Document');
@@ -91,39 +134,45 @@ export default function DocumentDetails({navigation, route}) {
     const imageSource = suffix ? `${AppImages[suffix]}` : null;
     const {Field} = get(selectedDocument, 'Column.User', null);
     const isDeclared = get(selectedDocument, 'Declared', false);
+    const hasCopy = get(selectedDocument, 'HasCopy', false);
+    const hasAttachments = get(selectedDocument, 'HasAttachments', false);
 
-    // Finding the desired field by its FieldNumber
-    const titleField = Field.find(field => field.FieldNumber === 21);
-    const descriptionField = Field.find(field => field.FieldNumber === 23);
-    const dateField = Field.find(field => field.FieldNumber === 24);
-
-    const titleLabel = titleField ? titleField.Label : 'N/A';
-    const titleData = titleField ? titleField.Data : '';
-    const descriptionLabel = descriptionField ? descriptionField.Label : '';
-    const descriptionData = descriptionField ? descriptionField.Data : 'N/A';
-    const dateLabel = dateField ? dateField.Label : '';
-    const dateData = dateField ? dateField.Data : 'N/A';
+    const convertBooleanToString = itemStatus => {
+      return itemStatus ? 'Yes' : 'No';
+    };
 
     return (
-      <>
-        <DocumentDetailsCell title={titleLabel + ':'} description={titleData} />
+      <View style={styles.dataContainer}>
+        {Array.isArray(Field) &&
+          Field.map((item, index) => {
+            const {Label, Data} = item;
+            const title = Label;
+            let description = Data;
+            if (title == 'Date') {
+              description = getFormattedDate(description);
+            }
+            return (
+              <DocumentDetailsCell
+                key={index}
+                title={title}
+                description={description}
+              />
+            );
+          })}
+        <DocumentDetailsCell title={'Attachment'} suffix={imageSource} />
         <DocumentDetailsCell
-          title={descriptionLabel + ':'}
-          description={descriptionData}
+          title={'Declared'}
+          description={convertBooleanToString(isDeclared)}
         />
         <DocumentDetailsCell
-          title={dateLabel + ':'}
-          description={getFormattedDate(dateData)}
+          title={'Has Copy'}
+          description={convertBooleanToString(hasCopy)}
         />
         <DocumentDetailsCell
-          title={dateLabel + ':'}
-          description={getFormattedDate(dateData)}
+          title={'Has Attachments'}
+          description={convertBooleanToString(hasAttachments)}
         />
-        <DocumentDetailsCell
-          title={dateLabel + ':'}
-          description={getFormattedDate(dateData)}
-        />
-      </>
+      </View>
     );
   };
 
@@ -135,33 +184,26 @@ export default function DocumentDetails({navigation, route}) {
         backButton={true}
         onBackPress={() => navigation.goBack()}
       />
-      <FlatList
-        ref={menulistRef}
-        data={menuItems}
-        horizontal={true}
-        renderItem={renderMenuItems}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-      />
+      <View>
+        <FlatList
+          ref={menulistRef}
+          data={menuItems}
+          horizontal={true}
+          renderItem={renderMenuItems}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
       <ScrollView>{renderFileCells()}</ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  viewContainer: {
-    padding: 10,
-    borderBottomWidth: 1,
-    backgroundColor: AppColors.white,
-    borderBottomColor: AppColors.gray,
+  container: {
+    flex: 1,
   },
-  title: {
-    fontFamily: AppFontFamily.semiBold,
-    color: AppColors.customBlue,
-  },
-  description: {
-    fontFamily: AppFontFamily.regular,
-    color: AppColors.black,
+  dataContainer: {
+    marginVertical: 10,
   },
 });
