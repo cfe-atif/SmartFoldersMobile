@@ -38,9 +38,11 @@ const styles = StyleSheet.create({
   description: {
     fontFamily: AppFontFamily.regular,
     color: AppColors.black,
+    marginTop: 2,
   },
   image: {
     height: 25,
     width: 25,
+    marginVertical: 6,
   },
 });

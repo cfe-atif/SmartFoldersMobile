@@ -10,6 +10,7 @@ import {
   treeAPIData,
   treeAPIRRData,
   treeFoldersRequest,
+  setSelectedFolder,
 } from '../../../redux/reducers/DocumentsReducer';
 import {
   mapAPICallError,
@@ -401,7 +402,7 @@ export default function Home({navigation}) {
         title={n}
         onPressFolder={() => {
           handleFolderNavItemsList(item);
-          // callTreeAPIFolderRequest(ph);
+          dispatch(setSelectedFolder(item));
         }}
         onPressFiles={() => {
           navigation.navigate(AppRoutes.DocumentsList, {

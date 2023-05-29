@@ -4,6 +4,20 @@ import {responseHasError} from '../../utils/HelperFunctions';
 import {clearStore} from './AuthenticationReducer';
 import Applogger from './../../helpers/AppLogger';
 
+export const setSelectedFolder = createAsyncThunk(
+  'DocumentsReducer/setSelectedFolder',
+  async payload => {
+    return payload;
+  },
+);
+
+export const setSelectedDocument = createAsyncThunk(
+  'DocumentsReducer/setSelectedDocument',
+  async payload => {
+    return payload;
+  },
+);
+
 export const treeAPIData = createAsyncThunk(
   'DocumentsReducer/treeAPIData',
   async payload => {
@@ -56,9 +70,21 @@ export const createNewDocumentData = createAsyncThunk(
   },
 );
 
+export const getViewPropertiesData = createAsyncThunk(
+  'DocumentsReducer/getViewPropertiesData',
+  async payload => {
+    const response = await DocumentsAPIServices.apiGetViewPropertiesData(
+      payload,
+    );
+    return response.data;
+  },
+);
+
 const initialState = {
   loading: false,
   error: null,
+  selectedFolder: null,
+  selectedDocument: null,
   folderType: null,
   documentType: null,
   treeData: null,
@@ -66,9 +92,24 @@ const initialState = {
   newFolderData: null,
   folders: null,
   folderDocuments: null,
+  viewPropertiesData: null,
 };
 
 export const DocumentsReducer = createReducer(initialState, {
+  [setSelectedFolder.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      selectedFolder: action.payload,
+    };
+  },
+
+  [setSelectedDocument.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      selectedDocument: action.payload,
+    };
+  },
+
   [treeAPIData.pending]: (state, _) => {
     return {
       ...state,
@@ -198,7 +239,7 @@ export const DocumentsReducer = createReducer(initialState, {
   [createNewFolderData.rejected]: (state, _) => {
     return {
       ...state,
-      loading: true,
+      loading: false,
       error: null,
     };
   },
@@ -222,7 +263,31 @@ export const DocumentsReducer = createReducer(initialState, {
   [createNewDocumentData.rejected]: (state, _) => {
     return {
       ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [getViewPropertiesData.pending]: (state, _) => {
+    return {
+      ...state,
       loading: true,
+      error: null,
+      viewPropertiesData: null,
+    };
+  },
+  [getViewPropertiesData.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      viewPropertiesData: action.payload,
+    };
+  },
+  [getViewPropertiesData.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
       error: null,
     };
   },

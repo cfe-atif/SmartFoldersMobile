@@ -49,6 +49,14 @@ function apiCreateNewDocumentData(payload) {
   return AxiosEvent.get(path);
 }
 
+function apiGetViewPropertiesData(payload) {
+  Applogger('Payload at apiGetViewPropertiesData', payload);
+  const {DB, USER, HIT, BUN, DocType} = payload;
+  var path = `servlets.CH_VaultJson?DB=${DB}&USER=${USER}&INT=191&BUN=${BUN}&HIT=${HIT}&DOCTYPE=${DocType}&EDIT=true`;
+  Applogger('Path at apiGetViewPropertiesData', path);
+  return AxiosEvent.get(path);
+}
+
 export const DocumentsAPIServices = {
   apiTreeAPIData,
   apiTreeAPIRRData,
@@ -56,4 +64,5 @@ export const DocumentsAPIServices = {
   apiTreeFoldersRequest,
   apiCreateNewFolderData,
   apiCreateNewDocumentData,
+  apiGetViewPropertiesData,
 };

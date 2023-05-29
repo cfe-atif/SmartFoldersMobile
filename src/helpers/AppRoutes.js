@@ -20,6 +20,12 @@ const AppRoutes = {
   ReminderDetails: 'ReminderDetails',
   AddUserToGroup: 'AddUserToGroup',
   DocumentsList: 'DocumentsList',
+  CheckoutDocument: 'CheckoutDocument',
+  DocumentIndex: 'DocumentIndex',
+  DocumentProperties: 'DocumentProperties',
+  DocumentVersionInfo: 'DocumentVersionInfo',
+  EditDocument: 'EditDocument',
+  SignDocument: 'SignDocument',
 };
 
 export default AppRoutes;

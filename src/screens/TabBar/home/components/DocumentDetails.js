@@ -1,28 +1,16 @@
-import React, {useEffect, useRef} from 'react';
-import {StyleSheet, View, ScrollView, Text, FlatList} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import React, {useRef} from 'react';
+import {StyleSheet, View, ScrollView, FlatList} from 'react-native';
 import {get} from 'lodash';
 import AppImages from '../../../../helpers/AppImages';
-import AppColors from '../../../../helpers/AppColors';
 import Applogger from '../../../../helpers/AppLogger';
-import AppFontSize from '../../../../helpers/AppFontSize';
-import AppFontFamily from '../../../../helpers/AppFontFamily';
 import Header from '../../../../components/headers/Header';
-import SFLoader from '../../../../components/loaders/SFLoader';
 import MenuButton from '../../../../components/buttons/MenuButton';
 import DocumentDetailsCell from '../../../../components/cells/DocumentDetailsCell';
+import AppRoutes from '../../../../helpers/AppRoutes';
 
 export default function DocumentDetails({navigation, route}) {
-  const dispatch = useDispatch();
-
-  const {user, dataBaseNumber} = useSelector(
-    state => state.AuthenticationReducer,
-  );
-  const {treeData, folders, loading} = useSelector(
-    state => state.DocumentsReducer,
-  );
-
   const menulistRef = useRef(null);
+
   const selectedDocument = get(route, 'params.selectedDocument', null);
 
   const menuItems = [
@@ -30,58 +18,73 @@ export default function DocumentDetails({navigation, route}) {
       title: 'Properties',
       image: AppImages.addDocument,
       onPress: () => {
-        Applogger('Clicked Add Document');
+        Applogger('Clicked Document Properties');
+        navigation.navigate(AppRoutes.DocumentProperties, {
+          selectedDocument: selectedDocument,
+        });
       },
     },
     {
       title: 'Edit',
       image: AppImages.addDocument,
       onPress: () => {
-        Applogger('Clicked Add Document');
+        Applogger('Edit Document');
+        navigation.navigate(AppRoutes.EditDocument, {
+          selectedDocument: selectedDocument,
+        });
       },
     },
     {
       title: 'Index Card',
       image: AppImages.addDocument,
       onPress: () => {
-        Applogger('Clicked Add Document');
+        Applogger('Document Index Card');
+        navigation.navigate(AppRoutes.DocumentIndex, {
+          selectedDocument: selectedDocument,
+        });
       },
     },
     {
       title: 'Checkout',
       image: AppImages.addDocument,
       onPress: () => {
-        Applogger('Clicked Add Document');
+        Applogger('Checkout Document');
+        navigation.navigate(AppRoutes.CheckoutDocument, {
+          selectedDocument: selectedDocument,
+        });
       },
     },
     {
       title: 'Page Version info',
       image: AppImages.addDocument,
       onPress: () => {
-        Applogger('Clicked Add Document');
+        Applogger('Document Version Info');
+        navigation.navigate(AppRoutes.DocumentVersionInfo, {
+          selectedDocument: selectedDocument,
+        });
       },
     },
     {
       title: 'Add Reminder',
       image: AppImages.addDocument,
       onPress: () => {
-        Applogger('Clicked Add Document');
+        Applogger('Add Reminder To Document');
+        navigation.navigate(AppRoutes.AddOrUpdateReminder, {
+          selectedDocument: selectedDocument,
+        });
       },
     },
     {
       title: 'Sign',
       image: AppImages.addDocument,
       onPress: () => {
-        Applogger('Clicked Add Document');
+        Applogger('Sign Document');
+        navigation.navigate(AppRoutes.SignDocument, {
+          selectedDocument: selectedDocument,
+        });
       },
     },
   ];
-
-  useEffect(() => {
-    console.log('====================================');
-    console.log(selectedDocument);
-    console.log('====================================');
-  }, [selectedDocument]);
 
   const renderMenuItems = ({item, index}) => {
     const {title, image, onPress} = item;
@@ -129,6 +132,10 @@ export default function DocumentDetails({navigation, route}) {
     }
   };
 
+  const convertBooleanToString = itemStatus => {
+    return itemStatus ? 'Yes' : 'No';
+  };
+
   const renderFileCells = () => {
     const suffix = getSuffix(selectedDocument);
     const imageSource = suffix ? `${AppImages[suffix]}` : null;
@@ -136,10 +143,6 @@ export default function DocumentDetails({navigation, route}) {
     const isDeclared = get(selectedDocument, 'Declared', false);
     const hasCopy = get(selectedDocument, 'HasCopy', false);
     const hasAttachments = get(selectedDocument, 'HasAttachments', false);
-
-    const convertBooleanToString = itemStatus => {
-      return itemStatus ? 'Yes' : 'No';
-    };
 
     return (
       <View style={styles.dataContainer}>
@@ -178,7 +181,6 @@ export default function DocumentDetails({navigation, route}) {
 
   return (
     <View style={styles.container}>
-      {loading && <SFLoader />}
       <Header
         title="Document Details"
         backButton={true}

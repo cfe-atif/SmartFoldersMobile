@@ -4,7 +4,10 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
 import {showFaliureToast} from '../../../../helpers/AppToasts';
 import {get} from 'lodash';
-import {treeFolderDocsRequest} from '../../../../redux/reducers/DocumentsReducer';
+import {
+  setSelectedDocument,
+  treeFolderDocsRequest,
+} from '../../../../redux/reducers/DocumentsReducer';
 import {
   mapAPICallError,
   responseHasError,
@@ -154,6 +157,7 @@ export default function DocumentsList({navigation, route}) {
         suffix={imageSource}
         isDeclared={isDeclared}
         onPress={() => {
+          dispatch(setSelectedDocument(item));
           navigation.navigate(AppRoutes.DocumentDetails, {
             selectedDocument: item,
           });

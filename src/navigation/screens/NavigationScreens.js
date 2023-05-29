@@ -19,6 +19,12 @@ import DocumentDetails from '../../screens/TabBar/home/components/DocumentDetail
 import ReminderDetails from '../../screens/TabBar/reminders/components/ReminderDetails';
 import AddUserToGroup from '../../screens/TabBar/chat/components/AddUserToGroup';
 import DocumentsList from '../../screens/TabBar/home/components/DocumentsList';
+import CheckoutDocument from '../../screens/TabBar/home/components/documentDetails/CheckoutDocument';
+import DocumentIndex from '../../screens/TabBar/home/components/documentDetails/DocumentIndex';
+import DocumentProperties from '../../screens/TabBar/home/components/documentDetails/DocumentProperties';
+import DocumentVersionInfo from '../../screens/TabBar/home/components/documentDetails/DocumentVersionInfo';
+import EditDocument from '../../screens/TabBar/home/components/documentDetails/EditDocument';
+import SignDocument from '../../screens/TabBar/home/components/documentDetails/SignDocument';
 
 const headerOptions = {
   headerShown: false,
@@ -103,6 +109,30 @@ const NavigationScreens = {
   },
   AddUserToGroup: {
     screen: AddUserToGroup,
+    options: headerOptions,
+  },
+  CheckoutDocument: {
+    screen: CheckoutDocument,
+    options: headerOptions,
+  },
+  DocumentIndex: {
+    screen: DocumentIndex,
+    options: headerOptions,
+  },
+  DocumentProperties: {
+    screen: DocumentProperties,
+    options: headerOptions,
+  },
+  DocumentVersionInfo: {
+    screen: DocumentVersionInfo,
+    options: headerOptions,
+  },
+  EditDocument: {
+    screen: EditDocument,
+    options: headerOptions,
+  },
+  SignDocument: {
+    screen: SignDocument,
     options: headerOptions,
   },
   BottomNavigation: {

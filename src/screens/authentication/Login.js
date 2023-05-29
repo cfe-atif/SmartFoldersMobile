@@ -16,7 +16,6 @@ import AppColors from '../../helpers/AppColors';
 import AppImages from '../../helpers/AppImages';
 import AppRoutes from '../../helpers/AppRoutes';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
-import SimpleButton from '../../components/buttons/SimpleButton';
 import PrimaryTextField from '../../components/textFields/PrimaryTextField';
 import SFLoader from '../../components/loaders/SFLoader';
 import SFHeading from '../../components/texts/SFHeading';
@@ -99,10 +98,6 @@ export default function Login({navigation}) {
       });
   };
 
-  const handleForgotPassword = () => {
-    navigation.navigate(AppRoutes.ForgotPassword);
-  };
-
   return (
     <KeyboardAwareScrollView style={styles.container}>
       {loading && <SFLoader />}
@@ -127,10 +122,6 @@ export default function Login({navigation}) {
         placeholder={'Server'}
         value={loginBody.server}
         onChange={text => setLoginBody({...loginBody, server: text})}
-      />
-      <SimpleButton
-        title="Forgot Password ?"
-        onPress={() => handleForgotPassword()}
       />
       <PrimaryButton title="Login" onPress={() => handleLoginPress()} />
     </KeyboardAwareScrollView>
