@@ -4,6 +4,13 @@ import {responseHasError} from '../../utils/HelperFunctions';
 import {clearStore} from './AuthenticationReducer';
 import Applogger from './../../helpers/AppLogger';
 
+export const setSelectedDocType = createAsyncThunk(
+  'DocumentsReducer/setSelectedDocType',
+  async payload => {
+    return payload;
+  },
+);
+
 export const setSelectedFolder = createAsyncThunk(
   'DocumentsReducer/setSelectedFolder',
   async payload => {
@@ -80,11 +87,30 @@ export const getViewPropertiesData = createAsyncThunk(
   },
 );
 
+export const getVersionInfoData = createAsyncThunk(
+  'DocumentsReducer/getVersionInfoData',
+  async payload => {
+    const response = await DocumentsAPIServices.apiGetVersionInfoData(payload);
+    return response.data;
+  },
+);
+
+export const getDocumentIndexData = createAsyncThunk(
+  'DocumentsReducer/getDocumentIndexData',
+  async payload => {
+    const response = await DocumentsAPIServices.apiGetDocumentIndexData(
+      payload,
+    );
+    return response.data;
+  },
+);
+
 const initialState = {
   loading: false,
   error: null,
   selectedFolder: null,
   selectedDocument: null,
+  selectedDocType: null,
   folderType: null,
   documentType: null,
   treeData: null,
@@ -93,9 +119,18 @@ const initialState = {
   folders: null,
   folderDocuments: null,
   viewPropertiesData: null,
+  versionInfoData: null,
+  documentIndexData: null,
 };
 
 export const DocumentsReducer = createReducer(initialState, {
+  [setSelectedDocType.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      selectedDocType: action.payload,
+    };
+  },
+
   [setSelectedFolder.fulfilled]: (state, action) => {
     return {
       ...state,
@@ -175,7 +210,7 @@ export const DocumentsReducer = createReducer(initialState, {
   [treeFolderDocsRequest.pending]: (state, _) => {
     return {
       ...state,
-      loading: false,
+      loading: true,
       error: null,
       folderDocuments: null,
     };
@@ -199,7 +234,7 @@ export const DocumentsReducer = createReducer(initialState, {
   [treeFoldersRequest.pending]: (state, _) => {
     return {
       ...state,
-      loading: false,
+      loading: true,
       error: null,
       folders: null,
     };
@@ -285,6 +320,54 @@ export const DocumentsReducer = createReducer(initialState, {
     };
   },
   [getViewPropertiesData.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [getVersionInfoData.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      versionInfoData: null,
+    };
+  },
+  [getVersionInfoData.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      versionInfoData: action.payload,
+    };
+  },
+  [getVersionInfoData.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [getDocumentIndexData.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      documentIndexData: null,
+    };
+  },
+  [getDocumentIndexData.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      documentIndexData: action.payload,
+    };
+  },
+  [getDocumentIndexData.rejected]: (state, _) => {
     return {
       ...state,
       loading: false,

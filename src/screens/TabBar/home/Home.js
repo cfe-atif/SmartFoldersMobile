@@ -402,9 +402,9 @@ export default function Home({navigation}) {
         title={n}
         onPressFolder={() => {
           handleFolderNavItemsList(item);
-          dispatch(setSelectedFolder(item));
         }}
         onPressFiles={() => {
+          dispatch(setSelectedFolder(item));
           navigation.navigate(AppRoutes.DocumentsList, {
             selectedFolder: item,
           });

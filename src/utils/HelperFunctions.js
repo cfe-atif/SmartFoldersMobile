@@ -3,7 +3,7 @@ import AppConstants from '../helpers/AppConstants';
 
 const error = 'Error';
 
-export const mapAPICallError = (errorMsg, isLoginError = false) => {
+export function mapAPICallError(errorMsg, isLoginError = false) {
   Applogger('Error to map at mapAPICallError = ', errorMsg);
   var errorMessage = '';
   if (errorMsg.hasOwnProperty(error)) {
@@ -36,9 +36,9 @@ export const mapAPICallError = (errorMsg, isLoginError = false) => {
   } else {
     return AppConstants.toastMessages.unknownError;
   }
-};
+}
 
-export const isUnAuthenticatedUser = response => {
+export function isUnAuthenticatedUser(response) {
   var status = false;
   if (response.hasOwnProperty(error)) {
     if (
@@ -50,29 +50,29 @@ export const isUnAuthenticatedUser = response => {
     }
   }
   return status;
-};
+}
 
-export const responseHasError = response => {
+export function responseHasError(response) {
   if (response.hasOwnProperty(error)) {
     return true;
   } else {
     return false;
   }
-};
+}
 
-export const responseHasError2 = (response, name) => {
+export function responseHasError2(response, name) {
   if (response.hasOwnProperty(name)) {
     return true;
   } else {
     return false;
   }
-};
+}
 
-export const getCurrentData = currentData => {
+export function getCurrentData(currentData) {
   return currentData;
-};
+}
 
-export const getDataBaseName = response => {
+export function getDataBaseName(response) {
   if (response.hasOwnProperty('Database')) {
     if (Array.isArray(response.Database) > 0) {
       return response.Database[0].Name;
@@ -82,9 +82,9 @@ export const getDataBaseName = response => {
   } else {
     return '';
   }
-};
+}
 
-export const getDataBaseNumber = response => {
+export function getDataBaseNumber(response) {
   if (response.hasOwnProperty('Database')) {
     if (Array.isArray(response.Database) > 0) {
       return response.Database[0].Number;
@@ -94,9 +94,9 @@ export const getDataBaseNumber = response => {
   } else {
     return '';
   }
-};
+}
 
-export const getAttachmentList = (attachmentList, payload) => {
+export function getAttachmentList(attachmentList, payload) {
   const {a_Index, type} = payload;
   if (a_Index !== null) {
     var myArray1 = attachmentList;
@@ -112,7 +112,7 @@ export const getAttachmentList = (attachmentList, payload) => {
   } else {
     return [];
   }
-};
+}
 
 export function getConvertedTime(date) {
   if (typeof date !== 'object') {
@@ -159,4 +159,39 @@ export function getConvertedTime(date) {
 
 export function truncatedString(str, n) {
   return str?.length > n ? str?.slice(0, n - 1) + '...' : str;
+}
+
+export function getSuffix(document) {
+  let suffix = null;
+  let docSuffix = null;
+  if (document) {
+    if (Array.isArray(get(document, 'Page', []))) {
+      docSuffix = get(document, 'Page[0].Suffix', null);
+      if (docSuffix) {
+        suffix = docSuffix;
+      }
+    } else {
+      docSuffix = get(document, 'Page.Suffix', null);
+      if (docSuffix) {
+        suffix = docSuffix;
+      }
+    }
+  }
+  return suffix;
+}
+
+export function getFormattedDate(dateObj) {
+  if (get(dateObj, 'Date.Day', null)) {
+    const date = dateObj.Date;
+    let day = date.Day;
+    let month = date.Month;
+    let year = date.Year;
+    return `${day}/${month}/${year}`;
+  } else {
+    return null;
+  }
+}
+
+export function convertBooleanToString(itemStatus) {
+  return itemStatus ? 'Yes' : 'No';
 }

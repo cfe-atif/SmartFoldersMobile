@@ -57,6 +57,22 @@ function apiGetViewPropertiesData(payload) {
   return AxiosEvent.get(path);
 }
 
+function apiGetVersionInfoData(payload) {
+  Applogger('Payload at apiGetVersionInfoData', payload);
+  const {DB, USER, HIT, BUN, SRC, DocType} = payload;
+  var path = `servlets.CH_VaultJson?DB=${DB}&USER=${USER}&INT=455&SRC=${SRC}&BUN=${BUN}&Doc=${HIT}&DOCTYPE=${DocType}`;
+  Applogger('Path at apiGetVersionInfoData', path);
+  return AxiosEvent.get(path);
+}
+
+function apiGetDocumentIndexData(payload) {
+  Applogger('Payload at apiGetDocumentIndexData', payload);
+  const {DB, USER, HIT, BUN, SRC, DocType, TotalHITS} = payload;
+  var path = `servlets.CH_VaultJson?DB=${DB}&USER=${USER}&INT=4&SRC=${SRC}&BUN=${BUN}&TOTALHITS=${TotalHITS}&HIT=${HIT}&DOCTYPE=${DocType}&EDIT=false`;
+  Applogger('Path at apiGetDocumentIndexData', path);
+  return AxiosEvent.get(path);
+}
+
 export const DocumentsAPIServices = {
   apiTreeAPIData,
   apiTreeAPIRRData,
@@ -65,4 +81,6 @@ export const DocumentsAPIServices = {
   apiCreateNewFolderData,
   apiCreateNewDocumentData,
   apiGetViewPropertiesData,
+  apiGetVersionInfoData,
+  apiGetDocumentIndexData,
 };

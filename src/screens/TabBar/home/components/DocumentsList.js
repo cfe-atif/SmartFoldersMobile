@@ -6,12 +6,15 @@ import {showFaliureToast} from '../../../../helpers/AppToasts';
 import {get} from 'lodash';
 import {
   setSelectedDocument,
+  setSelectedDocType,
   treeFolderDocsRequest,
 } from '../../../../redux/reducers/DocumentsReducer';
 import {
   mapAPICallError,
   responseHasError,
   isUnAuthenticatedUser,
+  getSuffix,
+  getFormattedDate,
 } from '../../../../utils/HelperFunctions';
 import Header from '../../../../components/headers/Header';
 import SFLoader from '../../../../components/loaders/SFLoader';
@@ -27,13 +30,11 @@ export default function DocumentsList({navigation, route}) {
   const {user, dataBaseNumber} = useSelector(
     state => state.AuthenticationReducer,
   );
-  const {folderDocuments, loading} = useSelector(
+  const {loading, selectedFolder, folderDocuments} = useSelector(
     state => state.DocumentsReducer,
   );
 
   const [localDocumentsList, setLocalDocumentsList] = useState([]);
-
-  const selectedFolder = get(route, 'params.selectedFolder', null);
 
   const localSearchResults = Array.isArray(
     get(folderDocuments, 'Search_Result', []),
@@ -45,7 +46,7 @@ export default function DocumentsList({navigation, route}) {
     if (selectedFolder) {
       callTreeAPIFolderDocsRequest();
     }
-  }, []);
+  }, [selectedFolder]);
 
   useEffect(() => {
     for (let index = 0; index < localSearchResults.length; index++) {
@@ -54,6 +55,7 @@ export default function DocumentsList({navigation, route}) {
         const localDocsArray = Array.isArray(get(element, 'Document', []))
           ? get(element, 'Document', [])
           : [get(element, 'Document', [])];
+        dispatch(setSelectedDocType(get(element, 'DocType', '')));
         setLocalDocumentsList(localDocsArray);
         break;
       }
@@ -97,37 +99,6 @@ export default function DocumentsList({navigation, route}) {
   const handleNoRecordView = () => {
     if (!localDocumentsList.length > 0) {
       return <SFNoRecord title={`No Documents`} textStyle={styles.noRecord} />;
-    } else {
-      return null;
-    }
-  };
-
-  const getSuffix = document => {
-    let suffix = null;
-    let docSuffix = null;
-    if (document) {
-      if (Array.isArray(get(document, 'Page', []))) {
-        docSuffix = get(document, 'Page[0].Suffix', null);
-        if (docSuffix) {
-          suffix = docSuffix;
-        }
-      } else {
-        docSuffix = get(document, 'Page.Suffix', null);
-        if (docSuffix) {
-          suffix = docSuffix;
-        }
-      }
-    }
-    return suffix;
-  };
-
-  const getFormattedDate = dateObj => {
-    if (get(dateObj, 'Date.Day', null)) {
-      const date = dateObj.Date;
-      let day = date.Day;
-      let month = date.Month;
-      let year = date.Year;
-      return `${day}/${month}/${year}`;
     } else {
       return null;
     }

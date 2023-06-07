@@ -1,17 +1,21 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {StyleSheet, View, ScrollView, FlatList} from 'react-native';
 import {get} from 'lodash';
+import {useSelector} from 'react-redux';
+import {
+  getSuffix,
+  getFormattedDate,
+  convertBooleanToString,
+} from '../../../../utils/HelperFunctions';
 import AppImages from '../../../../helpers/AppImages';
 import Applogger from '../../../../helpers/AppLogger';
+import AppRoutes from '../../../../helpers/AppRoutes';
 import Header from '../../../../components/headers/Header';
 import MenuButton from '../../../../components/buttons/MenuButton';
 import DocumentDetailsCell from '../../../../components/cells/DocumentDetailsCell';
-import AppRoutes from '../../../../helpers/AppRoutes';
 
 export default function DocumentDetails({navigation, route}) {
-  const menulistRef = useRef(null);
-
-  const selectedDocument = get(route, 'params.selectedDocument', null);
+  const {selectedDocument} = useSelector(state => state.DocumentsReducer);
 
   const menuItems = [
     {
@@ -89,94 +93,53 @@ export default function DocumentDetails({navigation, route}) {
   const renderMenuItems = ({item, index}) => {
     const {title, image, onPress} = item;
     return (
-      <MenuButton
-        key={index}
-        title={title}
-        image={image}
-        onPress={() => {
-          onPress();
-          menulistRef?.current.scrollToIndex({animated: true, index: index});
-        }}
-      />
+      <MenuButton key={index} title={title} image={image} onPress={onPress} />
     );
-  };
-
-  const getSuffix = document => {
-    let suffix = null;
-    let docSuffix = null;
-    if (document) {
-      if (Array.isArray(get(document, 'Page', []))) {
-        docSuffix = get(document, 'Page[0].Suffix', null);
-        if (docSuffix) {
-          suffix = docSuffix;
-        }
-      } else {
-        docSuffix = get(document, 'Page.Suffix', null);
-        if (docSuffix) {
-          suffix = docSuffix;
-        }
-      }
-    }
-    return suffix;
-  };
-
-  const getFormattedDate = dateObj => {
-    if (get(dateObj, 'Date.Day', null)) {
-      const date = dateObj.Date;
-      let day = date.Day;
-      let month = date.Month;
-      let year = date.Year;
-      return `${day}/${month}/${year}`;
-    } else {
-      return null;
-    }
-  };
-
-  const convertBooleanToString = itemStatus => {
-    return itemStatus ? 'Yes' : 'No';
   };
 
   const renderFileCells = () => {
-    const suffix = getSuffix(selectedDocument);
-    const imageSource = suffix ? `${AppImages[suffix]}` : null;
-    const {Field} = get(selectedDocument, 'Column.User', null);
-    const isDeclared = get(selectedDocument, 'Declared', false);
-    const hasCopy = get(selectedDocument, 'HasCopy', false);
-    const hasAttachments = get(selectedDocument, 'HasAttachments', false);
+    if (selectedDocument) {
+      const suffix = getSuffix(selectedDocument);
+      const imageSource = suffix ? `${AppImages[suffix]}` : null;
+      const {Field} = get(selectedDocument, 'Column.User', null);
+      const isDeclared = get(selectedDocument, 'Declared', false);
+      const hasCopy = get(selectedDocument, 'HasCopy', false);
+      const hasAttachments = get(selectedDocument, 'HasAttachments', false);
 
-    return (
-      <View style={styles.dataContainer}>
-        {Array.isArray(Field) &&
-          Field.map((item, index) => {
-            const {Label, Data} = item;
-            const title = Label;
-            let description = Data;
-            if (title == 'Date') {
-              description = getFormattedDate(description);
-            }
-            return (
-              <DocumentDetailsCell
-                key={index}
-                title={title}
-                description={description}
-              />
-            );
-          })}
-        <DocumentDetailsCell title={'Attachment'} suffix={imageSource} />
-        <DocumentDetailsCell
-          title={'Declared'}
-          description={convertBooleanToString(isDeclared)}
-        />
-        <DocumentDetailsCell
-          title={'Has Copy'}
-          description={convertBooleanToString(hasCopy)}
-        />
-        <DocumentDetailsCell
-          title={'Has Attachments'}
-          description={convertBooleanToString(hasAttachments)}
-        />
-      </View>
-    );
+      return (
+        <View style={styles.dataContainer}>
+          {Array.isArray(Field) &&
+            Field.map((item, index) => {
+              const {Label, Data} = item;
+              const title = Label;
+              let description = Data;
+              if (title == 'Date') {
+                description = getFormattedDate(description);
+              }
+              return (
+                <DocumentDetailsCell
+                  key={index}
+                  title={title}
+                  description={description}
+                />
+              );
+            })}
+          <DocumentDetailsCell title={'Attachment'} suffix={imageSource} />
+          <DocumentDetailsCell
+            title={'Declared'}
+            description={convertBooleanToString(isDeclared)}
+          />
+          <DocumentDetailsCell
+            title={'Has Copy'}
+            description={convertBooleanToString(hasCopy)}
+          />
+          <DocumentDetailsCell
+            title={'Has Attachments'}
+            description={convertBooleanToString(hasAttachments)}
+          />
+        </View>
+      );
+    }
   };
 
   return (
@@ -188,7 +151,6 @@ export default function DocumentDetails({navigation, route}) {
       />
       <View>
         <FlatList
-          ref={menulistRef}
           data={menuItems}
           horizontal={true}
           renderItem={renderMenuItems}
