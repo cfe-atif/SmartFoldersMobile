@@ -2,13 +2,13 @@ import React, {useRef, useState} from 'react';
 import {StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
 import {useSelector} from 'react-redux';
 import {get} from 'lodash';
-import AppColors from '../../../../helpers/AppColors';
-import AppFontSize from '../../../../helpers/AppFontSize';
-import AppFontFamily from '../../../../helpers/AppFontFamily';
-import Header from '../../../../components/headers/Header';
-import SFLoader from '../../../../components/loaders/SFLoader';
-import DocumentView from '../../../../components/addDocuments/DocumentView';
-import SFDescription from '../../../../components/texts/SFDescription';
+import AppColors from '../../../../../helpers/AppColors';
+import AppFontSize from '../../../../../helpers/AppFontSize';
+import AppFontFamily from '../../../../../helpers/AppFontFamily';
+import Header from '../../../../../components/headers/Header';
+import SFLoader from '../../../../../components/loaders/SFLoader';
+import DocumentView from '../../../../../components/addDocuments/DocumentView';
+import SFDescription from '../../../../../components/texts/SFDescription';
 
 export default function AddDocument({navigation, route}) {
   const docTypeListRef = useRef(null);

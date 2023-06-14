@@ -2,27 +2,27 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
-import {showFaliureToast} from '../../../../helpers/AppToasts';
+import {showFaliureToast} from '../../../../../helpers/AppToasts';
 import {get} from 'lodash';
 import {
   setSelectedDocument,
   setSelectedDocType,
   treeFolderDocsRequest,
-} from '../../../../redux/reducers/DocumentsReducer';
+} from '../../../../../redux/reducers/DocumentsReducer';
 import {
   mapAPICallError,
   responseHasError,
   isUnAuthenticatedUser,
   getSuffix,
   getFormattedDate,
-} from '../../../../utils/HelperFunctions';
-import Header from '../../../../components/headers/Header';
-import SFLoader from '../../../../components/loaders/SFLoader';
-import FileCell from '../../../../components/cells/FileCell';
-import SFNoRecord from '../../../../components/texts/SFNoRecord';
-import Applogger from '../../../../helpers/AppLogger';
-import AppImages from './../../../../helpers/AppImages';
-import AppRoutes from './../../../../helpers/AppRoutes';
+} from '../../../../../utils/HelperFunctions';
+import Header from '../../../../../components/headers/Header';
+import SFLoader from '../../../../../components/loaders/SFLoader';
+import FileCell from '../../../../../components/cells/FileCell';
+import SFNoRecord from '../../../../../components/texts/SFNoRecord';
+import Applogger from '../../../../../helpers/AppLogger';
+import AppImages from '../../../../../helpers/AppImages';
+import AppRoutes from '../../../../../helpers/AppRoutes';
 
 export default function DocumentsList({navigation, route}) {
   const dispatch = useDispatch();

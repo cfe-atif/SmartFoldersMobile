@@ -1,15 +1,15 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {get} from 'lodash';
-import Header from '../../../../../components/headers/Header';
+import Header from '../../../../../../components/headers/Header';
 
-export default function DocumentIndex({navigation, route}) {
+export default function CheckoutDocument({navigation, route}) {
   const selectedDocument = get(route, 'params.selectedDocument', null);
 
   return (
     <View style={styles.container}>
       <Header
-        title="Document Index"
+        title="Checkout Document"
         backButton={true}
         onBackPress={() => navigation.goBack()}
       />

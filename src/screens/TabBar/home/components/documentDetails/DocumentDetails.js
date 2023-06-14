@@ -6,13 +6,13 @@ import {
   getSuffix,
   getFormattedDate,
   convertBooleanToString,
-} from '../../../../utils/HelperFunctions';
-import AppImages from '../../../../helpers/AppImages';
-import Applogger from '../../../../helpers/AppLogger';
-import AppRoutes from '../../../../helpers/AppRoutes';
-import Header from '../../../../components/headers/Header';
-import MenuButton from '../../../../components/buttons/MenuButton';
-import DocumentDetailsCell from '../../../../components/cells/DocumentDetailsCell';
+} from '../../../../../utils/HelperFunctions';
+import AppImages from '../../../../../helpers/AppImages';
+import Applogger from '../../../../../helpers/AppLogger';
+import AppRoutes from '../../../../../helpers/AppRoutes';
+import Header from '../../../../../components/headers/Header';
+import MenuButton from '../../../../../components/buttons/MenuButton';
+import DocumentDetailsCell from '../../../../../components/cells/DocumentDetailsCell';
 
 export default function DocumentDetails({navigation, route}) {
   const {selectedDocument} = useSelector(state => state.DocumentsReducer);

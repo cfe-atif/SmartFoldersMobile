@@ -12,7 +12,7 @@ export default function FolderTypeButton({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={isSelected ? styles.folderButton : styles.selFolderButton}>
+      style={isSelected ? styles.selFolderButton : styles.folderButton}>
       <Text
         style={
           isSelected ? styles.selFolderButtonText : styles.folderButtonText
@@ -50,12 +50,12 @@ const styles = StyleSheet.create({
   },
   selFolderButtonText: {
     fontSize: AppFontSize.size16,
-    color: AppColors.customBlue,
+    color: AppColors.white,
     fontFamily: AppFontFamily.bold,
   },
   folderButtonText: {
     fontSize: AppFontSize.size16,
-    color: AppColors.white,
+    color: AppColors.customBlue,
     fontFamily: AppFontFamily.bold,
   },
 });

@@ -7,24 +7,24 @@ import {
   isUnAuthenticatedUser,
   mapAPICallError,
   responseHasError,
-} from '../../../../utils/HelperFunctions';
+} from '../../../../../utils/HelperFunctions';
 import {
   getRecentAndSavedSearches,
   deleteSavedSearch,
-} from '../../../../redux/reducers/RecentSearchesReducer';
+} from '../../../../../redux/reducers/RecentSearchesReducer';
 import {
   showFaliureToast,
   showSuccessToast,
-} from '../../../../helpers/AppToasts';
-import Applogger from '../../../../helpers/AppLogger';
-import AppColors from './../../../../helpers/AppColors';
-import AppRoutes from './../../../../helpers/AppRoutes';
-import AppFontSize from './../../../../helpers/AppFontSize';
-import AppFontFamily from './../../../../helpers/AppFontFamily';
-import Header from '../../../../components/headers/Header';
-import SFLoader from './../../../../components/loaders/SFLoader';
-import RecentSearchCell from './../../../../components/cells/RecentSearchCell';
-import ReminderFilterButton from '../../../../components/buttons/ReminderFilterButton';
+} from '../../../../../helpers/AppToasts';
+import Applogger from '../../../../../helpers/AppLogger';
+import AppColors from '../../../../../helpers/AppColors';
+import AppRoutes from '../../../../../helpers/AppRoutes';
+import AppFontSize from '../../../../../helpers/AppFontSize';
+import AppFontFamily from '../../../../../helpers/AppFontFamily';
+import Header from '../../../../../components/headers/Header';
+import SFLoader from '../../../../../components/loaders/SFLoader';
+import RecentSearchCell from '../../../../../components/cells/RecentSearchCell';
+import ReminderFilterButton from '../../../../../components/buttons/ReminderFilterButton';
 
 export default function RecentSearches({navigation}) {
   const dispatch = useDispatch();

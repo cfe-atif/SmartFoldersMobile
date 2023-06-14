@@ -12,19 +12,19 @@ import Settings from '../../screens/TabBar/settings/Settings';
 import AddOrUpdateReminder from '../../screens/TabBar/reminders/components/AddOrUpdateReminder';
 import Reminders from '../../screens/TabBar/reminders/Reminders';
 import BottomNavigation from '../bottomTabNavigation/BottomNavigation';
-import AddDocument from '../../screens/TabBar/home/components/AddDocument';
-import AddFolder from '../../screens/TabBar/home/components/AddFolder';
-import RecentSearches from '../../screens/TabBar/home/components/RecentSearches';
-import DocumentDetails from '../../screens/TabBar/home/components/DocumentDetails';
+import AddDocument from '../../screens/TabBar/home/components/AddDocument/AddDocument';
+import AddFolder from '../../screens/TabBar/home/components/AddFolder/AddFolder';
+import RecentSearches from '../../screens/TabBar/home/components/RecentSearches/RecentSearches';
+import DocumentDetails from '../../screens/TabBar/home/components/DocumentDetails/DocumentDetails';
 import ReminderDetails from '../../screens/TabBar/reminders/components/ReminderDetails';
 import AddUserToGroup from '../../screens/TabBar/chat/components/AddUserToGroup';
-import DocumentsList from '../../screens/TabBar/home/components/DocumentsList';
-import CheckoutDocument from '../../screens/TabBar/home/components/documentDetails/CheckoutDocument';
-import DocumentIndex from '../../screens/TabBar/home/components/documentDetails/DocumentIndex';
-import DocumentProperties from '../../screens/TabBar/home/components/documentDetails/DocumentProperties';
-import DocumentVersionInfo from '../../screens/TabBar/home/components/documentDetails/DocumentVersionInfo';
-import EditDocument from '../../screens/TabBar/home/components/documentDetails/EditDocument';
-import SignDocument from '../../screens/TabBar/home/components/documentDetails/SignDocument';
+import DocumentsList from '../../screens/TabBar/home/components/DocumentList/DocumentsList';
+import CheckoutDocument from '../../screens/TabBar/home/components/DocumentDetails/CheckoutDocument/CheckoutDocument';
+import DocumentIndex from '../../screens/TabBar/home/components/DocumentDetails/DocumentIndex/DocumentIndex';
+import DocumentProperties from '../../screens/TabBar/home/components/DocumentDetails/DocumentProperties/DocumentProperties';
+import DocumentVersionInfo from '../../screens/TabBar/home/components/DocumentDetails/DocumentVersionInfo/DocumentVersionInfo';
+import EditDocument from '../../screens/TabBar/home/components/DocumentDetails/EditDocument/EditDocument';
+import SignDocument from '../../screens/TabBar/home/components/DocumentDetails/SignDocument/SignDocument';
 
 const headerOptions = {
   headerShown: false,

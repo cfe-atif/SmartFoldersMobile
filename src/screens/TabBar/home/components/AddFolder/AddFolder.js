@@ -1,15 +1,12 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {get} from 'lodash';
 import Header from '../../../../../components/headers/Header';
 
-export default function EditDocument({navigation, route}) {
-  const selectedDocument = get(route, 'params.selectedDocument', null);
-
+export default function AddFolder({navigation}) {
   return (
     <View style={styles.container}>
       <Header
-        title="Edit Document"
+        title="Add Folder"
         backButton={true}
         onBackPress={() => navigation.goBack()}
       />

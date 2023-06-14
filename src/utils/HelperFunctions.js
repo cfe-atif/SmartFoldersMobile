@@ -1,6 +1,6 @@
 import Applogger from '../helpers/AppLogger';
 import AppConstants from '../helpers/AppConstants';
-
+import {get} from 'lodash';
 const error = 'Error';
 
 export function mapAPICallError(errorMsg, isLoginError = false) {

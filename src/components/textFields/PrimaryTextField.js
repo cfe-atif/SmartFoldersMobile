@@ -68,9 +68,11 @@ export default function PrimaryTextField({
 }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.placeholder} numberOfLines={2}>
-        {placeholder}
-      </Text>
+      {placeholder && (
+        <Text style={styles.placeholder} numberOfLines={2}>
+          {placeholder}
+        </Text>
+      )}
       <TextInput
         style={[styles.textField, multiline && {height: 125}]}
         value={value}

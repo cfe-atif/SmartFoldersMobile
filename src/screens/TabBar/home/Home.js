@@ -322,7 +322,7 @@ export default function Home({navigation}) {
     setGlobalTreeData(globalData);
   };
 
-  function handleFolderNavItemsList(document) {
+  const handleFolderNavItemsList = document => {
     setFolderNav(prevFolderNav => {
       let filteredArray = prevFolderNav.slice(); // make a copy of the previous array
 
@@ -351,7 +351,7 @@ export default function Home({navigation}) {
       animated: true,
       index: folderNav.length - 1,
     });
-  }
+  };
 
   const dataSorting = (a, b) => {
     if (a === 'Private') return 1;
