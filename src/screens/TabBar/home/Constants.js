@@ -9,6 +9,11 @@ export const menuTypes = {
   reminders: 'Reminders',
 };
 
+export const fieldTypes = {
+  edit: 'Edit',
+  date: 'Date',
+};
+
 export const foldersTypes = {
   public: 'Public',
   // private: 'Private',

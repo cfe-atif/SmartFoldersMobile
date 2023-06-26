@@ -35,7 +35,7 @@ export default function FileCell({
       {suffix && (
         <Image source={suffix} resizeMode="contain" style={styles.image} />
       )}
-      <Text style={styles.date}>{date}</Text>
+      {/* <Text style={styles.date}>{date}</Text> */}
       <Icon name={AppIcons.infoIcon} color={AppColors.customBlue} size={25} />
     </TouchableOpacity>
   );

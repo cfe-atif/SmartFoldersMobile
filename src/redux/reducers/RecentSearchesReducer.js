@@ -1,8 +1,6 @@
 import {createAsyncThunk, createReducer} from '@reduxjs/toolkit';
 import {RecentSearchesAPIServices} from '../actions/RecentSearchesAPIServices';
 import {clearStore} from './AuthenticationReducer';
-import {get} from 'lodash';
-import Applogger from './../../helpers/AppLogger';
 
 export const getRecentAndSavedSearches = createAsyncThunk(
   'RecentSearchesReducer/getRecentAndSavedSearches',

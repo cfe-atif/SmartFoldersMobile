@@ -15,10 +15,11 @@ import Applogger from '../../helpers/AppLogger';
 import AppColors from '../../helpers/AppColors';
 import AppImages from '../../helpers/AppImages';
 import AppRoutes from '../../helpers/AppRoutes';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
-import PrimaryTextField from '../../components/textFields/PrimaryTextField';
+import APIConstants from '../../helpers/APIConstants';
 import SFLoader from '../../components/loaders/SFLoader';
 import SFHeading from '../../components/texts/SFHeading';
+import PrimaryButton from '../../components/buttons/PrimaryButton';
+import PrimaryTextField from '../../components/textFields/PrimaryTextField';
 
 export default function Login({navigation}) {
   const dispatch = useDispatch();
@@ -26,11 +27,11 @@ export default function Login({navigation}) {
   const {loading} = useSelector(state => state.AuthenticationReducer);
 
   const [loginBody, setLoginBody] = useState({
-    // username: 'sysadmin',
-    // password: 'psl2023',
-    server: '192.119.110.10:8081',
-    username: '',
-    password: '',
+    username: 'sysadmin',
+    password: 'psl2023',
+    server: APIConstants.baseUrl,
+    // username: '',
+    // password: '',
   });
 
   useEffect(() => {

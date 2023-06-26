@@ -1,13 +1,24 @@
 import {createAsyncThunk, createReducer} from '@reduxjs/toolkit';
 import {DocumentsAPIServices} from '../actions/DocumentsAPIServices';
 import {responseHasError} from '../../utils/HelperFunctions';
-import {clearStore} from './AuthenticationReducer';
-import Applogger from './../../helpers/AppLogger';
+import {
+  clearStore,
+  changeDBNumber,
+  changeDBName,
+} from './AuthenticationReducer';
 
 export const setSelectedDocType = createAsyncThunk(
   'DocumentsReducer/setSelectedDocType',
   async payload => {
     return payload;
+  },
+);
+
+export const signDocumentRequest = createAsyncThunk(
+  'DocumentsReducer/signDocumentRequest',
+  async payload => {
+    const response = await DocumentsAPIServices.apiSignDocumentRequest(payload);
+    return response.data;
   },
 );
 
@@ -124,6 +135,14 @@ const initialState = {
 };
 
 export const DocumentsReducer = createReducer(initialState, {
+  [changeDBName.pending]: (state, action) => {
+    return initialState;
+  },
+
+  [changeDBNumber.pending]: (state, action) => {
+    return initialState;
+  },
+
   [setSelectedDocType.fulfilled]: (state, action) => {
     return {
       ...state,

@@ -27,12 +27,14 @@ import {
 import moment from 'moment';
 import Applogger from '../../../../helpers/AppLogger';
 import AppConstants from '../../../../helpers/AppConstants';
+import ReminderDocView from './ReminderDocView';
 import Header from '../../../../components/headers/Header';
 import PrimaryTextField from '../../../../components/textFields/PrimaryTextField';
 import PrimaryButton from '../../../../components/buttons/PrimaryButton';
 import PrimaryDatePicker from './../../../../components/textFields/PrimaryDatePicker';
 import SFLoader from './../../../../components/loaders/SFLoader';
 import ReminderDropDown from './../../../../components/dropdowns/ReminderDropDown';
+import AppImages from '../../../../helpers/AppImages';
 
 export default function AddOrUpdateReminder({navigation, route}) {
   const dispatch = useDispatch();
@@ -55,11 +57,13 @@ export default function AddOrUpdateReminder({navigation, route}) {
     STATE: reminderStates.open,
   });
 
+  const selectedDocument = get(route, 'params.selectedDocument', null);
   const reminderToUpdate = get(route, 'params.reminderToUpdate', null);
 
   useEffect(() => {
     console.log('====================================');
     console.log('reminder To update: ', reminderToUpdate);
+    console.log('Selected Document: ', selectedDocument);
     console.log('====================================');
     handleInitialValues();
   }, []);
@@ -202,6 +206,13 @@ export default function AddOrUpdateReminder({navigation, route}) {
         onBackPress={() => navigation.goBack()}
       />
       <KeyboardAwareScrollView style={styles.fieldsContainer}>
+        <ReminderDocView
+          title={get(selectedDocument, 'Database', '')}
+          description={get(selectedDocument, 'DocumentTitle', '')}
+          suffix={`${
+            AppImages[get(selectedDocument, 'DocumentExtention', '')]
+          }`}
+        />
         <PrimaryTextField
           placeholder="Subject"
           value={addReminderBody.SUBJECT}

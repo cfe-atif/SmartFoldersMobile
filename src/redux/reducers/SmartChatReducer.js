@@ -7,7 +7,6 @@ import {
   sortUsersByName,
   sortChatMessagesbyDate,
 } from '../utitlities';
-import Applogger from './../../helpers/AppLogger';
 
 export const setShowSmartChat = createAsyncThunk(
   'SmartChatReducer/setShowSmartChat',

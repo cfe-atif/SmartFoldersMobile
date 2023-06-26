@@ -2,8 +2,10 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
-import {showFaliureToast} from '../../../../../helpers/AppToasts';
+import {useIsFocused} from '@react-navigation/native';
 import {get} from 'lodash';
+import {showFaliureToast} from '../../../../../helpers/AppToasts';
+import {fieldTypes} from '../../Constants';
 import {
   setSelectedDocument,
   setSelectedDocType,
@@ -26,14 +28,15 @@ import AppRoutes from '../../../../../helpers/AppRoutes';
 
 export default function DocumentsList({navigation, route}) {
   const dispatch = useDispatch();
-
+  const isFocused = useIsFocused();
   const {user, dataBaseNumber} = useSelector(
     state => state.AuthenticationReducer,
   );
-  const {loading, selectedFolder, folderDocuments} = useSelector(
+  const {loading, folderDocuments} = useSelector(
     state => state.DocumentsReducer,
   );
 
+  const selectedFolder = get(route, 'params.selectedFolder', null);
   const [localDocumentsList, setLocalDocumentsList] = useState([]);
 
   const localSearchResults = Array.isArray(
@@ -43,10 +46,10 @@ export default function DocumentsList({navigation, route}) {
     : [get(folderDocuments, 'Search_Result', [])];
 
   useEffect(() => {
-    if (selectedFolder) {
+    if (selectedFolder && isFocused) {
       callTreeAPIFolderDocsRequest();
     }
-  }, [selectedFolder]);
+  }, [selectedFolder, isFocused]);
 
   useEffect(() => {
     for (let index = 0; index < localSearchResults.length; index++) {
@@ -104,6 +107,11 @@ export default function DocumentsList({navigation, route}) {
     }
   };
 
+  const getFieldDataByNumber = (Field, fieldNumber) => {
+    const field = Field.find(field => field.FieldNumber === fieldNumber);
+    return field ? field : '';
+  };
+
   const renderFileItems = ({item, index}) => {
     const suffix = getSuffix(item);
     const imageSource = suffix ? `${AppImages[suffix]}` : null;
@@ -111,20 +119,43 @@ export default function DocumentsList({navigation, route}) {
     const isDeclared = get(item, 'Declared', false);
 
     // Finding the desired field by its FieldNumber
-    const titleField = Field.find(field => field.FieldNumber === 21);
-    const descriptionField = Field.find(field => field.FieldNumber === 23);
-    const dateField = Field.find(field => field.FieldNumber === 24);
 
-    const titleData = titleField ? titleField.Data : '';
-    const descriptionData = descriptionField ? descriptionField.Data : '';
-    const dateData = dateField ? dateField.Data : '';
+    const fieldNumbers = Field.map(field => field.FieldNumber);
+
+    let fieldData = fieldNumbers.map(fieldNumber =>
+      getFieldDataByNumber(Field, fieldNumber),
+    );
+    fieldData = fieldData.filter(field => {
+      return field != '';
+    });
+
+    let date = {};
+    let title = '';
+    let description = '';
+
+    fieldData.forEach(field => {
+      if (field) {
+        if (get(field, 'Type', '') == fieldTypes.edit) {
+          if (get(field, 'Label', '').toLowerCase().includes('title')) {
+            title = get(field, 'Data', '');
+          } else if (get(field, 'Label', '').toLowerCase().includes('desc')) {
+            description = get(field, 'Data', '');
+          }
+        }
+        if (get(field, 'Type', '') == fieldTypes.date) {
+          if (get(field, 'Label', '').toLowerCase().includes('date')) {
+            date = get(field, 'Data', '');
+          }
+        }
+      }
+    });
 
     return (
       <FileCell
         key={index}
-        title={titleData}
-        description={descriptionData}
-        date={getFormattedDate(dateData)}
+        title={title}
+        description={description}
+        date={getFormattedDate(date)}
         suffix={imageSource}
         isDeclared={isDeclared}
         onPress={() => {

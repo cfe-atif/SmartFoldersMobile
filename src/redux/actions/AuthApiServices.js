@@ -6,7 +6,6 @@ function apiLoginRequest(payload) {
   Applogger('Payload at apiLoginRequest', payload);
   const {username, password} = payload;
   const path = `servlets.CH_VaultJson?INT=1&Name=${username}&Password=${password}`;
-  Applogger('Path at apiLoginRequest', path);
   return AxiosEvent.post(path);
 }
 
@@ -16,7 +15,6 @@ function apiChangePasswordRequest(payload) {
   const path =
     APIConstants.baseUrl +
     `servlets.CH_VaultJson?UserNo=${userNo}&INT=21&Password=${password}&Password_Cycle=-1`;
-  Applogger('Path at apiChangePasswordRequest', path);
   return AxiosEvent.post(path);
 }
 
@@ -24,7 +22,6 @@ function apiLogoutRequest(payload) {
   Applogger('Payload at apiLogoutRequest', payload);
   const {DB, USER} = payload;
   var path = `servlets.CH_VaultJson?DB=${DB}&USER=${USER}&INT=54`;
-  Applogger('Path at apiLogoutRequest', path);
   return AxiosEvent.get(path);
 }
 

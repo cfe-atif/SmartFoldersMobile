@@ -3,7 +3,6 @@ import {RemindersAPIServices} from '../actions/RemindersAPIServices';
 import {clearStore} from './AuthenticationReducer';
 import {getConvertedRemindersList} from '../utitlities';
 import {get} from 'lodash';
-import Applogger from './../../helpers/AppLogger';
 
 export const getRemindersList = createAsyncThunk(
   'RemindersReducer/getRemindersList',

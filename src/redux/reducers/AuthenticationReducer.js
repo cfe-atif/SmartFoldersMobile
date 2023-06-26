@@ -1,7 +1,6 @@
 import {createAsyncThunk, createReducer} from '@reduxjs/toolkit';
 import {AuthApiServices} from '../actions/AuthApiServices';
-import {getDataBaseName, responseHasError} from '../../utils/HelperFunctions';
-import Applogger from '../../helpers/AppLogger';
+import {responseHasError} from '../../utils/HelperFunctions';
 
 export const stopLoaderAndError = createAsyncThunk(
   'AuthenticationReducer/stopLoaderAndError',

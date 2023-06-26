@@ -55,33 +55,33 @@ export default function Chats({navigation}) {
   const [searchedText, setSearchedText] = useState('');
   const [isChatListing, setIsChatListing] = useState(true);
 
-  useEffect(() => {
-    if (isFocused) {
-      handleGetUserChatsListRequest();
-      handleGetUsersAllGroupsRequest(currentUserId);
-    }
-  }, [isFocused]);
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     handleGetUserChatsListRequest();
+  //     handleGetUsersAllGroupsRequest(currentUserId);
+  //   }
+  // }, [isFocused]);
 
-  useEffect(() => {
-    if (!user) {
-      if (stompClient != null) {
-        stompClient.disconnect(onDisconnect);
-      }
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user) {
+  //     if (stompClient != null) {
+  //       stompClient.disconnect(onDisconnect);
+  //     }
+  //   }
+  // }, [user]);
 
-  useEffect(() => {
-    if (stompClient == null) {
-      connect();
-    }
+  // useEffect(() => {
+  //   if (stompClient == null) {
+  //     connect();
+  //   }
 
-    return () => {
-      if (stompClient != null && user == null) {
-        stompClient.disconnect(onDisconnect);
-        stompClient = null;
-      }
-    };
-  }, []);
+  //   return () => {
+  //     if (stompClient != null && user == null) {
+  //       stompClient.disconnect(onDisconnect);
+  //       stompClient = null;
+  //     }
+  //   };
+  // }, []);
 
   const connect = () => {
     let Sock = new SockJS(APIConstants.wsChatBaseUrl);

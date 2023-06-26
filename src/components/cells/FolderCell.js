@@ -24,9 +24,6 @@ export default function FolderCell({
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{getTitle()}</Text>
-      <TouchableOpacity onPress={onPressFolder}>
-        <Image source={AppImages.folder} style={styles.image} />
-      </TouchableOpacity>
       {nestedItems > 0 && (
         <TouchableOpacity onPress={onPressFiles}>
           <Icon
@@ -37,6 +34,9 @@ export default function FolderCell({
           />
         </TouchableOpacity>
       )}
+      <TouchableOpacity onPress={onPressFolder}>
+        <Image source={AppImages.folder} style={styles.image} />
+      </TouchableOpacity>
     </View>
   );
 }

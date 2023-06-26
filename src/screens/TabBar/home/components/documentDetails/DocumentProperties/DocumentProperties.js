@@ -3,7 +3,7 @@ import {StyleSheet, View, FlatList, ScrollView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {get} from 'lodash';
-import {viewPropertiesData} from '../../../Constants';
+// import {viewPropertiesData} from '../../../Constants';
 import {getViewPropertiesData} from '../../../../../../redux/reducers/DocumentsReducer';
 import {showFaliureToast} from '../../../../../../helpers/AppToasts';
 import {
@@ -11,8 +11,8 @@ import {
   isUnAuthenticatedUser,
 } from '../../../../../../utils/HelperFunctions';
 import Security from './InternalComponents/Security';
-import WorkflowHistory from './InternalComponents/WorkflowHistory';
-import PreviousMarkings from './InternalComponents/PreviousMarkings';
+// import WorkflowHistory from './InternalComponents/WorkflowHistory';
+// import PreviousMarkings from './InternalComponents/PreviousMarkings';
 import ViewDocProperties from './InternalComponents/ViewDocProperties';
 import FreedomOfInformation from './InternalComponents/FOI';
 import Header from '../../../../../../components/headers/Header';
@@ -30,15 +30,15 @@ export default function DocumentProperties({navigation}) {
     selectedDocument,
     selectedDocType,
     folderDocuments,
-    // viewPropertiesData,
+    viewPropertiesData,
   } = useSelector(state => state.DocumentsReducer);
 
   const headerTypes = {
     Document: 'Document',
     Security: 'Security',
     FOI: 'Freedom Of Information',
-    WorkflowHistory: 'Workflow History',
-    PreviousMarkings: 'Previous Markings',
+    // WorkflowHistory: 'Workflow History',
+    // PreviousMarkings: 'Previous Markings',
   };
 
   const [selectedType, setSelectedType] = useState(headerTypes.Document);
@@ -56,14 +56,14 @@ export default function DocumentProperties({navigation}) {
       title: headerTypes.FOI,
       type: headerTypes.FOI,
     },
-    {
-      title: headerTypes.WorkflowHistory,
-      type: headerTypes.WorkflowHistory,
-    },
-    {
-      title: headerTypes.PreviousMarkings,
-      type: headerTypes.PreviousMarkings,
-    },
+    // {
+    //   title: headerTypes.WorkflowHistory,
+    //   type: headerTypes.WorkflowHistory,
+    // },
+    // {
+    //   title: headerTypes.PreviousMarkings,
+    //   type: headerTypes.PreviousMarkings,
+    // },
   ];
 
   useEffect(() => {
@@ -108,11 +108,11 @@ export default function DocumentProperties({navigation}) {
       case headerTypes.FOI:
         return <FreedomOfInformation viewPropertiesData={viewPropertiesData} />;
 
-      case headerTypes.WorkflowHistory:
-        return <WorkflowHistory viewPropertiesData={viewPropertiesData} />;
+      // case headerTypes.WorkflowHistory:
+      //   return <WorkflowHistory viewPropertiesData={viewPropertiesData} />;
 
-      case headerTypes.PreviousMarkings:
-        return <PreviousMarkings viewPropertiesData={viewPropertiesData} />;
+      // case headerTypes.PreviousMarkings:
+      //   return <PreviousMarkings viewPropertiesData={viewPropertiesData} />;
 
       default:
         return <ViewDocProperties viewPropertiesData={viewPropertiesData} />;
