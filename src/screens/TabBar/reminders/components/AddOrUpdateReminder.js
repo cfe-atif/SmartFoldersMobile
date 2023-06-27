@@ -42,6 +42,9 @@ export default function AddOrUpdateReminder({navigation, route}) {
   const {user} = useSelector(state => state.AuthenticationReducer);
   const {loading} = useSelector(state => state.RemindersReducer);
 
+  const selectedDocument = get(route, 'params.selectedDocument', null);
+  const reminderToUpdate = get(route, 'params.reminderToUpdate', null);
+
   const [headerTitle, setHeaderTitle] = useState('Add Reminder');
   const [pickerType, setPickerType] = useState(false);
   const [openDatePicker, setOpenDatePicker] = useState(false);
@@ -51,20 +54,13 @@ export default function AddOrUpdateReminder({navigation, route}) {
     DUE_DATE: new Date(),
     ALERT_DATE: new Date(),
     ALERT_DATE_VALUE: null,
-    DATABASE: null,
-    DOC_NUM: null,
+    DATABASE: get(selectedDocument, 'DatabaseNo', ''),
+    DOC_NUM: get(selectedDocument, 'DocumentNo', ''),
     ID: null,
     STATE: reminderStates.open,
   });
 
-  const selectedDocument = get(route, 'params.selectedDocument', null);
-  const reminderToUpdate = get(route, 'params.reminderToUpdate', null);
-
   useEffect(() => {
-    console.log('====================================');
-    console.log('reminder To update: ', reminderToUpdate);
-    console.log('Selected Document: ', selectedDocument);
-    console.log('====================================');
     handleInitialValues();
   }, []);
 
@@ -206,13 +202,15 @@ export default function AddOrUpdateReminder({navigation, route}) {
         onBackPress={() => navigation.goBack()}
       />
       <KeyboardAwareScrollView style={styles.fieldsContainer}>
-        <ReminderDocView
-          title={get(selectedDocument, 'Database', '')}
-          description={get(selectedDocument, 'DocumentTitle', '')}
-          suffix={`${
-            AppImages[get(selectedDocument, 'DocumentExtention', '')]
-          }`}
-        />
+        {selectedDocument && (
+          <ReminderDocView
+            title={get(selectedDocument, 'Database', '')}
+            description={get(selectedDocument, 'DocumentTitle', '')}
+            suffix={`${
+              AppImages[get(selectedDocument, 'DocumentExtention', '')]
+            }`}
+          />
+        )}
         <PrimaryTextField
           placeholder="Subject"
           value={addReminderBody.SUBJECT}
