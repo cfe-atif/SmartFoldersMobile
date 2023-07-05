@@ -116,6 +116,30 @@ export const getDocumentIndexData = createAsyncThunk(
   },
 );
 
+export const addDocumentRequest = createAsyncThunk(
+  'DocumentsReducer/addDocumentRequest',
+  async payload => {
+    const response = await DocumentsAPIServices.apiAddDocumentRequest(payload);
+    return response.data;
+  },
+);
+
+export const setDeclaredRequest = createAsyncThunk(
+  'DocumentsReducer/setDeclaredRequest',
+  async payload => {
+    const response = await DocumentsAPIServices.apiSetDeclaredRequest(payload);
+    return response.data;
+  },
+);
+
+export const getDeclaredOption = createAsyncThunk(
+  'DocumentsReducer/getDeclaredOption',
+  async payload => {
+    const response = await DocumentsAPIServices.apiGetDeclaredOption(payload);
+    return response.data;
+  },
+);
+
 const initialState = {
   loading: false,
   error: null,
@@ -132,6 +156,7 @@ const initialState = {
   viewPropertiesData: null,
   versionInfoData: null,
   documentIndexData: null,
+  declareOptions: null,
 };
 
 export const DocumentsReducer = createReducer(initialState, {
@@ -387,6 +412,74 @@ export const DocumentsReducer = createReducer(initialState, {
     };
   },
   [getDocumentIndexData.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [addDocumentRequest.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+  [addDocumentRequest.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      viewPropertiesData: action.payload,
+    };
+  },
+  [addDocumentRequest.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [setDeclaredRequest.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+  [setDeclaredRequest.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+  [setDeclaredRequest.rejected]: (state, _) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
+  },
+
+  [getDeclaredOption.pending]: (state, _) => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+    };
+  },
+  [getDeclaredOption.fulfilled]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      declareOptions: action.payload,
+    };
+  },
+  [getDeclaredOption.rejected]: (state, _) => {
     return {
       ...state,
       loading: false,

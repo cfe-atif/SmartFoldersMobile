@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
-import {menuTypes, foldersTypes} from './Constants';
+import {foldersTypes} from './Constants';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
@@ -11,6 +11,7 @@ import {
   treeAPIRRData,
   treeFoldersRequest,
   setSelectedFolder,
+  createNewFolderData,
 } from '../../../redux/reducers/DocumentsReducer';
 import {
   mapAPICallError,
@@ -38,11 +39,10 @@ export default function Home({navigation}) {
   const {user, dataBaseNumber} = useSelector(
     state => state.AuthenticationReducer,
   );
-  const {treeData, folders, loading} = useSelector(
+  const {treeData, folders, loading, selectedFolder, folderType} = useSelector(
     state => state.DocumentsReducer,
   );
 
-  const menulistRef = useRef(null);
   const folderNavlistRef = useRef(null);
   const folderTypesRef = useRef(null);
 
@@ -52,9 +52,9 @@ export default function Home({navigation}) {
   const [privateTreeData, setPrivateTreeData] = useState([]);
   const [folderNav, setFolderNav] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [selectedMenu, setSelectedMenu] = useState('');
   const [folderPath, setFolderPath] = useState('');
   const [selectedFoldersType, setSelectedFoldersType] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
   const menuItems = [
     {
@@ -62,7 +62,10 @@ export default function Home({navigation}) {
       image: AppImages.addDocument,
       onPress: () => {
         Applogger('Clicked Add Document');
-        // setSelectedMenu(menuTypes.addDocument);
+        if (!selectedFolder || selectedIndex == null) {
+          showFaliureToast('Warning', 'Please select a folder to continue');
+          return;
+        }
         navigation.navigate(AppRoutes.AddDocument, {
           folderPath: selectedFoldersType == foldersTypes.private ? 'P' : 'G',
         });
@@ -73,8 +76,12 @@ export default function Home({navigation}) {
       image: AppImages.addFolder,
       onPress: () => {
         Applogger('Clicked Add Folder');
-        // setSelectedMenu(menuTypes.addFolder);
-        navigation.navigate(AppRoutes.AddFolder);
+        Applogger('selectedIndex: ', selectedIndex);
+        if (!selectedFolder || selectedIndex == null) {
+          showFaliureToast('Warning', 'Please select a folder to continue');
+          return;
+        }
+        callTreeAPINewFolderCreate();
       },
     },
     {
@@ -82,7 +89,6 @@ export default function Home({navigation}) {
       image: AppImages.addReminder,
       onPress: () => {
         Applogger('Clicked Add Reminder');
-        setSelectedMenu('');
         navigation.navigate(AppRoutes.AddOrUpdateReminder);
       },
     },
@@ -91,7 +97,6 @@ export default function Home({navigation}) {
       image: AppImages.reminders,
       onPress: () => {
         Applogger('Clicked Reminders');
-        setSelectedMenu('');
         navigation.navigate(AppRoutes.Reminders);
       },
     },
@@ -100,7 +105,6 @@ export default function Home({navigation}) {
       image: AppImages.recentSearches,
       onPress: () => {
         Applogger('Clicked Recent Searches');
-        // setSelectedMenu(menuTypes.recentSearch);
         navigation.navigate(AppRoutes.RecentSearches);
       },
     },
@@ -109,25 +113,8 @@ export default function Home({navigation}) {
       image: AppImages.refresh,
       onPress: () => {
         Applogger('Clicked Refresh');
-        setSelectedMenu(menuTypes.refresh);
       },
     },
-    // {
-    //   title: 'Email',
-    //   image: AppImages.email,
-    //   onPress: () => {
-    //     Applogger('Clicked Email');
-    //     setSelectedMenu(menuTypes.email);
-    //   },
-    // },
-    // {
-    //   title: 'PDF',
-    //   image: AppImages.pdf,
-    //   onPress: () => {
-    //     Applogger('Clicked PDF');
-    //     setSelectedMenu(menuTypes.pdf);
-    //   },
-    // },
   ];
 
   useEffect(() => {
@@ -185,10 +172,10 @@ export default function Home({navigation}) {
       .then(res => {
         if (isUnAuthenticatedUser(res)) {
           navigation.navigate(AppRoutes.Login);
-          showFaliureToast(mapAPICallError(res));
+          showFaliureToast('Error', mapAPICallError(res));
         } else {
           if (responseHasError(res)) {
-            showFaliureToast(mapAPICallError(res));
+            showFaliureToast('Error', mapAPICallError(res));
           }
         }
         Applogger('Response at fetchTreeAPIRRData', res);
@@ -210,10 +197,10 @@ export default function Home({navigation}) {
       .then(res => {
         if (isUnAuthenticatedUser(res)) {
           navigation.navigate(AppRoutes.Login);
-          showFaliureToast(mapAPICallError(res));
+          showFaliureToast('Error', mapAPICallError(res));
         } else {
           if (responseHasError(res)) {
-            showFaliureToast(mapAPICallError(res));
+            showFaliureToast('Error', mapAPICallError(res));
           }
         }
         Applogger('Response at fetchTreeAPIData', res);
@@ -244,7 +231,7 @@ export default function Home({navigation}) {
         Applogger('Response at treeFoldersRequest NavBar', res);
         if (isUnAuthenticatedUser(res)) {
           navigation.navigate(AppRoutes.Login);
-          showFaliureToast(mapAPICallError(res));
+          showFaliureToast('Error', mapAPICallError(res));
         } else {
           if (!responseHasError(res)) {
           }
@@ -256,6 +243,37 @@ export default function Home({navigation}) {
           showFaliureToast(mapAPICallError(err));
         }
         Applogger('Error at treeFoldersRequest NavBar', err);
+      });
+  };
+
+  const callTreeAPINewFolderCreate = () => {
+    dispatch(
+      createNewFolderData({
+        folderPath: `G${get(selectedFolder, 'ph', '')}`,
+        dataBaseNumber,
+        user,
+        docTypeNo: get(folderType, 'dt.no', ''),
+      }),
+    )
+      .then(unwrapResult)
+      .then(res => {
+        if (isUnAuthenticatedUser(res)) {
+          navigation.navigate(AppRoutes.Login);
+          showFaliureToast('Error', mapAPICallError(res));
+        }
+        if (!responseHasError(res)) {
+          navigation.navigate(AppRoutes.AddFolder);
+          Applogger('Response at createNewFolderData', res);
+        } else {
+          showFaliureToast('Error', res.Error);
+        }
+      })
+      .catch(err => {
+        if (isUnAuthenticatedUser(err)) {
+          navigation.navigate(AppRoutes.Login);
+          showFaliureToast('Error', mapAPICallError(err));
+        }
+        Applogger('Error at createNewFolderData', err);
       });
   };
 
@@ -365,15 +383,7 @@ export default function Home({navigation}) {
   const renderMenuItems = ({item, index}) => {
     const {title, image, onPress} = item;
     return (
-      <MenuButton
-        key={index}
-        title={title}
-        image={image}
-        onPress={() => {
-          onPress();
-          menulistRef?.current.scrollToIndex({animated: true, index: index});
-        }}
-      />
+      <MenuButton key={index} title={title} image={image} onPress={onPress} />
     );
   };
 
@@ -384,6 +394,8 @@ export default function Home({navigation}) {
         title={index == 0 ? `/${n}/` : `${n}/`}
         isSelected={index == folderNav.length - 1}
         onPress={() => {
+          dispatch(setSelectedFolder(null));
+          setSelectedIndex(null);
           handleFolderNavItemsList(item);
           folderNavlistRef?.current.scrollToIndex({
             animated: true,
@@ -401,13 +413,20 @@ export default function Home({navigation}) {
         key={index}
         title={n}
         onPressFolder={() => {
+          setSelectedIndex(null);
           handleFolderNavItemsList(item);
         }}
         onPressFiles={() => {
+          setSelectedIndex(null);
           dispatch(setSelectedFolder(item));
           navigation.navigate(AppRoutes.DocumentsList, {
             selectedFolder: item,
           });
+        }}
+        isSelected={index === selectedIndex}
+        onSelectFolder={() => {
+          setSelectedIndex(index);
+          dispatch(setSelectedFolder(item));
         }}
         nestedItems={dc}
       />
@@ -424,6 +443,8 @@ export default function Home({navigation}) {
         onPress={() => {
           setFolderNav([item]);
           setSelectedFoldersType(item);
+          dispatch(setSelectedFolder(null));
+          setSelectedIndex(null);
           folderTypesRef?.current.scrollToIndex({
             animated: true,
             index: index,
@@ -472,7 +493,6 @@ export default function Home({navigation}) {
           onSearchPress={() => Applogger('Pressed search')}
         />
         <FlatList
-          ref={menulistRef}
           data={menuItems}
           horizontal={true}
           renderItem={renderMenuItems}

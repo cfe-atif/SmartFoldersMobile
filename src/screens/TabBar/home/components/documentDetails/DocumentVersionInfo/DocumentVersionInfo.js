@@ -54,7 +54,7 @@ export default function DocumentVersionInfo({navigation, route}) {
         Applogger('Response at getVersionInfoData', res);
         if (isUnAuthenticatedUser(res)) {
           navigation.navigate(AppRoutes.Login);
-          showFaliureToast(mapAPICallError(res));
+          showFaliureToast('Error', mapAPICallError(res));
         }
       })
       .catch(err => {

@@ -89,7 +89,7 @@ export default function AddOrUpdateGroup({navigation}) {
       dispatch(createUserGroupRequest({createGroupBody}))
         .then(unwrapResult)
         .then(res => {
-          showSuccessToast(AppConstants.toastMessages.groupCreated);
+          showSuccessToast('Success', AppConstants.toastMessages.groupCreated);
           handleSuccessToastAndLogs('createUserGroupRequest', res);
           navigation.goBack();
         })
@@ -104,7 +104,7 @@ export default function AddOrUpdateGroup({navigation}) {
     Applogger('Response at ' + message, res);
     if (isUnAuthenticatedUser(res)) {
       navigation.navigate(AppRoutes.Login);
-      showFaliureToast(mapAPICallError(res));
+      showFaliureToast('Error', mapAPICallError(res));
     }
   };
 

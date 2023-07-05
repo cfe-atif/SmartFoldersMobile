@@ -9,6 +9,7 @@ import {
 } from '../../redux/reducers/AuthenticationReducer';
 import {get} from 'lodash';
 import {showFaliureToast} from '../../helpers/AppToasts';
+import {StackActions} from '@react-navigation/native';
 import AppColors from './../../helpers/AppColors';
 import AppRoutes from './../../helpers/AppRoutes';
 import Applogger from './../../helpers/AppLogger';
@@ -33,15 +34,13 @@ export default function SelectDatabase({navigation}) {
   }, []);
 
   const createDrpDownArray = () => {
-    const convertedArray = databases.map(
-      ({Number: key, Name: value, ...rest}) => ({
+    setDropDownItems(() => {
+      return databases.map(({Number: key, Name: value, ...rest}) => ({
         key,
         value,
         ...rest,
-      }),
-    );
-    setDropDownItems(convertedArray);
-    Applogger('Converted Array', convertedArray);
+      }));
+    });
   };
 
   const getDatabaseNumber = () => {
@@ -60,9 +59,14 @@ export default function SelectDatabase({navigation}) {
       .then(res => {
         setLocalLoading(false);
         Applogger('DB Name updated Successfully', res);
-        navigation.navigate(AppRoutes.BottomNavigation, {
-          screen: AppRoutes.Home,
-        });
+        // navigation.navigate(AppRoutes.BottomNavigation, {
+        //   screen: AppRoutes.Home,
+        // });
+        navigation.dispatch(
+          StackActions.replace(AppRoutes.BottomNavigation, {
+            screen: AppRoutes.Home,
+          }),
+        );
       })
       .catch(err => {
         setLocalLoading(false);

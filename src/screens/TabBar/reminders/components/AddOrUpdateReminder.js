@@ -87,7 +87,7 @@ export default function AddOrUpdateReminder({navigation, route}) {
     Applogger('Response at ' + message, res);
     if (isUnAuthenticatedUser(res)) {
       navigation.navigate(AppRoutes.Login);
-      showFaliureToast(mapAPICallError(res));
+      showFaliureToast('Error', mapAPICallError(res));
     }
   };
 
@@ -133,6 +133,7 @@ export default function AddOrUpdateReminder({navigation, route}) {
           handleGetRemindersList(reminderPeriods.all);
           handleGetUpcomingRemindersList();
           showSuccessToast(
+            'Success',
             `Reminder ${reminderToUpdate ? 'updated' : 'added'} successfully`,
           );
           navigation.goBack();
@@ -312,3 +313,59 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+// viewPropertiesDataLocal.Document.UserEdit
+//                       .DeclareDocument ? (
+//                       viewPropertiesDataLocal.Document.Declared ? (
+//                         <tr>
+//                           <th>Declared as record</th>
+//                           <td>
+//                             <Text>
+//                               On:
+//                               {viewPropertiesDataLocal.Document.DeclaredDate[0]}
+//                             </Text>
+//                             <br />
+//                             <Text>
+//                               By: {viewPropertiesDataLocal.Document.DeclaredBy}
+//                             </Text>
+//                           </td>
+//                         </tr>
+//                       ) : (
+//                         <tr>
+//                           <th>Declare document as record </th>
+//                           <td>
+//                             {declaredData !== null && (
+//                               <Select
+//                                 name={`DISPOSALSCHEDULE`}
+//                                 placeholder={`Select Declare document as record`}
+//                                 onChange={handleChange}
+//                                 style={{
+//                                   width: "190px",
+//                                   marginRight: "20px",
+//                                 }}
+//                               >
+//                                 {declaredData.RecordTypeList.RecordType.map(
+//                                   (option, indexKey) => (
+//                                     <>
+//                                       <Option
+//                                         key={indexKey}
+//                                         value={option.Number}
+//                                       >
+//                                         {option.Name}
+//                                       </Option>
+//                                     </>
+//                                   )
+//                                 )}
+//                               </Select>
+//                             )}
+//                             <Button
+//                               style={{ width: "110px" }}
+//                               type="primary"
+//                               onClick={() => setDeclared()}
+//                             >
+//                               Declare
+//                             </Button>
+//                           </td>
+//                         </tr>
+//                       )
+//                     ) : null}

@@ -21,7 +21,7 @@ export default function ReminderDropDown({
         data={options}
         save="key"
         search={false}
-        placeholder="Select"
+        placeholder="Select an Option"
         boxStyles={{
           borderColor: AppColors.gray,
           marginHorizontal: 10,

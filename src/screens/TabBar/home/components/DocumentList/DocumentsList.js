@@ -84,7 +84,7 @@ export default function DocumentsList({navigation, route}) {
         Applogger('Response at treeFolderDocsRequest NavBar', res);
         if (isUnAuthenticatedUser(res)) {
           navigation.navigate(AppRoutes.Login);
-          showFaliureToast(mapAPICallError(res));
+          showFaliureToast('Error', mapAPICallError(res));
         } else {
           if (!responseHasError(res)) {
           }

@@ -52,7 +52,7 @@ export default function DocumentIndex({navigation, route}) {
         Applogger('Response at getDocumentIndexData', res);
         if (isUnAuthenticatedUser(res)) {
           navigation.navigate(AppRoutes.Login);
-          showFaliureToast(mapAPICallError(res));
+          showFaliureToast('Error', mapAPICallError(res));
         }
       })
       .catch(err => {

@@ -1,16 +1,74 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {get} from 'lodash';
+import {useDispatch} from 'react-redux';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {addDocumentRequest} from '../../../../../../../redux/reducers/DocumentsReducer';
+import {
+  responseHasError,
+  mapAPICallError,
+  isUnAuthenticatedUser,
+} from '../../../../../../../utils/HelperFunctions';
+import {
+  showSuccessToast,
+  showFaliureToast,
+} from '../../../../../../../helpers/AppToasts';
+import AppRoutes from '../../../../../../../helpers/AppRoutes';
 import AppColors from '../../../../../../../helpers/AppColors';
 import Applogger from '../../../../../../../helpers/AppLogger';
+import AppConstants from '../../../../../../../helpers/AppConstants';
 import AppFontSize from '../../../../../../../helpers/AppFontSize';
 import AppFontFamily from '../../../../../../../helpers/AppFontFamily';
 import Separator from '../../../../../../../components/seperator/Separator';
 import PrimaryTextField from '../../../../../../../components/textFields/PrimaryTextField';
 import PrimaryButton from '../../../../../../../components/buttons/PrimaryButton';
 
-export default function FOI({viewPropertiesData}) {
+export default function FOI({viewPropertiesData, navigation}) {
+  const dispatch = useDispatch();
+
   const [documentRequest, setDocumentRequest] = useState('');
+
+  const handleAddDocumentRequest = () => {
+    if (!documentRequest) {
+      showFaliureToast('Field Error', 'Please enter request to continue');
+      return;
+    }
+
+    let HIT = viewPropertiesData.Document.Hit;
+    let DB = viewPropertiesData.Document.DB;
+    let USER = viewPropertiesData.User;
+    let DocType = viewPropertiesData.Document.DocType;
+    let REQUEST = documentRequest;
+
+    dispatch(addDocumentRequest({HIT, DB, USER, DocType, REQUEST}))
+      .then(unwrapResult)
+      .then(res => {
+        Applogger('Response at addDocumentRequest', res);
+        if (!responseHasError(res)) {
+          showSuccessToast('Success', AppConstants.toastMessages.addFOISuccess);
+          setDocumentRequest('');
+        } else {
+          if (isUnAuthenticatedUser(res)) {
+            navigation.navigate(AppRoutes.Login);
+            showFaliureToast('Error', mapAPICallError(res));
+          } else {
+            var errorMessage = responseHasError(res)
+              ? res.Error
+              : 'Something Wrong';
+            showFaliureToast(errorMessage);
+          }
+        }
+      })
+      .catch(err => {
+        if (isUnAuthenticatedUser(err)) {
+          navigation.navigate(AppRoutes.Login);
+          showFaliureToast(mapAPICallError(err));
+        } else {
+          showFaliureToast(AppConstants.toastMessages.addFOIFailed);
+        }
+        Applogger('Error at addDocumentRequest', err);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -52,7 +110,7 @@ export default function FOI({viewPropertiesData}) {
             setDocumentRequest(text);
           }}
         />
-        <PrimaryButton title="Add" onPress={() => Applogger('Pressed Add')} />
+        <PrimaryButton title="Add" onPress={() => handleAddDocumentRequest()} />
       </View>
     </View>
   );

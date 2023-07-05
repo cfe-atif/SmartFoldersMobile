@@ -11,6 +11,8 @@ import {
 } from '../../redux/reducers/AuthenticationReducer';
 import {mapAPICallError, responseHasError} from '../../utils/HelperFunctions';
 import {showFaliureToast} from '../../helpers/AppToasts';
+import {StackActions} from '@react-navigation/native';
+import {get} from 'lodash';
 import Applogger from '../../helpers/AppLogger';
 import AppColors from '../../helpers/AppColors';
 import AppImages from '../../helpers/AppImages';
@@ -84,8 +86,14 @@ export default function Login({navigation}) {
           if (res.hasOwnProperty('PasswordExpired')) {
             navigation.navigate(AppRoutes.ChangePassword);
           } else {
-            if (Array.isArray(res.Database) > 0) {
-              navigation.navigate(AppRoutes.SelectDatabase);
+            if (
+              Array.isArray(res.Database) &&
+              get(res, 'Database', []).length > 0
+            ) {
+              // navigation.navigate(AppRoutes.SelectDatabase);
+              navigation.dispatch(
+                StackActions.replace(AppRoutes.SelectDatabase),
+              );
             } else {
               handleChangeDBNumber(get(res, 'Database.Number'), '');
               handleChangeDBName(get(res, 'Database.Name'), '');

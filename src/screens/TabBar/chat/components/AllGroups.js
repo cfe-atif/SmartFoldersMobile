@@ -53,7 +53,7 @@ export default function AllGroups({navigation, route}) {
     Applogger('Response at ' + message, res);
     if (isUnAuthenticatedUser(res)) {
       navigation.navigate(AppRoutes.Login);
-      showFaliureToast(mapAPICallError(res));
+      showFaliureToast('Error', mapAPICallError(res));
     }
   };
 

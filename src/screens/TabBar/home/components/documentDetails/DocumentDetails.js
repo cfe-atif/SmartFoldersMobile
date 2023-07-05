@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View, ScrollView, FlatList} from 'react-native';
 import {get} from 'lodash';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
+import {signDocumentRequest} from '../../../../../redux/reducers/DocumentsReducer';
 import {
   getSuffix,
   getFormattedDate,
@@ -15,7 +16,6 @@ import {
   showFaliureToast,
   showSuccessToast,
 } from '../../../../../helpers/AppToasts';
-import {signDocumentRequest} from '../../../../../redux/reducers/DocumentsReducer';
 import AppImages from '../../../../../helpers/AppImages';
 import Applogger from '../../../../../helpers/AppLogger';
 import AppRoutes from '../../../../../helpers/AppRoutes';
@@ -32,17 +32,7 @@ export default function DocumentDetails({navigation, route}) {
   const {user, dataBaseNumber, dataBaseName} = useSelector(
     state => state.AuthenticationReducer,
   );
-  const {loading, folderDocuments} = useSelector(
-    state => state.DocumentsReducer,
-  );
-
-  const [localDocument, setLocalDocument] = useState({
-    Database: '',
-    DatabaseNo: null,
-    DocumentExtention: '',
-    DocumentNo: null,
-    DocumentTitle: '',
-  });
+  const {loading} = useSelector(state => state.DocumentsReducer);
 
   const menuItems = [
     {
@@ -141,7 +131,7 @@ export default function DocumentDetails({navigation, route}) {
           navigation.goBack();
         } else {
           if (isUnAuthenticatedUser(res)) {
-            showFaliureToast(mapAPICallError(res));
+            showFaliureToast('Error', mapAPICallError(res));
           } else {
             var errorMessage = responseHasError(res)
               ? res.Error

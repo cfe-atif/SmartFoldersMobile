@@ -31,8 +31,8 @@ function apiTreeFoldersRequest(payload) {
 
 function apiCreateNewFolderData(payload) {
   Applogger('Payload at apiCreateNewFolderData', payload);
-  const {folderPath, bunPath, dataBaseNumber, user, docTypeNo} = payload;
-  var path = `servlets.CH_VaultJson?DB=${dataBaseNumber}&USER=${user}&INT=151&FOLDER=${folderPath}&BUN=${bunPath}&ADD=null&DOCTYPE=${docTypeNo}`;
+  const {folderPath, dataBaseNumber, user, docTypeNo} = payload;
+  var path = `servlets.CH_VaultJson?DB=${dataBaseNumber}&USER=${user.No}&INT=151&FOLDER=${folderPath}&BUN=${folderPath}&ADD=null&DOCTYPE=${docTypeNo}`;
   return AxiosEvent.get(path);
 }
 
@@ -71,6 +71,27 @@ function apiSignDocumentRequest(payload) {
   return AxiosEvent.get(path);
 }
 
+function apiAddDocumentRequest(payload) {
+  Applogger('Payload at apiAddDocumentRequest', payload);
+  const {HIT, DB, USER, DocType, REQUEST} = payload;
+  var path = `servlets.CH_VaultJson?HIT=${HIT}&DB=${DB}&USER=${USER}&INT=182&DOCTYPE=${DocType}&REQUEST=${REQUEST}`;
+  return AxiosEvent.get(path);
+}
+
+function apiSetDeclaredRequest(payload) {
+  Applogger('Payload at apiSetDeclaredRequest', payload);
+  const {HIT, DB, USER, DocType, declaredValue} = payload;
+  var path = `servlets.CH_VaultJson?USER=${USER}&DB=${DB}&DOCTYPE=${DocType}&HIT=${HIT}&INT=208&FOLDER=none&RECORDTYPE=${declaredValue}`;
+  return AxiosEvent.get(path);
+}
+
+function apiGetDeclaredOption(payload) {
+  Applogger('Payload at apiGetDeclaredOption', payload);
+  const {HIT, DB, USER, DocType} = payload;
+  var path = `servlets.CH_VaultJson?USER=${USER}&DB=${DB}&DOCTYPE=${DocType}&HIT=${HIT}&INT=208&FOLDER=none`;
+  return AxiosEvent.get(path);
+}
+
 export const DocumentsAPIServices = {
   apiTreeAPIData,
   apiTreeAPIRRData,
@@ -82,4 +103,7 @@ export const DocumentsAPIServices = {
   apiGetVersionInfoData,
   apiGetDocumentIndexData,
   apiSignDocumentRequest,
+  apiAddDocumentRequest,
+  apiSetDeclaredRequest,
+  apiGetDeclaredOption,
 };

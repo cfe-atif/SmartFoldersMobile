@@ -20,6 +20,8 @@ const AppIcons = {
   // Folders Cell
   arrowRight: 'chevron-forward',
   documents: 'documents',
+  selectFill: 'ios-checkbox',
+  select: 'square-outline',
   // File Cell
   fileIcon: 'document-sharp',
   infoIcon: 'information-circle-outline',

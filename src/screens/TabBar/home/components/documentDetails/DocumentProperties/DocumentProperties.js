@@ -85,7 +85,7 @@ export default function DocumentProperties({navigation}) {
         Applogger('Response at getViewPropertiesData', res);
         if (isUnAuthenticatedUser(res)) {
           navigation.navigate(AppRoutes.Login);
-          showFaliureToast(mapAPICallError(res));
+          showFaliureToast('Error', mapAPICallError(res));
         }
       })
       .catch(err => {
@@ -100,13 +100,23 @@ export default function DocumentProperties({navigation}) {
   const renderHeaderTypeView = () => {
     switch (selectedType) {
       case headerTypes.Document:
-        return <ViewDocProperties viewPropertiesData={viewPropertiesData} />;
+        return (
+          <ViewDocProperties
+            viewPropertiesData={viewPropertiesData}
+            navigation={navigation}
+          />
+        );
 
       case headerTypes.Security:
         return <Security viewPropertiesData={viewPropertiesData} />;
 
       case headerTypes.FOI:
-        return <FreedomOfInformation viewPropertiesData={viewPropertiesData} />;
+        return (
+          <FreedomOfInformation
+            viewPropertiesData={viewPropertiesData}
+            navigation={navigation}
+          />
+        );
 
       case headerTypes.WorkflowHistory:
         return <WorkflowHistory viewPropertiesData={viewPropertiesData} />;
@@ -115,7 +125,12 @@ export default function DocumentProperties({navigation}) {
         return <PreviousMarkings viewPropertiesData={viewPropertiesData} />;
 
       default:
-        return <ViewDocProperties viewPropertiesData={viewPropertiesData} />;
+        return (
+          <ViewDocProperties
+            viewPropertiesData={viewPropertiesData}
+            navigation={navigation}
+          />
+        );
     }
   };
 
