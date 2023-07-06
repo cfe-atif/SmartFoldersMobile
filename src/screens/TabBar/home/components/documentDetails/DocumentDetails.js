@@ -62,15 +62,15 @@ export default function DocumentDetails({navigation, route}) {
         });
       },
     },
-    {
-      title: 'Checkout',
-      image: AppImages.addDocument,
-      onPress: () => {
-        navigation.navigate(AppRoutes.CheckoutDocument, {
-          selectedDocument: selectedDocument,
-        });
-      },
-    },
+    // {
+    //   title: 'Checkout',
+    //   image: AppImages.addDocument,
+    //   onPress: () => {
+    //     navigation.navigate(AppRoutes.CheckoutDocument, {
+    //       selectedDocument: selectedDocument,
+    //     });
+    //   },
+    // },
     {
       title: 'Page Version info',
       image: AppImages.addDocument,

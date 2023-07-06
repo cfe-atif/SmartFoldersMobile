@@ -11,7 +11,7 @@ import {
 } from '../../../../../../utils/HelperFunctions';
 import Applogger from '../../../../../../helpers/AppLogger';
 import Security from './InternalComponents/Security';
-import WorkflowHistory from './InternalComponents/WorkflowHistory';
+// import WorkflowHistory from './InternalComponents/WorkflowHistory';
 import PreviousMarkings from './InternalComponents/PreviousMarkings';
 import ViewDocProperties from './InternalComponents/ViewDocProperties';
 import FreedomOfInformation from './InternalComponents/FOI';
@@ -56,10 +56,10 @@ export default function DocumentProperties({navigation}) {
       title: headerTypes.FOI,
       type: headerTypes.FOI,
     },
-    {
-      title: headerTypes.WorkflowHistory,
-      type: headerTypes.WorkflowHistory,
-    },
+    // {
+    //   title: headerTypes.WorkflowHistory,
+    //   type: headerTypes.WorkflowHistory,
+    // },
     {
       title: headerTypes.PreviousMarkings,
       type: headerTypes.PreviousMarkings,
@@ -118,8 +118,8 @@ export default function DocumentProperties({navigation}) {
           />
         );
 
-      case headerTypes.WorkflowHistory:
-        return <WorkflowHistory viewPropertiesData={viewPropertiesData} />;
+      // case headerTypes.WorkflowHistory:
+      //   return <WorkflowHistory viewPropertiesData={viewPropertiesData} />;
 
       case headerTypes.PreviousMarkings:
         return <PreviousMarkings viewPropertiesData={viewPropertiesData} />;
