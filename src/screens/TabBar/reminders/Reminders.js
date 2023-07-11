@@ -69,17 +69,17 @@ export default function Reminders({navigation}) {
   }, [remindersList, filterType, sortType]);
 
   const getFinalRemindersList = () => {
-    let finalList = remindersList;
+    let finalList = [...remindersList];
     if (Array.isArray(remindersList)) {
       if (filterType == filterTypes.completed) {
-        finalList = [...finalList].filter(reminder => {
+        finalList = finalList.filter(reminder => {
           return (
             reminder.State == reminderStates.completed ||
             reminder.State == reminderStates.dismiss
           );
         });
       } else {
-        finalList = [...finalList].filter(reminder => {
+        finalList = finalList.filter(reminder => {
           return (
             reminder.State == reminderStates.open ||
             reminder.State == reminderStates.snooze
@@ -88,28 +88,26 @@ export default function Reminders({navigation}) {
       }
 
       if (sortType == sortTypes.aToZ) {
-        finalList = [...finalList].sort((reminderA, reminderB) => {
-          return get(reminderA, 'Subject', '').toLowerCase() >
-            get(reminderB, 'Subject', '').toLowerCase()
+        finalList = finalList.sort((reminderA, reminderB) => {
+          return get(reminderA, 'Subject', '').toString().toLowerCase() >
+            get(reminderB, 'Subject', '').toString().toLowerCase()
             ? 1
             : -1;
         });
       } else if (sortType == sortTypes.zToA) {
-        finalList = [...finalList].sort((reminderA, reminderB) => {
-          return get(reminderA, 'Subject', '').toLowerCase() <
-            get(reminderB, 'Subject', '').toLowerCase()
+        finalList = finalList.sort((reminderA, reminderB) => {
+          return get(reminderA, 'Subject', '').toString().toLowerCase() <
+            get(reminderB, 'Subject', '').toString().toLowerCase()
             ? 1
             : -1;
         });
-      } else if (sortType == sortTypes.byDate) {
+      } else {
         finalList = finalList.sort((reminderA, reminderB) => {
           return (
-            new Date(get(reminderA, 'AlertDate', '')) -
-            new Date(get(reminderB, 'AlertDate', ''))
+            new Date(get(reminderB, 'AlertDate', '')) -
+            new Date(get(reminderA, 'AlertDate', ''))
           );
         });
-      } else {
-        finalList;
       }
     }
     setFinalRemindersList(finalList);
@@ -167,7 +165,12 @@ export default function Reminders({navigation}) {
       .then(unwrapResult)
       .then(res => {
         handleSuccessToastAndLogs('getRemindersList', res);
-        if (!responseHasError(res)) {
+        if (isUnAuthenticatedUser(res)) {
+          navigate(AppRoutes.Login);
+          showFaliureToast(mapAPICallError(res));
+        } else {
+          if (!responseHasError(res)) {
+          }
         }
       })
       .catch(err => {
@@ -184,9 +187,15 @@ export default function Reminders({navigation}) {
       .then(unwrapResult)
       .then(res => {
         handleSuccessToastAndLogs('getUpcomingRemindersList', res);
-        if (!responseHasError(res)) {
-          if (res.hasOwnProperty('Reminders')) {
-            if (res.Reminders.Reminder) {
+
+        if (isUnAuthenticatedUser(res)) {
+          navigate(AppRoutes.Login);
+          showFaliureToast(mapAPICallError(res));
+        } else {
+          if (!responseHasError(res)) {
+            if (res.hasOwnProperty('Reminders')) {
+              if (res.Reminders.Reminder) {
+              }
             }
           }
         }

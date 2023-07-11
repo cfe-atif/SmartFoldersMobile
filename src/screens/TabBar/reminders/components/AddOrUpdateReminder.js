@@ -25,16 +25,17 @@ import {
   showFaliureToast,
 } from '../../../../helpers/AppToasts';
 import moment from 'moment';
-import Applogger from '../../../../helpers/AppLogger';
-import AppConstants from '../../../../helpers/AppConstants';
 import ReminderDocView from './ReminderDocView';
-import Header from '../../../../components/headers/Header';
-import PrimaryTextField from '../../../../components/textFields/PrimaryTextField';
-import PrimaryButton from '../../../../components/buttons/PrimaryButton';
-import PrimaryDatePicker from './../../../../components/textFields/PrimaryDatePicker';
-import SFLoader from './../../../../components/loaders/SFLoader';
-import ReminderDropDown from './../../../../components/dropdowns/ReminderDropDown';
+import AppRoutes from '../../../../helpers/AppRoutes';
+import Applogger from '../../../../helpers/AppLogger';
 import AppImages from '../../../../helpers/AppImages';
+import AppConstants from '../../../../helpers/AppConstants';
+import Header from '../../../../components/headers/Header';
+import SFLoader from './../../../../components/loaders/SFLoader';
+import PrimaryButton from '../../../../components/buttons/PrimaryButton';
+import PrimaryTextField from '../../../../components/textFields/PrimaryTextField';
+import ReminderDropDown from './../../../../components/dropdowns/ReminderDropDown';
+import PrimaryDatePicker from './../../../../components/textFields/PrimaryDatePicker';
 
 export default function AddOrUpdateReminder({navigation, route}) {
   const dispatch = useDispatch();
@@ -129,17 +130,22 @@ export default function AddOrUpdateReminder({navigation, route}) {
       .then(unwrapResult)
       .then(res => {
         handleSuccessToastAndLogs('addOrUpdateReminderRequest', res);
-        if (!responseHasError(res)) {
-          handleGetRemindersList(reminderPeriods.all);
-          handleGetUpcomingRemindersList();
-          showSuccessToast(
-            'Success',
-            `Reminder ${reminderToUpdate ? 'updated' : 'added'} successfully`,
-          );
-          navigation.goBack();
+        if (isUnAuthenticatedUser(res)) {
+          navigate(AppRoutes.Login);
+          showFaliureToast(mapAPICallError(res));
         } else {
-          if (responseHasError(res)) {
-            showFaliureToast(res.Error);
+          if (!responseHasError(res)) {
+            handleGetRemindersList(reminderPeriods.all);
+            handleGetUpcomingRemindersList();
+            showSuccessToast(
+              'Success',
+              `Reminder ${reminderToUpdate ? 'updated' : 'added'} successfully`,
+            );
+            navigation.goBack();
+          } else {
+            if (responseHasError(res)) {
+              showFaliureToast(res.Error);
+            }
           }
         }
       })
@@ -157,7 +163,12 @@ export default function AddOrUpdateReminder({navigation, route}) {
       .then(unwrapResult)
       .then(res => {
         handleSuccessToastAndLogs('getRemindersList', res);
-        if (!responseHasError(res)) {
+        if (isUnAuthenticatedUser(res)) {
+          navigate(AppRoutes.Login);
+          showFaliureToast(mapAPICallError(res));
+        } else {
+          if (!responseHasError(res)) {
+          }
         }
       })
       .catch(err => {
@@ -174,9 +185,14 @@ export default function AddOrUpdateReminder({navigation, route}) {
       .then(unwrapResult)
       .then(res => {
         handleSuccessToastAndLogs('getUpcomingRemindersList', res);
-        if (!responseHasError(res)) {
-          if (res.hasOwnProperty('Reminders')) {
-            if (res.Reminders.Reminder) {
+        if (isUnAuthenticatedUser(res)) {
+          navigate(AppRoutes.Login);
+          showFaliureToast(mapAPICallError(res));
+        } else {
+          if (!responseHasError(res)) {
+            if (res.hasOwnProperty('Reminders')) {
+              if (res.Reminders.Reminder) {
+              }
             }
           }
         }

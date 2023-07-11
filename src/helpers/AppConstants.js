@@ -88,7 +88,7 @@ const AppConstants = {
     '.eml',
   ],
   dateTimeFormat: 'DD-MMM-YYYY hh:mm A',
-  dateTimeFormatAPI: 'DD-MMM-YYYYThh:mm',
+  dateTimeFormatAPI: 'YYYY-DD-MMThh:mm',
   dateFormat: 'DD-MMM-YY',
   timeFormat: 'hh:mm:ss A',
   datePicker: {

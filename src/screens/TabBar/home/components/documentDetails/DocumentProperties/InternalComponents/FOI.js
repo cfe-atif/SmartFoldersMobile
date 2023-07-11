@@ -28,6 +28,12 @@ export default function FOI({viewPropertiesData, navigation}) {
 
   const [documentRequest, setDocumentRequest] = useState('');
 
+  const FOIRequests = Array.isArray(
+    get(viewPropertiesData, 'Document.FreedomOfInformation.Request', []),
+  )
+    ? get(viewPropertiesData, 'Document.FreedomOfInformation.Request', [])
+    : [get(viewPropertiesData, 'Document.FreedomOfInformation.Request', [])];
+
   const handleAddDocumentRequest = () => {
     if (!documentRequest) {
       showFaliureToast('Field Error', 'Please enter request to continue');
@@ -74,32 +80,18 @@ export default function FOI({viewPropertiesData, navigation}) {
     <View style={styles.container}>
       <View style={styles.intContainer}>
         <Text style={styles.title}>Requests:</Text>
-        {Array.isArray(
-          get(viewPropertiesData, 'Document.FreedomOfInformation.Request', []),
-        ) &&
-          get(
-            viewPropertiesData,
-            'Document.FreedomOfInformation.Request',
-            [],
-          ).map((request, index) => {
-            return (
-              <Text key={index} style={styles.desc}>
-                {request}
-              </Text>
-            );
-          })}
-        {typeof get(viewPropertiesData, 'Document.FreedomOfInformation', '') ==
-          'object' && (
-          <Text style={styles.desc}>
-            {get(
-              viewPropertiesData,
-              'Document.FreedomOfInformation.Request',
-              '',
+        {FOIRequests.length > 0
+          ? FOIRequests.map((request, index) => {
+              return (
+                <Text key={index} style={styles.desc}>
+                  {`${index + 1}. ${request}`}
+                </Text>
+              );
+            })
+          : get(viewPropertiesData, 'Document.FreedomOfInformation', 'None') ==
+              ('None' || '') && (
+              <Text style={styles.desc}>{'No request on system'}</Text>
             )}
-          </Text>
-        )}
-        {typeof get(viewPropertiesData, 'Document.FreedomOfInformation', '') ==
-          'string' && <Text style={styles.desc}>{'No request on system'}</Text>}
       </View>
       <Separator />
       <View style={styles.intContainer}>
@@ -133,6 +125,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     color: AppColors.gray,
     fontSize: AppFontSize.size14,
-    fontFamily: AppFontFamily.semiBold,
+    fontFamily: AppFontFamily.regular,
   },
 });

@@ -28,7 +28,7 @@ const AppImages = {
   extract: require('../assets/docImages/extract.png'),
   folder: require('../assets/docImages/folder.png'),
   gif: require('../assets/docImages/gif.png'),
-  gwe: require('../assets/docImages/gwe.png'),
+  // gwe: require('../assets/docImages/gwe.png'),
   htm: require('../assets/docImages/htm.png'),
   html: require('../assets/docImages/html.png'),
   jpe: require('../assets/docImages/jpe.png'),

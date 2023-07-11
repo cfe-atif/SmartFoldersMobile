@@ -10,13 +10,15 @@ import {
   isUnAuthenticatedUser,
   getFormattedDate,
 } from '../../../../../../utils/HelperFunctions';
-import Header from '../../../../../../components/headers/Header';
-import SFLoader from '../../../../../../components/loaders/SFLoader';
 import Applogger from '../../../../../../helpers/AppLogger';
 import AppRoutes from '../../../../../../helpers/AppRoutes';
+import Header from '../../../../../../components/headers/Header';
+import SFLoader from '../../../../../../components/loaders/SFLoader';
+import SFHeading from '../../../../../../components/texts/SFHeading';
 import DocumentDetailsCell from '../../../../../../components/cells/DocumentDetailsCell';
+import AppColors from '../../../../../../helpers/AppColors';
 
-export default function DocumentIndex({navigation, route}) {
+export default function DocumentIndex({navigation}) {
   const dispatch = useDispatch();
 
   const {user} = useSelector(state => state.AuthenticationReducer);
@@ -71,19 +73,25 @@ export default function DocumentIndex({navigation, route}) {
         <View style={styles.dataContainer}>
           {Array.isArray(Field) &&
             Field.map((item, index) => {
-              const {Label, Data, Date} = item;
+              const {Label, Data, Type} = item;
               const title = Label;
-              let description = Data;
-              if (title == 'Date') {
-                description = getFormattedDate(item);
+              if (Type == 'Date') {
+                return (
+                  <DocumentDetailsCell
+                    key={index}
+                    title={title}
+                    description={getFormattedDate(item)}
+                  />
+                );
+              } else {
+                return (
+                  <DocumentDetailsCell
+                    key={index}
+                    title={title}
+                    description={Data}
+                  />
+                );
               }
-              return (
-                <DocumentDetailsCell
-                  key={index}
-                  title={title}
-                  description={description}
-                />
-              );
             })}
         </View>
       );
@@ -98,6 +106,12 @@ export default function DocumentIndex({navigation, route}) {
         backButton={true}
         onBackPress={() => navigation.goBack()}
       />
+      {documentIndexData && (
+        <SFHeading
+          title={'Document ' + get(documentIndexData, 'System.Hit', '')}
+          textStyle={styles.heading}
+        />
+      )}
       <ScrollView>{renderFileCells()}</ScrollView>
     </View>
   );
@@ -109,5 +123,9 @@ const styles = StyleSheet.create({
   },
   dataContainer: {
     marginVertical: 10,
+  },
+  heading: {
+    textAlign: 'left',
+    color: AppColors.black,
   },
 });
